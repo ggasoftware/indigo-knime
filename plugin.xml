@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+	<extension point="org.knime.workbench.repository.nodes">
+    	<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
+    	<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
+		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoBasicPropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoBasicPropertiesNodeFactory"/>
+		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
+		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
+   	</extension>
+</plugin>
