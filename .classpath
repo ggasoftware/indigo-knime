@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.chem.base_2.3.3.0028596.jar" sourcepath="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.chem.base.source_2.3.3.0028596.jar"/>
+	<classpathentry kind="lib" path="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.ext.chem.cdk.source_2.3.3.0028574.jar"/>
+	<classpathentry kind="lib" path="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.ext.chem.cdk_2.3.3.0028574/knime-cdk.jar" sourcepath="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.ext.chem.cdk.source_2.3.3.0028574.jar"/>
+	<classpathentry kind="lib" path="lib/indigo-renderer.jar"/>
+	<classpathentry kind="lib" path="lib/indigo.jar"/>
+	<classpathentry kind="lib" path="lib/jna.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
