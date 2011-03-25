@@ -15,6 +15,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.knime.chem.types.CMLValue;
 import org.knime.chem.types.SdfValue;
@@ -50,13 +54,10 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane {
     private final JComboBox m_destFormat =
         new JComboBox(new Object[]{Format.SDF, Format.Smiles, Format.CML});
 
-    private final JCheckBox m_replaceColumn = new JCheckBox();
-
-    private final JLabel m_newColNameLabel =
-    	new JLabel("   New column name   ");
-
+    private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
+    
     private final JTextField m_newColName = new JTextField(20);
-
+    
     private final IndigoMoleculeSaverSettings m_settings = new IndigoMoleculeSaverSettings();
     
     /**
@@ -76,31 +77,34 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane {
         c.gridx = 1;
         p.add(m_molColumn, c);
 
-        c.gridx = 0;
         c.gridy++;
-        p.add(new JLabel("Replace column   "), c);
-        c.gridx = 1;
-        p.add(m_replaceColumn, c);
-
-        m_replaceColumn.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent e) {
-                m_newColNameLabel.setEnabled(!m_replaceColumn.isSelected());
-                m_newColName.setEnabled(!m_replaceColumn.isSelected());
-            }
-        });
-
         c.gridx = 0;
-        c.gridy++;
-        p.add(m_newColNameLabel, c);
+        p.add(m_appendColumn, c);
         c.gridx = 1;
         p.add(m_newColName, c);
 
-        c.gridx = 0;
         c.gridy++;
+        c.gridx = 0;
         p.add(new JLabel("Destination format   "), c);
         c.gridx = 1;
         p.add(m_destFormat, c);
 
+
+        m_appendColumn.addChangeListener(new ChangeListener() {
+            public void stateChanged(final ChangeEvent e) {
+                if (m_appendColumn.isSelected()) {
+                    m_newColName.setEnabled(true);
+                    if ("".equals(m_newColName.getText())) {
+                        m_newColName.setText(
+                                m_molColumn.getSelectedColumn() + " (saved)");
+                    }
+                } else {
+                    m_newColName.setEnabled(false);
+                }
+            }
+        });
+        m_newColName.setEnabled(m_appendColumn.isSelected());
+        
         m_destFormat.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(final JList list,
@@ -137,8 +141,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane {
         m_settings.loadSettingsForDialog(settings);
 
         m_molColumn.update(specs[0], m_settings.colName);
-        m_replaceColumn.setSelected(m_settings.replaceColumn);
-        m_newColNameLabel.setEnabled(!m_settings.replaceColumn);
+        m_appendColumn.setSelected(!m_settings.replaceColumn);
         m_newColName.setEnabled(!m_settings.replaceColumn);
         m_newColName.setText(m_settings.newColName);
         m_destFormat.setSelectedItem(m_settings.destFormat);
@@ -151,7 +154,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane {
     protected void saveSettingsTo(final NodeSettingsWO settings)
             throws InvalidSettingsException {
         m_settings.colName = m_molColumn.getSelectedColumn();
-        m_settings.replaceColumn = m_replaceColumn.isSelected();
+        m_settings.replaceColumn = !m_appendColumn.isSelected();
         m_settings.newColName = m_newColName.getText();
         m_settings.destFormat = ((Format)m_destFormat.getSelectedItem());
         m_settings.saveSettings(settings);
