@@ -10,15 +10,15 @@ import org.knime.core.node.NodeView;
  *
  * @author GGA Software Services LLC
  */
-public class IndigoBasicPropertiesNodeFactory 
-        extends NodeFactory<IndigoBasicPropertiesNodeModel> {
+public class IndigoMoleculePropertiesNodeFactory 
+        extends NodeFactory<IndigoMoleculePropertiesNodeModel> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IndigoBasicPropertiesNodeModel createNodeModel() {
-        return new IndigoBasicPropertiesNodeModel();
+    public IndigoMoleculePropertiesNodeModel createNodeModel() {
+        return new IndigoMoleculePropertiesNodeModel();
     }
 
     /**
@@ -33,8 +33,8 @@ public class IndigoBasicPropertiesNodeFactory
      * {@inheritDoc}
      */
     @Override
-    public NodeView<IndigoBasicPropertiesNodeModel> createNodeView(final int viewIndex,
-            final IndigoBasicPropertiesNodeModel nodeModel) {
+    public NodeView<IndigoMoleculePropertiesNodeModel> createNodeView(final int viewIndex,
+            final IndigoMoleculePropertiesNodeModel nodeModel) {
         return null;
     }
 
@@ -51,7 +51,7 @@ public class IndigoBasicPropertiesNodeFactory
      */
     @Override
     public NodeDialogPane createNodeDialogPane() {
-        return new IndigoBasicPropertiesNodeDialog();
+        return new IndigoMoleculePropertiesNodeDialog();
     }
 
 }
