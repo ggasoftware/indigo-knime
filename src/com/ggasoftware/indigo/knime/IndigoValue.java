@@ -12,59 +12,64 @@ import org.knime.core.data.renderer.MultiLineStringValueRenderer;
 
 import com.ggasoftware.indigo.IndigoObject;
 
-public interface IndigoValue extends DataValue {
-	
+public interface IndigoValue extends DataValue
+{
+
 	IndigoObject getIndigoObject ();
-	
-    public static final UtilityFactory UTILITY = new IndigoUtilityFactory();
-    
-    /** Implementations of the meta information of this value class. */
-    public static class IndigoUtilityFactory extends UtilityFactory {
-        /** Singleton icon to be used to display this cell type. */
-    	//private static final Icon ICON = loadIcon(org.knime.ext.chem.cdk.type.CDKValue.class, "/cdk.png");
-    	private static final Icon ICON = null;
 
-        private static final DataValueComparator COMPARATOR =
-                new DataValueComparator() {
-                    @Override
-                    protected int compareDataValues(final DataValue v1,
-                            final DataValue v2) {
-                        int atomCount1 =
-                                ((IndigoValue)v1).getIndigoObject().countAtoms();
-                        int atomCount2 =
-                                ((IndigoValue)v2).getIndigoObject().countAtoms();
-                        return atomCount1 - atomCount2;
-                    }
-                };
+	public static final UtilityFactory UTILITY = new IndigoUtilityFactory();
 
-        /** Only subclasses are allowed to instantiate this class. */
-        protected IndigoUtilityFactory() {
-        }
+	/** Implementations of the meta information of this value class. */
+	public static class IndigoUtilityFactory extends UtilityFactory
+	{
+		/** Singleton icon to be used to display this cell type. */
+		// private static final Icon ICON =
+		// loadIcon(org.knime.ext.chem.cdk.type.CDKValue.class, "/cdk.png");
+		private static final Icon ICON = null;
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Icon getIcon() {
-            return ICON;
-        }
+		private static final DataValueComparator COMPARATOR = new DataValueComparator() {
+			@Override
+			protected int compareDataValues (final DataValue v1, final DataValue v2)
+			{
+				int atomCount1 = ((IndigoValue) v1).getIndigoObject().countAtoms();
+				int atomCount2 = ((IndigoValue) v2).getIndigoObject().countAtoms();
+				return atomCount1 - atomCount2;
+			}
+		};
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected DataValueComparator getComparator() {
-            return COMPARATOR;
-        }
+		/** Only subclasses are allowed to instantiate this class. */
+		protected IndigoUtilityFactory()
+		{
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected DataValueRendererFamily getRendererFamily(
-                final DataColumnSpec spec) {
-            return new DefaultDataValueRendererFamily(new IndigoValueRenderer(), new MultiLineStringValueRenderer("String"));
-        }
-    }
-	
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Icon getIcon ()
+		{
+			return ICON;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected DataValueComparator getComparator ()
+		{
+			return COMPARATOR;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected DataValueRendererFamily getRendererFamily (
+		      final DataColumnSpec spec)
+		{
+			return new DefaultDataValueRendererFamily(new IndigoValueRenderer(),
+			      new MultiLineStringValueRenderer("String"));
+		}
+	}
+
 }

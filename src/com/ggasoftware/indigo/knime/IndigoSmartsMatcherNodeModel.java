@@ -38,8 +38,10 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 
 		DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
 
-		BufferedDataContainer validOutputContainer = exec.createDataContainer(inputTableSpec);
-		BufferedDataContainer invalidOutputContainer = exec.createDataContainer(inputTableSpec);
+		BufferedDataContainer validOutputContainer = exec
+		      .createDataContainer(inputTableSpec);
+		BufferedDataContainer invalidOutputContainer = exec
+		      .createDataContainer(inputTableSpec);
 
 		int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
 
@@ -54,18 +56,19 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 			DataRow inputRow = it.next();
 
 			IndigoObject match = IndigoCell.indigo.substructureMatcher(
-					((IndigoCell)(inputRow.getCell(colIdx))).getIndigoObject()).match(smarts);
+			      ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject())
+			      .match(smarts);
 
 			if (match != null)
 			{
 				validOutputContainer.addRowToTable(inputRow);
-			}
-			else
+			} else
 			{
 				invalidOutputContainer.addRowToTable(inputRow);
 			}
 			exec.checkCanceled();
-			exec.setProgress(rowNumber / (double) inData[0].getRowCount(), "Adding row " + rowNumber);
+			exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+			      "Adding row " + rowNumber);
 			rowNumber++;
 		}
 
