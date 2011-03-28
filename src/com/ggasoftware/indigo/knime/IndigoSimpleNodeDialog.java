@@ -18,7 +18,7 @@ import javax.swing.event.ChangeListener;
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoAromatizerNodeDialog extends NodeDialogPane
+public class IndigoSimpleNodeDialog extends NodeDialogPane
 {
 
 	@SuppressWarnings("unchecked")
@@ -29,11 +29,15 @@ public class IndigoAromatizerNodeDialog extends NodeDialogPane
 
 	private final JTextField m_newColName = new JTextField(20);
 
-	private final IndigoAromatizerSettings m_settings = new IndigoAromatizerSettings();
+	private final IndigoSimpleSettings m_settings = new IndigoSimpleSettings();
+	
+	private final String _desc;
 
-	protected IndigoAromatizerNodeDialog()
+	protected IndigoSimpleNodeDialog (String desc)
 	{
 		super();
+		
+		_desc = desc; 
 
 		JPanel p = new JPanel(new GridBagLayout());
 
@@ -62,7 +66,7 @@ public class IndigoAromatizerNodeDialog extends NodeDialogPane
 					if ("".equals(m_newColName.getText()))
 					{
 						m_newColName.setText(m_molColumn.getSelectedColumn()
-						      + " (aromatized)");
+						      + " (" + _desc + ")");
 					}
 				} else
 				{

@@ -36,7 +36,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 	/**
 	 * New pane for configuring the IndigoMoleculeSaver node.
 	 */
-	protected IndigoMoleculeSaverNodeDialog()
+	@SuppressWarnings("serial")
+   protected IndigoMoleculeSaverNodeDialog()
 	{
 
 		JPanel p = new JPanel(new GridBagLayout());

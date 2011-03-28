@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
 <knimeNode icon="./default.png" type="Source">
-    <name>IndigoAromatizer</name>
+    <name>IndigoHydrogenAdder</name>
     
     <shortDescription>
         
     </shortDescription>
     
     <fullDescription>
-        <intro><p>This node converts the chemical structures in one of the input table's columns into the aromatic
-        form. The target column must contain Indigo cells.</p>
+        <intro><p>This node adds explicit hydrogens to Indigo molecules to fulfill the valencies.</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
         <option name="Molecule Column">The column that contains the molecules.</option>
         <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
@@ -17,7 +16,7 @@
     
     <ports>
         <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Aromatized molecules">The same as input, with aromatized molecules</outPort>
+        <outPort index="0" name="Molecules with hydrogens">The same as input, but with explicit hydrogens</outPort>
     </ports>    
     <views>
         <!-- <view index="0" name="name of first view">Description of first view...</view> -->

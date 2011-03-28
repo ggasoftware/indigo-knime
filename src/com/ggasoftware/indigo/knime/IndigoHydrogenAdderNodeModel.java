@@ -11,12 +11,12 @@ import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 /**
- * This is the model implementation of IndigoAromatizer.
+ * This is the model implementation of IndigoHydrogenAdder.
  * 
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoAromatizerNodeModel extends NodeModel
+public class IndigoHydrogenAdderNodeModel extends NodeModel
 {
 
 	// the logger instance
@@ -25,7 +25,7 @@ public class IndigoAromatizerNodeModel extends NodeModel
 
 	IndigoSimpleSettings m_settings = new IndigoSimpleSettings();
 
-	protected IndigoAromatizerNodeModel()
+	protected IndigoHydrogenAdderNodeModel()
 	{
 		super(1, 1);
 	}
@@ -89,12 +89,11 @@ public class IndigoAromatizerNodeModel extends NodeModel
 				try
 				{
 					IndigoObject io = iv.getIndigoObject().clone();
-					io.aromatize();
+					io.unfoldHydrogens();
 					return new IndigoCell(io);
 				} catch (IndigoException ex)
 				{
-					logger.error("Could not aromatize molecule: " + ex.getMessage(),
-					      ex);
+					logger.error("Could not unfold hydrogens: " + ex.getMessage(), ex);
 					return DataType.getMissingCell();
 				}
 			}
@@ -204,7 +203,6 @@ public class IndigoAromatizerNodeModel extends NodeModel
 	protected void saveSettingsTo (final NodeSettingsWO settings)
 	{
 		m_settings.saveSettings(settings);
-
 	}
 
 	/**

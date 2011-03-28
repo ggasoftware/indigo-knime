@@ -2,7 +2,7 @@ package com.ggasoftware.indigo.knime;
 
 import org.knime.core.node.*;
 
-public class IndigoAromatizerSettings
+public class IndigoSimpleSettings
 {
 	public String colName = "Molecule";
 	public boolean replaceColumn = true;
