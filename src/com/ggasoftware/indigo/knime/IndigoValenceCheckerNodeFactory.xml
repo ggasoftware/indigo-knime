@@ -14,14 +14,12 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Description of first input port...</inPort>
-        <!-- possibly more input ports here-->
-        <outPort index="0" name="Out-Port name">Valid molecules are copied as is</outPort>
-        <outPort index="1" name="Out-Port name">Invalid molecules are supplied with an error message</outPort>
-        <!-- possibly more output ports here-->
+        <inPort index="0" name="Input">Input data</inPort>
+        <outPort index="0" name="Valid molecules">Valid molecules are copied as is</outPort>
+        <outPort index="1" name="Invalid molecules">Invalid molecules are supplied with an error message</outPort>
     </ports>    
     <views>
-        <view index="0" name="name of first view">Description of first view...</view>
+        <!-- <view index="0" name="name of first view">Description of first view...</view> -->
         <!--view index="1" name="name of second view">Description of second view...</view-->
     </views>
 </knimeNode>

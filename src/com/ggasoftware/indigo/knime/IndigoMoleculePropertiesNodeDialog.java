@@ -8,27 +8,16 @@ import javax.swing.*;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
-import org.knime.core.node.defaultnodesettings.*;
 import org.knime.core.node.util.*;
-import org.knime.ext.chem.cdk.molprops.MolPropsNodeModel;
 
 /**
  * <code>NodeDialog</code> for the "IndigoBasicProperties" Node.
- * 
  *
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more 
- * complex dialog please derive directly from 
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
  * @author GGA Software Services LLC
  */
 public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane {
 
-	//private final ColumnSelectionComboxBox m_colName = new ColumnSelectionComboxBox((Border)null, IndigoValue.class);
-	
     private final ColumnSelectionPanel m_selPanel;
-
     private final ColumnFilterPanel m_filterPanel;
 	
     /**
@@ -36,7 +25,8 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane {
      * This is just a suggestion to demonstrate possible default dialog
      * components.
      */
-    protected IndigoMoleculePropertiesNodeDialog() {
+    @SuppressWarnings("unchecked")
+	protected IndigoMoleculePropertiesNodeDialog() {
         super();
         
         m_selPanel = new ColumnSelectionPanel(IndigoValue.class);

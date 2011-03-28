@@ -8,5 +8,6 @@
 		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
 		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
 		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
-   	</extension>
+		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory"/>
+</extension>
 </plugin>

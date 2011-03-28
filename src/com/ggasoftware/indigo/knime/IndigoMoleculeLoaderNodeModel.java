@@ -20,13 +20,8 @@ import java.io.File;
 public class IndigoMoleculeLoaderNodeModel extends NodeModel {
     
     private final IndigoMoleculeLoaderSettings m_settings = new IndigoMoleculeLoaderSettings();
-    
-    private static final NodeLogger LOGGER =
-        NodeLogger.getLogger(IndigoMoleculeLoaderNodeModel.class);
-    
-    /**
-     * Constructor for the node model.
-     */
+   
+
     protected IndigoMoleculeLoaderNodeModel() {
         super(1, 2);
     }

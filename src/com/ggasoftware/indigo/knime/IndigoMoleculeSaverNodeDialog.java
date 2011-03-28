@@ -1,36 +1,13 @@
 package com.ggasoftware.indigo.knime;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import org.knime.chem.types.CMLValue;
-import org.knime.chem.types.SdfValue;
-import org.knime.chem.types.SmilesValue;
-import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.DataValue;
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
-import org.knime.core.node.NotConfigurableException;
-import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
+import org.knime.chem.types.*;
+import org.knime.core.data.*;
+import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
 import com.ggasoftware.indigo.knime.IndigoMoleculeSaverSettings.Format;
@@ -48,7 +25,8 @@ import com.ggasoftware.indigo.knime.IndigoMoleculeSaverSettings.Format;
  */
 public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane {
 
-    private final ColumnSelectionComboxBox m_molColumn =
+    @SuppressWarnings("unchecked")
+	private final ColumnSelectionComboxBox m_molColumn =
         new ColumnSelectionComboxBox((Border)null, IndigoValue.class);
 
     private final JComboBox m_destFormat =

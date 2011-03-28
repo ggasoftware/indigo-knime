@@ -12,9 +12,6 @@ import java.util.*;
 
 public class IndigoMoleculePropertiesNodeModel extends NodeModel {
     
-    private static final NodeLogger LOGGER =
-        NodeLogger.getLogger(IndigoMoleculePropertiesNodeModel.class);
-    
     private final IndigoMoleculePropertiesSettings m_settings = new IndigoMoleculePropertiesSettings();
 
     public static interface PropertyCalculator
@@ -129,6 +126,14 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel {
     	calculators.put("Molecular weight", new DoublePropertyCalculator () {
     		public DataCell calculate (IndigoObject io)
     		{ return new DoubleCell(io.molecularWeight()); }});
+    	
+    	calculators.put("Monoisotopic mass", new DoublePropertyCalculator () {
+    		public DataCell calculate (IndigoObject io)
+    		{ return new DoubleCell(io.monoisotopicMass()); }});
+    	
+    	calculators.put("Most abundant mass", new DoublePropertyCalculator () {
+    		public DataCell calculate (IndigoObject io)
+    		{ return new DoubleCell(io.mostAbundantMass()); }});
     	
     	calculators.put("Molecular formula", new StringPropertyCalculator () {
     		public DataCell calculate (IndigoObject io)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./default.png" type="Source">
+    <name>IndigoSmartsMatcher</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node accepts a table with Indigo molecules and divides it into two sets, one with all molecules that contain the specified SMARTS fragment, the other with all molecules that do not contain it.</intro>
+        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="SMARTS expression">SMARTS fragment being matched</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input data">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Matched">Rows with matched molecules</outPort>
+        <outPort index="1" name="Unmatched">Rows with unmatched molecules</outPort>
+    </ports>    
+    <views>
+        <!--<view index="0" name="name of first view">Description of first view...</view>-->
+        <!--view index="1" name="name of second view">Description of second view...</view-->
+    </views>
+</knimeNode>

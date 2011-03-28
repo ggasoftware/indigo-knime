@@ -47,8 +47,6 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel {
      * Constructor for the node model.
      */
     protected IndigoMoleculeSaverNodeModel() {
-    
-        // TODO: Specify the amount of input and output ports needed.
         super(1, 1);
     }
 

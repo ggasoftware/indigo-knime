@@ -1,15 +1,8 @@
 package com.ggasoftware.indigo.knime;
 
 import com.ggasoftware.indigo.*;
-import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
 import org.knime.core.data.DataCellDataInput;
 import org.knime.core.data.DataCellDataOutput;
 import org.knime.core.data.DataCellSerializer;
@@ -19,7 +12,9 @@ import org.knime.core.node.NodeLogger;
 
 public class IndigoCell extends DataCell implements IndigoValue {
 
-    private static final NodeLogger LOGGER =
+	private static final long serialVersionUID = 4639666561132594069L;
+
+	private static final NodeLogger LOGGER =
         NodeLogger.getLogger(IndigoCell.class);
     
     private static class IndigoSerializer implements DataCellSerializer<IndigoCell> {

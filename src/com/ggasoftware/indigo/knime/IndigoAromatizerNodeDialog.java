@@ -105,4 +105,3 @@ public class IndigoAromatizerNodeDialog extends NodeDialogPane {
         m_settings.saveSettings(settings);
     }    
 }
-
