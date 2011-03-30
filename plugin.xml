@@ -11,7 +11,8 @@
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
-	</extension>
+	    <node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory"/>
+</extension>
  	<extension point="org.knime.workbench.repository.categories">
 		<category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/chemistry">
       	</category>

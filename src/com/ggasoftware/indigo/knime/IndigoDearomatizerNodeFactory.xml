@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
 <knimeNode icon="./indigo.png" type="Source">
-    <name>Hydrogen Remover</name>
+    <name>Dearomatizer</name>
     
     <shortDescription>
         
     </shortDescription>
     
     <fullDescription>
-        <intro><p>This node removes explicit hydrogens from Indigo molecules.</p>
+        <intro><p>This node converts the chemical structures in one of the input table's columns into the Kekule
+        form. The target column must contain Indigo cells.</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
         <option name="Molecule Column">The column that contains the molecules.</option>
         <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
@@ -16,7 +17,7 @@
     
     <ports>
         <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Molecules without hydrogens">The same as input, but with explicit hydrogens removed</outPort>
+        <outPort index="0" name="Dearomatized molecules">The same as input, with dearomatized molecules</outPort>
     </ports>    
     <views>
         <!-- <view index="0" name="name of first view">Description of first view...</view> -->

@@ -7,12 +7,12 @@ import org.knime.core.node.NodeView;
 import com.ggasoftware.indigo.IndigoObject;
 
 /**
- * <code>NodeFactory</code> for the "IndigoHydrogenAdder" Node.
+ * <code>NodeFactory</code> for the "IndigoDearomatizer" Node.
  * 
  * 
- * @author GGA Software Services LLC
+ * @author
  */
-public class IndigoHydrogenRemoverNodeFactory extends
+public class IndigoDearomatizerNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
 {
 
@@ -22,12 +22,12 @@ public class IndigoHydrogenRemoverNodeFactory extends
 	@Override
 	public IndigoSimpleNodeModel createNodeModel ()
 	{
-		return new IndigoSimpleNodeModel("fold hydrogens", new IndigoSimpleNodeModel.Transformer()
+		return new IndigoSimpleNodeModel("dearomatize molecule", new IndigoSimpleNodeModel.Transformer()
 		{
 			@Override
 			void transform (IndigoObject io)
 			{
-				io.foldHydrogens();
+				io.dearomatize();
 			}
 		});
 	}
@@ -38,7 +38,7 @@ public class IndigoHydrogenRemoverNodeFactory extends
 	@Override
 	public int getNrNodeViews ()
 	{
-		return 0;
+		return 1;
 	}
 
 	/**
@@ -66,6 +66,6 @@ public class IndigoHydrogenRemoverNodeFactory extends
 	@Override
 	public NodeDialogPane createNodeDialogPane ()
 	{
-		return new IndigoSimpleNodeDialog("-H");
+		return new IndigoSimpleNodeDialog("dearom");
 	}
 }

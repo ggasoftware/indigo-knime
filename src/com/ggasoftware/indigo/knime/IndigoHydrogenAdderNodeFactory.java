@@ -4,6 +4,8 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
+import com.ggasoftware.indigo.IndigoObject;
+
 /**
  * <code>NodeFactory</code> for the "IndigoHydrogenAdder" Node.
  * 
@@ -11,16 +13,23 @@ import org.knime.core.node.NodeView;
  * @author GGA Software Services LLC
  */
 public class IndigoHydrogenAdderNodeFactory extends
-      NodeFactory<IndigoHydrogenAdderNodeModel>
+      NodeFactory<IndigoSimpleNodeModel>
 {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IndigoHydrogenAdderNodeModel createNodeModel ()
+	public IndigoSimpleNodeModel createNodeModel ()
 	{
-		return new IndigoHydrogenAdderNodeModel();
+		return new IndigoSimpleNodeModel("unfold hydrogens", new IndigoSimpleNodeModel.Transformer()
+		{
+			@Override
+			void transform (IndigoObject io)
+			{
+				io.unfoldHydrogens();
+			}
+		});
 	}
 
 	/**
@@ -36,8 +45,8 @@ public class IndigoHydrogenAdderNodeFactory extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NodeView<IndigoHydrogenAdderNodeModel> createNodeView (
-	      final int viewIndex, final IndigoHydrogenAdderNodeModel nodeModel)
+	public NodeView<IndigoSimpleNodeModel> createNodeView (
+	      final int viewIndex, final IndigoSimpleNodeModel nodeModel)
 	{
 		return null;
 	}

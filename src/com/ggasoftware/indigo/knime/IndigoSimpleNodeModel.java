@@ -7,27 +7,35 @@ import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.node.*;
 
-import com.ggasoftware.indigo.IndigoException;
-import com.ggasoftware.indigo.IndigoObject;
+import com.ggasoftware.indigo.*;
 
 /**
- * This is the model implementation of IndigoHydrogenRemover.
+ * This is the model implementation of a generic transformer of Indigo objects.
  * 
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoHydrogenRemoverNodeModel extends NodeModel
+public class IndigoSimpleNodeModel extends NodeModel
 {
 
+	public static abstract class Transformer
+	{
+		abstract void transform (IndigoObject io);
+	}
+	
 	// the logger instance
 	private static final NodeLogger logger = NodeLogger
-	      .getLogger(IndigoAromatizerNodeModel.class);
+	      .getLogger(IndigoSimpleNodeModel.class);
 
-	IndigoSimpleSettings m_settings = new IndigoSimpleSettings();
+	IndigoSimpleSettings _settings = new IndigoSimpleSettings();
+	Transformer _transformer;
+	String _message;
 
-	protected IndigoHydrogenRemoverNodeModel()
+	protected IndigoSimpleNodeModel (String message, Transformer transformer)
 	{
 		super(1, 1);
+		_message = message;
+		_transformer = transformer;
 	}
 
 	/**
@@ -89,11 +97,11 @@ public class IndigoHydrogenRemoverNodeModel extends NodeModel
 				try
 				{
 					IndigoObject io = iv.getIndigoObject().clone();
-					io.foldHydrogens();
+					_transformer.transform(io);
 					return new IndigoCell(io);
 				} catch (IndigoException ex)
 				{
-					logger.error("Could not fold hydrogens: " + ex.getMessage(), ex);
+					logger.error("Could not " + _message + ": " + ex.getMessage(), ex);
 					return DataType.getMissingCell();
 				}
 			}
@@ -125,22 +133,22 @@ public class IndigoHydrogenRemoverNodeModel extends NodeModel
 		DataType type = IndigoCell.TYPE;
 
 		DataColumnSpec cs;
-		if (m_settings.replaceColumn)
+		if (_settings.replaceColumn)
 		{
-			cs = new DataColumnSpecCreator(m_settings.colName, type).createSpec();
+			cs = new DataColumnSpecCreator(_settings.colName, type).createSpec();
 		} else
 		{
 			String name = DataTableSpec.getUniqueColumnName(inSpec,
-			      m_settings.newColName);
+			      _settings.newColName);
 			cs = new DataColumnSpecCreator(name, type).createSpec();
 		}
 
-		Converter conv = new Converter(inSpec, cs, m_settings,
-		      inSpec.findColumnIndex(m_settings.colName));
+		Converter conv = new Converter(inSpec, cs, _settings,
+		      inSpec.findColumnIndex(_settings.colName));
 
-		if (m_settings.replaceColumn)
+		if (_settings.replaceColumn)
 		{
-			crea.replace(conv, m_settings.colName);
+			crea.replace(conv, _settings.colName);
 		} else
 		{
 			crea.append(conv);
@@ -157,38 +165,38 @@ public class IndigoHydrogenRemoverNodeModel extends NodeModel
 	      throws InvalidSettingsException
 	{
 
-		if (m_settings.colName == null)
+		if (_settings.colName == null)
 		{
 			for (DataColumnSpec cs : inSpecs[0])
 			{
 				if (cs.getType().isCompatible(IndigoValue.class))
 				{
-					if (m_settings.colName != null)
+					if (_settings.colName != null)
 					{
-						setWarningMessage("Selected column '" + m_settings.colName
+						setWarningMessage("Selected column '" + _settings.colName
 						      + "' as Indigo column");
 					} else
 					{
-						m_settings.colName = cs.getName();
+						_settings.colName = cs.getName();
 					}
 				}
 			}
-			if (m_settings.colName == null)
+			if (_settings.colName == null)
 			{
 				throw new InvalidSettingsException(
 				      "No Indigo column in input table");
 			}
 		} else
 		{
-			if (!inSpecs[0].containsName(m_settings.colName))
+			if (!inSpecs[0].containsName(_settings.colName))
 			{
-				throw new InvalidSettingsException("Column '" + m_settings.colName
+				throw new InvalidSettingsException("Column '" + _settings.colName
 				      + "' does not exist in input table");
 			}
-			if (!inSpecs[0].getColumnSpec(m_settings.colName).getType()
+			if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
 			      .isCompatible(IndigoValue.class))
 			{
-				throw new InvalidSettingsException("Column '" + m_settings.colName
+				throw new InvalidSettingsException("Column '" + _settings.colName
 				      + "' does not contain Indigo molecules");
 			}
 		}
@@ -202,7 +210,8 @@ public class IndigoHydrogenRemoverNodeModel extends NodeModel
 	@Override
 	protected void saveSettingsTo (final NodeSettingsWO settings)
 	{
-		m_settings.saveSettings(settings);
+		_settings.saveSettings(settings);
+
 	}
 
 	/**
@@ -212,7 +221,7 @@ public class IndigoHydrogenRemoverNodeModel extends NodeModel
 	protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
 	      throws InvalidSettingsException
 	{
-		m_settings.loadSettings(settings);
+		_settings.loadSettings(settings);
 	}
 
 	/**
