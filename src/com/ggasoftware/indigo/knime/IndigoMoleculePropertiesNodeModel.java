@@ -13,7 +13,7 @@ import java.util.*;
 public class IndigoMoleculePropertiesNodeModel extends NodeModel
 {
 
-	private final IndigoMoleculePropertiesSettings m_settings = new IndigoMoleculePropertiesSettings();
+	private final IndigoMoleculePropertiesSettings _settings = new IndigoMoleculePropertiesSettings();
 
 	public static interface PropertyCalculator
 	{
@@ -200,14 +200,14 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 	protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
 	{
 		DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns()
-		      + m_settings.selectedProps.length];
+		      + _settings.selectedProps.length];
 
 		int i;
 
 		for (i = 0; i < inSpec.getNumColumns(); i++)
 			specs[i] = inSpec.getColumnSpec(i);
 
-		for (String key : m_settings.selectedProps)
+		for (String key : _settings.selectedProps)
 			specs[i++] = colSpecs.get(key);
 
 		return new DataTableSpec(specs);
@@ -224,7 +224,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 
 		BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-		int colIdx = spec.findColumnIndex(m_settings.colName);
+		int colIdx = spec.findColumnIndex(_settings.colName);
 
 		if (colIdx == -1)
 			throw new Exception("column not found");
@@ -237,7 +237,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 			DataRow inputRow = it.next();
 			RowKey key = inputRow.getKey();
 			DataCell[] cells = new DataCell[inputRow.getNumCells()
-			      + m_settings.selectedProps.length];
+			      + _settings.selectedProps.length];
 			IndigoObject io = ((IndigoCell) (inputRow.getCell(colIdx)))
 			      .getIndigoObject();
 			int i;
@@ -245,7 +245,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 			for (i = 0; i < inputRow.getNumCells(); i++)
 				cells[i] = inputRow.getCell(i);
 
-			for (String prop : m_settings.selectedProps)
+			for (String prop : _settings.selectedProps)
 				cells[i++] = calculators.get(prop).calculate(io);
 
 			outputContainer.addRowToTable(new DefaultRow(key, cells));
@@ -289,7 +289,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 	protected void saveSettingsTo (final NodeSettingsWO settings)
 	{
 
-		m_settings.saveSettings(settings);
+		_settings.saveSettings(settings);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 	      throws InvalidSettingsException
 	{
 
-		m_settings.loadSettings(settings);
+		_settings.loadSettings(settings);
 	}
 
 	/**

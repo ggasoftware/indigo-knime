@@ -87,7 +87,6 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
 				{
 					m_newColName.setEnabled(false);
 				}
-
 			}
 		});
 		m_newColName.setEnabled(m_appendColumn.isSelected());

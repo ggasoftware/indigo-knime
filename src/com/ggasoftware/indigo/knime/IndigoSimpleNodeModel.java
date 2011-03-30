@@ -211,7 +211,6 @@ public class IndigoSimpleNodeModel extends NodeModel
 	protected void saveSettingsTo (final NodeSettingsWO settings)
 	{
 		_settings.saveSettings(settings);
-
 	}
 
 	/**

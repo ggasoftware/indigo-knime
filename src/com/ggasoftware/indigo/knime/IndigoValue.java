@@ -4,7 +4,6 @@ import javax.swing.Icon;
 
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataValue;
-import org.knime.core.data.DataValue.UtilityFactory;
 import org.knime.core.data.DataValueComparator;
 import org.knime.core.data.renderer.DataValueRendererFamily;
 import org.knime.core.data.renderer.DefaultDataValueRendererFamily;
@@ -23,9 +22,8 @@ public interface IndigoValue extends DataValue
 	public static class IndigoUtilityFactory extends UtilityFactory
 	{
 		/** Singleton icon to be used to display this cell type. */
-		// private static final Icon ICON =
-		// loadIcon(org.knime.ext.chem.cdk.type.CDKValue.class, "/cdk.png");
-		private static final Icon ICON = null;
+		private static final Icon ICON =
+		 loadIcon(com.ggasoftware.indigo.knime.IndigoValue.class, "/indigo.png");
 
 		private static final DataValueComparator COMPARATOR = new DataValueComparator() {
 			@Override

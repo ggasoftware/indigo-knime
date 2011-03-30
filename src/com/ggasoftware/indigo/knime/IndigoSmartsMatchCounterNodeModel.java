@@ -5,26 +5,29 @@ import java.io.IOException;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.*;
+import org.knime.core.data.def.*;
 import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModel;
 
 import com.ggasoftware.indigo.*;
 
 /**
- * This is the model implementation of IndigoSmartsMatcher.
+ * This is the model implementation of SmartsMatchCounter.
  * 
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoSmartsMatcherNodeModel extends NodeModel
+public class IndigoSmartsMatchCounterNodeModel extends NodeModel
 {
-	IndigoSmartsMatcherSettings _settings = new IndigoSmartsMatcherSettings();
+
+	IndigoSmartsMatchCounterSettings _settings = new IndigoSmartsMatchCounterSettings();
 
 	/**
 	 * Constructor for the node model.
 	 */
-	protected IndigoSmartsMatcherNodeModel()
+	protected IndigoSmartsMatchCounterNodeModel()
 	{
-		super(1, 2);
+		super(1, 1);
 	}
 
 	/**
@@ -34,16 +37,11 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
 	      final ExecutionContext exec) throws Exception
 	{
-		IndigoObject smarts = IndigoCell.indigo.loadSmarts(_settings.smarts);
+		DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
 
-		DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+		BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-		BufferedDataContainer validOutputContainer = exec
-		      .createDataContainer(inputTableSpec);
-		BufferedDataContainer invalidOutputContainer = exec
-		      .createDataContainer(inputTableSpec);
-
-		int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+		int colIdx = spec.findColumnIndex(_settings.colName);
 
 		if (colIdx == -1)
 			throw new Exception("column not found");
@@ -51,31 +49,34 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 		CloseableRowIterator it = inData[0].iterator();
 		int rowNumber = 1;
 
+		IndigoObject query = IndigoCell.indigo.loadSmarts(_settings.smarts);
+		IndigoCell.indigo.setOption("embedding-uniqueness", _settings.uniqueness.name().toLowerCase());
+		
 		while (it.hasNext())
 		{
 			DataRow inputRow = it.next();
+			RowKey key = inputRow.getKey();
+			DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+			IndigoObject io = ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject();
+			int i;
 
-			IndigoObject match = IndigoCell.indigo.substructureMatcher(
-			      ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject())
-			      .match(smarts);
+			for (i = 0; i < inputRow.getNumCells(); i++)
+				cells[i] = inputRow.getCell(i);
 
-			if (match != null)
-			{
-				validOutputContainer.addRowToTable(inputRow);
-			} else
-			{
-				invalidOutputContainer.addRowToTable(inputRow);
-			}
+			IndigoObject matcher = IndigoCell.indigo.substructureMatcher(io);
+			
+			cells[i++] = new IntCell(matcher.countMatches(query));
+
+			outputContainer.addRowToTable(new DefaultRow(key, cells));
 			exec.checkCanceled();
 			exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
 			      "Adding row " + rowNumber);
+
 			rowNumber++;
 		}
 
-		validOutputContainer.close();
-		invalidOutputContainer.close();
-		return new BufferedDataTable[] { validOutputContainer.getTable(),
-		      invalidOutputContainer.getTable() };
+		outputContainer.close();
+		return new BufferedDataTable[] { outputContainer.getTable() };
 	}
 
 	/**
@@ -86,6 +87,20 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	{
 	}
 
+	protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
+	{
+		DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
+
+		int i;
+
+		for (i = 0; i < inSpec.getNumColumns(); i++)
+			specs[i] = inSpec.getColumnSpec(i);
+
+		specs[i] = new DataColumnSpecCreator(_settings.newColName, IntCell.TYPE).createSpec();
+
+		return new DataTableSpec(specs);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -93,8 +108,7 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
 	      throws InvalidSettingsException
 	{
-
-		return new DataTableSpec[] { inSpecs[0], inSpecs[0] };
+		return new DataTableSpec[]{getDataTableSpec(inSpecs[0])};
 	}
 
 	/**
@@ -123,14 +137,15 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected void validateSettings (final NodeSettingsRO settings)
 	      throws InvalidSettingsException
 	{
-		IndigoSmartsMatcherSettings s = new IndigoSmartsMatcherSettings();
+		IndigoSmartsMatchCounterSettings s = new IndigoSmartsMatchCounterSettings();
 		s.loadSettings(settings);
 		if (s.smarts == null)
 			throw new InvalidSettingsException("null SMARTS expression");
 		try
 		{
 			IndigoCell.indigo.loadSmarts(s.smarts);
-		} catch (IndigoException e)
+		}
+		catch (IndigoException e)
 		{
 			throw new InvalidSettingsException(e.getMessage());
 		}
@@ -155,5 +170,4 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	      CanceledExecutionException
 	{
 	}
-
 }

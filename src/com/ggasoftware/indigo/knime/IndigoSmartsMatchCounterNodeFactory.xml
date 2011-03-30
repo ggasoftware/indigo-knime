@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./indigo.png" type="Source">
+    <name>SMARTS Match Counter</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>This node counts the number of unique independent matches of a SMARTS expression in each molecule of the input table</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+        
+        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="New column">Name of the new column to append.</option>
+        <option name="SMARTS expression">SMARTS fragment being matched</option>
+        <option name="Uniqueness"><ul><li>By atoms: "CCC" matches "C1CC1" once</li>
+    								  <li>By bonds: "CCC" matches "C1CC1" three times</li>
+    							      <li>None: "CCC" matches "C1CC1" six times</li></ul>
+    							      </option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input structures">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="SMARTS match counters">The same as input, plus an extra column with match counters</outPort>
+    </ports>    
+    <views>
+        <!--<view index="0" name="name of first view">Description of first view...</view>-->
+        <!--view index="1" name="name of second view">Description of second view...</view-->
+    </views>
+</knimeNode>
