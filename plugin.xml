@@ -3,13 +3,17 @@
 
 <plugin>
 	<extension point="org.knime.workbench.repository.nodes">
-    	<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
-    	<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
-		<node category-path="/" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
+    	<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
+    	<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
 	</extension>
+ 	<extension point="org.knime.workbench.repository.categories">
+		<category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/chemistry">
+      	</category>
+ 	</extension>
 </plugin>

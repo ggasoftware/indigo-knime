@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
-<knimeNode icon="./default.png" type="Source">
-    <name>IndigoMoleculeProperties</name>
+<knimeNode icon="./indigo.png" type="Source">
+    <name>Molecule Properties</name>
     
     <shortDescription>
         
     </shortDescription>
     
     <fullDescription>
-        <intro>Create new columns holding molecular properties, computed for each structure.
+        <intro><p>Create new columns holding molecular properties, computed for each structure.
         The computations are based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a>
-        toolkit and include number of heavy atoms, molecular weight, number of aromatic atoms, and others.</intro>
+        toolkit and include number of heavy atoms, molecular weight, number of aromatic atoms, and others.</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
         
         <option name="Column Selection">Select the column containing the molecular structure. </option>
         <option name="Properties">Move the available properties into the INCLUDE (right) list.</option>
