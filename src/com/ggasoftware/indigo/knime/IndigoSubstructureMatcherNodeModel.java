@@ -15,14 +15,14 @@ import com.ggasoftware.indigo.*;
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoSmartsMatcherNodeModel extends NodeModel
+public class IndigoSubstructureMatcherNodeModel extends NodeModel
 {
-	IndigoSmartsMatcherSettings _settings = new IndigoSmartsMatcherSettings();
+	IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 
 	/**
 	 * Constructor for the node model.
 	 */
-	protected IndigoSmartsMatcherNodeModel()
+	protected IndigoSubstructureMatcherNodeModel()
 	{
 		super(1, 2);
 	}
@@ -34,8 +34,9 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
 	      final ExecutionContext exec) throws Exception
 	{
-		IndigoObject smarts = IndigoCell.indigo.loadSmarts(_settings.smarts);
+		IndigoObject query = IndigoCell.indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
 
+		query.aromatize();
 		DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
 
 		BufferedDataContainer validOutputContainer = exec
@@ -57,7 +58,7 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 
 			IndigoObject match = IndigoCell.indigo.substructureMatcher(
 			      ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject())
-			      .match(smarts);
+			      .match(query);
 
 			if (match != null)
 			{
@@ -93,7 +94,6 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
 	      throws InvalidSettingsException
 	{
-
 		return new DataTableSpec[] { inSpecs[0], inSpecs[0] };
 	}
 
@@ -123,11 +123,13 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	protected void validateSettings (final NodeSettingsRO settings)
 	      throws InvalidSettingsException
 	{
-		IndigoSmartsMatcherSettings s = new IndigoSmartsMatcherSettings();
+		IndigoSubstructureMatcherSettings s = new IndigoSubstructureMatcherSettings();
 		s.loadSettings(settings);
+		if (s.queryFileName == null || s.queryFileName.equals(""))
+			throw new InvalidSettingsException("the query file name must be specified");
 		try
 		{
-			IndigoCell.indigo.loadSmarts(s.smarts);
+			IndigoCell.indigo.loadQueryMoleculeFromFile(s.queryFileName);
 		} catch (IndigoException e)
 		{
 			throw new InvalidSettingsException(e.getMessage());
@@ -153,5 +155,4 @@ public class IndigoSmartsMatcherNodeModel extends NodeModel
 	      CanceledExecutionException
 	{
 	}
-
 }

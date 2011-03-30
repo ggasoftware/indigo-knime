@@ -7,7 +7,6 @@ import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
-import org.knime.core.node.defaultnodesettings.SettingsModel;
 
 import com.ggasoftware.indigo.*;
 
@@ -139,8 +138,6 @@ public class IndigoSmartsMatchCounterNodeModel extends NodeModel
 	{
 		IndigoSmartsMatchCounterSettings s = new IndigoSmartsMatchCounterSettings();
 		s.loadSettings(settings);
-		if (s.smarts == null)
-			throw new InvalidSettingsException("null SMARTS expression");
 		try
 		{
 			IndigoCell.indigo.loadSmarts(s.smarts);

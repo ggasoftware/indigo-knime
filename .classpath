@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="lib/indigo-renderer.jar"/>
 	<classpathentry kind="lib" path="lib/indigo.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
+	<classpathentry kind="lib" path="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.chem.base.source_2.3.3.0028596.jar"/>
+	<classpathentry kind="lib" path="/home/dpavlov/.eclipse/org.eclipse.platform_3.6.1_1198549736/plugins/org.knime.chem.types.source_2.3.3.0028574.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
