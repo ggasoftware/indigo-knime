@@ -13,7 +13,7 @@
            molecules that contain the specified query molecule as a substructure, the other with all molecules that do not contain it.</p>
 		<p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p>        
         </intro>
-        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="Indigo column">The column that contains Indigo molecules</option>
         <option name="Query file">File (usually a Molfile) to load the query from</option>
     </fullDescription>
     
