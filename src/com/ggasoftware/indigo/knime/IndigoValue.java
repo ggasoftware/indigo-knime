@@ -2,12 +2,8 @@ package com.ggasoftware.indigo.knime;
 
 import javax.swing.Icon;
 
-import org.knime.core.data.DataColumnSpec;
-import org.knime.core.data.DataValue;
-import org.knime.core.data.DataValueComparator;
-import org.knime.core.data.renderer.DataValueRendererFamily;
-import org.knime.core.data.renderer.DefaultDataValueRendererFamily;
-import org.knime.core.data.renderer.MultiLineStringValueRenderer;
+import org.knime.core.data.*;
+import org.knime.core.data.renderer.*;
 
 import com.ggasoftware.indigo.IndigoObject;
 
@@ -22,18 +18,8 @@ public interface IndigoValue extends DataValue
 	public static class IndigoUtilityFactory extends UtilityFactory
 	{
 		/** Singleton icon to be used to display this cell type. */
-		private static final Icon ICON =
-		 loadIcon(com.ggasoftware.indigo.knime.IndigoValue.class, "/indigo.png");
-
-		private static final DataValueComparator COMPARATOR = new DataValueComparator() {
-			@Override
-			protected int compareDataValues (final DataValue v1, final DataValue v2)
-			{
-				int atomCount1 = ((IndigoValue) v1).getIndigoObject().countAtoms();
-				int atomCount2 = ((IndigoValue) v2).getIndigoObject().countAtoms();
-				return atomCount1 - atomCount2;
-			}
-		};
+		private static final Icon ICON = loadIcon(
+		      com.ggasoftware.indigo.knime.IndigoValue.class, "/indigo.png");
 
 		/** Only subclasses are allowed to instantiate this class. */
 		protected IndigoUtilityFactory()
@@ -53,15 +39,6 @@ public interface IndigoValue extends DataValue
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected DataValueComparator getComparator ()
-		{
-			return COMPARATOR;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
 		protected DataValueRendererFamily getRendererFamily (
 		      final DataColumnSpec spec)
 		{
@@ -69,5 +46,4 @@ public interface IndigoValue extends DataValue
 			      new MultiLineStringValueRenderer("String"));
 		}
 	}
-
 }

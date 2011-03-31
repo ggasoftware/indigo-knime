@@ -12,10 +12,8 @@ import org.knime.core.node.NodeLogger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-
 public class IndigoCell extends DataCell implements IndigoValue
 {
-
 	private static final long serialVersionUID = 4639666561132594069L;
 
 	private static final NodeLogger LOGGER = NodeLogger
@@ -33,9 +31,11 @@ public class IndigoCell extends DataCell implements IndigoValue
 			try
 			{
 				BASE64Encoder encoder = new BASE64Encoder();
-				String str = encoder.encodeBuffer(cell.getIndigoObject().serialize());
+				String str = encoder.encodeBuffer(cell.getIndigoObject()
+				      .serialize());
 				out.writeUTF(str);
-			} catch (IndigoException ex)
+			}
+			catch (IndigoException ex)
 			{
 				LOGGER.error("Error while serializing Indigo object", ex);
 				throw new IOException(ex.getMessage());
@@ -55,7 +55,8 @@ public class IndigoCell extends DataCell implements IndigoValue
 				BASE64Decoder decoder = new BASE64Decoder();
 				byte[] buf = decoder.decodeBuffer(str);
 				return new IndigoCell(IndigoCell.indigo.unserialize(buf));
-			} catch (IndigoException ex)
+			}
+			catch (IndigoException ex)
 			{
 				LOGGER.error("Error while deserializing Indigo object", ex);
 				throw new IOException(ex.getMessage());
@@ -108,5 +109,4 @@ public class IndigoCell extends DataCell implements IndigoValue
 	{
 		return _object;
 	}
-
 }

@@ -52,15 +52,18 @@ public class IndigoValueRenderer extends AbstractPainterDataValueRenderer
 		if (value instanceof IndigoValue)
 		{ // when used directly on CDKCell
 			_object = ((IndigoValue) value).getIndigoObject();
-		} else if (value instanceof SmilesValue)
+		}
+		else if (value instanceof SmilesValue)
 		{
 			_object = IndigoCell.indigo.loadMolecule(((SmilesValue) value)
 			      .getSmilesValue());
-		} else if (value instanceof MolValue)
+		}
+		else if (value instanceof MolValue)
 		{
 			_object = IndigoCell.indigo.loadMolecule(((MolValue) value)
 			      .getMolValue());
-		} else if (value instanceof SdfValue)
+		}
+		else if (value instanceof SdfValue)
 		{
 			_object = IndigoCell.indigo.loadMolecule(((SdfValue) value)
 			      .getSdfValue());
@@ -91,7 +94,8 @@ public class IndigoValueRenderer extends AbstractPainterDataValueRenderer
 		{
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(buf));
 			g.drawImage(img, 0, 0, null);
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			LOGGER.debug(e.getMessage(), e);
 		}
