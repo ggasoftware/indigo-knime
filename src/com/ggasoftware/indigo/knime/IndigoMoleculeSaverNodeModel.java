@@ -19,7 +19,6 @@ import com.ggasoftware.indigo.knime.IndigoMoleculeSaverSettings.Format;
  */
 public class IndigoMoleculeSaverNodeModel extends NodeModel
 {
-
 	IndigoMoleculeSaverSettings m_settings = new IndigoMoleculeSaverSettings();
 
 	private static final NodeLogger LOGGER = NodeLogger
@@ -44,7 +43,6 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 
 		return new BufferedDataTable[] { exec.createColumnRearrangeTable(
 		      inData[0], crea, exec) };
-
 	}
 
 	/**
@@ -79,7 +77,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 			{
 				m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
 				      settings.colName, type).createSpec() };
-			} else
+			}
+			else
 			{
 				m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
 				      DataTableSpec
@@ -94,7 +93,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 			if (cell.isMissing())
 			{
 				return cell;
-			} else
+			}
+			else
 			{
 				IndigoValue iv = (IndigoValue) cell;
 				try
@@ -104,7 +104,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 					if (m_settings.destFormat == Format.Smiles)
 						return new SmilesCell(iv.getIndigoObject().smiles());
 					return CMLCellFactory.create(iv.getIndigoObject().cml());
-				} catch (IndigoException ex)
+				}
+				catch (IndigoException ex)
 				{
 					LOGGER.error("Could not convert molecule: " + ex.getMessage(),
 					      ex);
@@ -140,10 +141,12 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 		if (m_settings.destFormat == Format.SDF)
 		{
 			type = SdfCell.TYPE;
-		} else if (m_settings.destFormat == Format.Smiles)
+		}
+		else if (m_settings.destFormat == Format.Smiles)
 		{
 			type = SmilesCell.TYPE;
-		} else if (m_settings.destFormat == Format.CML)
+		}
+		else if (m_settings.destFormat == Format.CML)
 		{
 			type = CMLCell.TYPE;
 		}
@@ -152,7 +155,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 		if (m_settings.replaceColumn)
 		{
 			cs = new DataColumnSpecCreator(m_settings.colName, type).createSpec();
-		} else
+		}
+		else
 		{
 			String name = DataTableSpec.getUniqueColumnName(inSpec,
 			      m_settings.newColName);
@@ -165,7 +169,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 		if (m_settings.replaceColumn)
 		{
 			crea.replace(conv, m_settings.colName);
-		} else
+		}
+		else
 		{
 			crea.append(conv);
 		}
@@ -191,7 +196,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 					{
 						setWarningMessage("Selected column '" + m_settings.colName
 						      + "' as Indigo column");
-					} else
+					}
+					else
 					{
 						m_settings.colName = cs.getName();
 					}
@@ -202,7 +208,8 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 				throw new InvalidSettingsException(
 				      "No Indigo column in input table");
 			}
-		} else
+		}
+		else
 		{
 			if (!inSpecs[0].containsName(m_settings.colName))
 			{
@@ -274,5 +281,4 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 	      CanceledExecutionException
 	{
 	}
-
 }

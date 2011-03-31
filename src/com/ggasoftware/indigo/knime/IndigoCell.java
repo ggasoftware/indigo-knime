@@ -9,6 +9,9 @@ import org.knime.core.data.DataCellSerializer;
 import org.knime.core.data.DataType;
 import org.knime.core.data.DataCell;
 import org.knime.core.node.NodeLogger;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 
 public class IndigoCell extends DataCell implements IndigoValue
 {
@@ -29,7 +32,9 @@ public class IndigoCell extends DataCell implements IndigoValue
 		{
 			try
 			{
-				out.writeUTF(cell.getIndigoObject().molfile());
+				BASE64Encoder encoder = new BASE64Encoder();
+				String str = encoder.encodeBuffer(cell.getIndigoObject().serialize());
+				out.writeUTF(str);
 			} catch (IndigoException ex)
 			{
 				LOGGER.error("Error while serializing Indigo object", ex);
@@ -43,11 +48,13 @@ public class IndigoCell extends DataCell implements IndigoValue
 		public IndigoCell deserialize (final DataCellDataInput input)
 		      throws IOException
 		{
-			String molfile = input.readUTF();
+			String str = input.readUTF();
 
 			try
 			{
-				return new IndigoCell(IndigoCell.indigo.loadMolecule(molfile));
+				BASE64Decoder decoder = new BASE64Decoder();
+				byte[] buf = decoder.decodeBuffer(str);
+				return new IndigoCell(IndigoCell.indigo.unserialize(buf));
 			} catch (IndigoException ex)
 			{
 				LOGGER.error("Error while deserializing Indigo object", ex);

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./indigo.png" type="Other">
+    <name>Molecule Similarity</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        <p>This node calculates the values of structural similarity of input molecules against a given template.</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+        
+        <option name="Molecule column">The column that contains Indigo molecules.</option>
+        <option name="SMILES">Specify the template structure as SMILES.</option>
+        <option name="Load from file">Load the template structure from file.</option>
+        <option name="New column">Name of the new column that contains similarity values.</option>
+        <option name="Metric">Metric for similarity computation.</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input structures">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Similarity values">The same as input, plus an extra column with similarity values</outPort>
+    </ports>    
+    <views>
+        <!--<view index="0" name="name of first view">Description of first view...</view>-->
+        <!--view index="1" name="name of second view">Description of second view...</view-->
+    </views>
+</knimeNode>

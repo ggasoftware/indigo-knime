@@ -22,9 +22,6 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 {
 	IndigoSubstructureMatchCounterSettings _settings = new IndigoSubstructureMatchCounterSettings();
 
-	/**
-	 * Constructor for the node model.
-	 */
 	protected IndigoSubstructureMatchCounterNodeModel()
 	{
 		super(1, 1);
@@ -86,7 +83,6 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 	@Override
 	protected void reset ()
 	{
-		// TODO: generated method stub
 	}
 
 	protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
@@ -172,5 +168,4 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 	      CanceledExecutionException
 	{
 	}
-
 }
