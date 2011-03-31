@@ -8,7 +8,7 @@ public class IndigoMoleculeSaverSettings
 {
 	public enum Format
 	{
-		SDF, Smiles, CML
+		SDF, Smiles, CanonicalSmiles, CML
 	}
 
 	public String colName = "Molecule";

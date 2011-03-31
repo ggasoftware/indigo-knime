@@ -25,7 +25,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 	      (Border) null, IndigoValue.class);
 
 	private final JComboBox m_destFormat = new JComboBox(new Object[] {
-	      Format.SDF, Format.Smiles, Format.CML });
+	      Format.SDF, Format.Smiles, Format.CanonicalSmiles, Format.CML });
 
 	private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
 
@@ -37,7 +37,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 	 * New pane for configuring the IndigoMoleculeSaver node.
 	 */
 	@SuppressWarnings("serial")
-   protected IndigoMoleculeSaverNodeDialog()
+	protected IndigoMoleculeSaverNodeDialog()
 	{
 
 		JPanel p = new JPanel(new GridBagLayout());
@@ -64,7 +64,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 		c.gridx = 1;
 		p.add(m_destFormat, c);
 
-		m_appendColumn.addChangeListener(new ChangeListener() {
+		m_appendColumn.addChangeListener(new ChangeListener()
+		{
 			public void stateChanged (final ChangeEvent e)
 			{
 				if (m_appendColumn.isSelected())
@@ -75,7 +76,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 						m_newColName.setText(m_molColumn.getSelectedColumn()
 						      + " (saved)");
 					}
-				} else
+				}
+				else
 				{
 					m_newColName.setEnabled(false);
 				}
@@ -83,7 +85,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 		});
 		m_newColName.setEnabled(m_appendColumn.isSelected());
 
-		m_destFormat.setRenderer(new DefaultListCellRenderer() {
+		m_destFormat.setRenderer(new DefaultListCellRenderer()
+		{
 			@Override
 			public Component getListCellRendererComponent (final JList list,
 			      final Object value, final int index, final boolean isSelected,
@@ -95,15 +98,23 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 				{
 					setIcon(SdfValue.UTILITY.getIcon());
 					setText("SDF");
-				} else if (value == Format.Smiles)
+				}
+				else if (value == Format.Smiles)
 				{
 					setIcon(SmilesValue.UTILITY.getIcon());
-					setText("Smiles");
-				} else if (value == Format.CML)
+					setText("SMILES");
+				}
+				else if (value == Format.CanonicalSmiles)
+				{
+					setIcon(SmilesValue.UTILITY.getIcon());
+					setText("Canonical SMILES");
+				}
+				else if (value == Format.CML)
 				{
 					setIcon(CMLValue.UTILITY.getIcon());
 					setText("CML");
-				} else
+				}
+				else
 				{
 					setIcon(null);
 					setText("");
