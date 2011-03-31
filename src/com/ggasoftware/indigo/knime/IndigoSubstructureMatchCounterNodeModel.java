@@ -46,8 +46,16 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 		CloseableRowIterator it = inData[0].iterator();
 		int rowNumber = 1;
 
-		IndigoObject query = IndigoCell.indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
-		query.aromatize();
+		IndigoObject query;
+		
+		if (_settings.loadFromFile)
+		{
+			query = IndigoCell.indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
+			query.aromatize();
+		}
+		else
+			query = IndigoCell.indigo.loadSmarts(_settings.smarts);
+		
 		IndigoCell.indigo.setOption("embedding-uniqueness", _settings.uniqueness.name().toLowerCase());
 		
 		while (it.hasNext())
@@ -137,13 +145,22 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 	{
 		IndigoSubstructureMatchCounterSettings s = new IndigoSubstructureMatchCounterSettings();
 		s.loadSettings(settings);
-		if (s.queryFileName == null || s.queryFileName.equals(""))
-			throw new InvalidSettingsException(
-			      "the query file name must be specified");
 		try
 		{
-			IndigoCell.indigo.loadQueryMoleculeFromFile(s.queryFileName);
-		} catch (IndigoException e)
+			if (s.loadFromFile)
+			{
+				if (s.queryFileName == null || s.queryFileName.equals(""))
+					throw new InvalidSettingsException("the query file name must be specified");
+				IndigoCell.indigo.loadQueryMoleculeFromFile(s.queryFileName);
+			}
+			else
+			{
+				if (s.smarts == null || s.smarts.equals(""))
+					throw new InvalidSettingsException("the SMARTS expression must be specified");
+				IndigoCell.indigo.loadSmarts(s.smarts);
+			}
+		}
+		catch (IndigoException e)
 		{
 			throw new InvalidSettingsException(e.getMessage());
 		}

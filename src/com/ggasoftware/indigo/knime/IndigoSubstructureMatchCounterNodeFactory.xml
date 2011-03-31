@@ -14,6 +14,7 @@
         <option name="Indigo column">The column that contains Indigo molecules.</option>
         <option name="New column">Name of the new column to append.</option>
         <option name="Query file">File (usually a Molfile) to load the query from</option>
+        <option name="SMARTS">Specify the query as a SMARTS expression</option>
         <option name="Uniqueness"><ul><li>By atoms: "CCC" matches "C1CC1" once</li>
     								  <li>By bonds: "CCC" matches "C1CC1" three times</li>
     							      <li>None: "CCC" matches "C1CC1" six times</li></ul>

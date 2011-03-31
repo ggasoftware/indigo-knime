@@ -13,6 +13,9 @@ public class IndigoSubstructureMatchCounterSettings
 	public String queryFileName;
 	public String newColName;
 	Uniqueness uniqueness;
+	public boolean loadFromFile;
+	public String smarts;
+	
 
 	public void loadSettings (final NodeSettingsRO settings)
 	      throws InvalidSettingsException
@@ -21,6 +24,8 @@ public class IndigoSubstructureMatchCounterSettings
 		newColName = settings.getString("newColName");
 		queryFileName = settings.getString("queryFileName");
 		uniqueness = Uniqueness.valueOf(settings.getString("uniqueness"));
+		loadFromFile = settings.getBoolean("loadFromFile");
+		smarts = settings.getString("smarts");
 	}
 
 	public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -29,6 +34,8 @@ public class IndigoSubstructureMatchCounterSettings
 		newColName = settings.getString("newColName", "Number of matches");
 		queryFileName = settings.getString("queryFileName", null);
 		uniqueness = Uniqueness.valueOf(settings.getString("uniqueness", Uniqueness.Atoms.name()));
+		loadFromFile = settings.getBoolean("loadFromFile", false);
+		smarts = settings.getString("smarts", "");
 	}
 
 	public void saveSettings (final NodeSettingsWO settings)
@@ -41,5 +48,8 @@ public class IndigoSubstructureMatchCounterSettings
 			settings.addString("queryFileName", queryFileName);
 		if (uniqueness != null) 
 			settings.addString("uniqueness", uniqueness.name());
+		settings.addBoolean("loadFromFile", loadFromFile);
+		if (smarts != null)
+			settings.addString("smarts", smarts);
 	}
 }

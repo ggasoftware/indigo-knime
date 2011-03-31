@@ -8,11 +8,9 @@
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
-		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatcherNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
 	    <node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory"/>
-		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSmartsMatchCounterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSmartsMatchCounterNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeSimilarityNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSimilarityNodeFactory"/>
