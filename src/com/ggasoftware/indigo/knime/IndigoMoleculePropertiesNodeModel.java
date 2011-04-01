@@ -278,7 +278,6 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 	protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
 	      throws InvalidSettingsException
 	{
-
 		return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
 	}
 

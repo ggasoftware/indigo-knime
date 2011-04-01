@@ -22,7 +22,4 @@
         <outPort index="0" name="Valid Molecules">Table with the successfully parsed molecules</outPort>
         <outPort index="1" name="Invalid Molecules">Table with the molecules that parsed with errors</outPort>
     </ports>    
-    <views>
-        <!-- <view index="0" name="name of first view">Description of first view...</view> -->
-    </views> 
 </knimeNode>

@@ -19,8 +19,4 @@
         <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
         <outPort index="0" name="Dearomatized molecules">The same as input, with dearomatized molecules</outPort>
     </ports>    
-    <views>
-        <!-- <view index="0" name="name of first view">Description of first view...</view> -->
-        <!--view index="1" name="name of second view">Description of second view...</view-->
-    </views>
 </knimeNode>

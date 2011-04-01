@@ -20,8 +20,4 @@
         <inPort index="0" name="Input data">Table containing Indigo molecules</inPort>
         <outPort index="0" name="Converted results">Table with the molecules' converted string representations </outPort>
     </ports>    
-    <views>
-        <!-- <view index="0" name="name of first view">Description of first view...</view> -->
-        <!--view index="1" name="name of second view">Description of second view...</view-->
-    </views>
 </knimeNode>
