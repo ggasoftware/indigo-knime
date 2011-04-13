@@ -19,4 +19,10 @@
 		<category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/chemistry">
       	</category>
  	</extension>
+ 	<extension point="org.eclipse.equinox.preferences.preferences">
+ 		<initializer class="com.ggasoftware.indigo.knime.IndigoPreferenceInitializer" />
+ 	</extension>
+ 	<extension point="org.eclipse.ui.preferencePages">
+ 		<page category="org.knime.chem.preferences" class="com.ggasoftware.indigo.knime.IndigoPreferencePage" id="com.ggasoftware.indigo.knime.preferences" name="Indigo"/>
+ 	</extension> 
 </plugin>

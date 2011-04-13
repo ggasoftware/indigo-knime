@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Export-Package: com.ggasoftware.indigo.knime
 Import-Package: org.knime.chem.types
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.ggasoftware.indigo.knime.IndigoPlugin
