@@ -85,8 +85,18 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
 
 			cells = new DataCell[inputRow.getNumCells()];
 
-			String str = ((IndigoCell) (inputRow.getCell(colIdx)))
+			String str;
+			
+			try
+			{
+				IndigoPlugin.lock();
+				str = ((IndigoMolCell) (inputRow.getCell(colIdx)))
 			      .getIndigoObject().checkBadValence();
+			}
+			finally
+			{
+				IndigoPlugin.unlock();
+			}
 
 			if (str != null && !str.equals(""))
 			{
@@ -139,9 +149,6 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
 	@Override
 	protected void saveSettingsTo (final NodeSettingsWO settings)
 	{
-
-		// TODO save user settings to the config object.
-
 		m_settings.saveSettings(settings);
 
 	}

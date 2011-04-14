@@ -46,39 +46,48 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 		CloseableRowIterator it = inData[0].iterator();
 		int rowNumber = 1;
 
-		IndigoObject query;
-		
-		if (_settings.loadFromFile)
+		try
 		{
-			query = IndigoCell.indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
-			query.aromatize();
-		}
-		else
-			query = IndigoCell.indigo.loadSmarts(_settings.smarts);
-		
-		IndigoCell.indigo.setOption("embedding-uniqueness", _settings.uniqueness.name().toLowerCase());
-		
-		while (it.hasNext())
-		{
-			DataRow inputRow = it.next();
-			RowKey key = inputRow.getKey();
-			DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-			IndigoObject io = ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject();
-			int i;
-
-			for (i = 0; i < inputRow.getNumCells(); i++)
-				cells[i] = inputRow.getCell(i);
-
-			IndigoObject matcher = IndigoCell.indigo.substructureMatcher(io);
+			IndigoPlugin.lock();
+			IndigoObject query;
+			Indigo indigo = IndigoPlugin.getIndigo();
 			
-			cells[i++] = new IntCell(matcher.countMatches(query));
-
-			outputContainer.addRowToTable(new DefaultRow(key, cells));
-			exec.checkCanceled();
-			exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-			      "Adding row " + rowNumber);
-
-			rowNumber++;
+			if (_settings.loadFromFile)
+			{
+				query = indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
+				query.aromatize();
+			}
+			else
+				query = indigo.loadSmarts(_settings.smarts);
+			
+			indigo.setOption("embedding-uniqueness", _settings.uniqueness.name().toLowerCase());
+			
+			while (it.hasNext())
+			{
+				DataRow inputRow = it.next();
+				RowKey key = inputRow.getKey();
+				DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+				IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+				int i;
+	
+				for (i = 0; i < inputRow.getNumCells(); i++)
+					cells[i] = inputRow.getCell(i);
+	
+				IndigoObject matcher = indigo.substructureMatcher(io);
+				
+				cells[i++] = new IntCell(matcher.countMatches(query));
+	
+				outputContainer.addRowToTable(new DefaultRow(key, cells));
+				exec.checkCanceled();
+				exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+				      "Adding row " + rowNumber);
+	
+				rowNumber++;
+			}
+		}
+		finally
+		{
+			IndigoPlugin.unlock();
 		}
 
 		outputContainer.close();
@@ -147,22 +156,27 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 		s.loadSettings(settings);
 		try
 		{
+			IndigoPlugin.lock();
 			if (s.loadFromFile)
 			{
 				if (s.queryFileName == null || s.queryFileName.equals(""))
 					throw new InvalidSettingsException("the query file name must be specified");
-				IndigoCell.indigo.loadQueryMoleculeFromFile(s.queryFileName);
+				IndigoPlugin.getIndigo().loadQueryMoleculeFromFile(s.queryFileName);
 			}
 			else
 			{
 				if (s.smarts == null || s.smarts.equals(""))
 					throw new InvalidSettingsException("the SMARTS expression must be specified");
-				IndigoCell.indigo.loadSmarts(s.smarts);
+				IndigoPlugin.getIndigo().loadSmarts(s.smarts);
 			}
 		}
 		catch (IndigoException e)
 		{
 			throw new InvalidSettingsException(e.getMessage());
+		}
+		finally
+		{
+			IndigoPlugin.unlock();
 		}
 	}
 

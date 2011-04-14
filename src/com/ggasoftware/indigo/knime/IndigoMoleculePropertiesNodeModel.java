@@ -238,7 +238,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 			RowKey key = inputRow.getKey();
 			DataCell[] cells = new DataCell[inputRow.getNumCells()
 			      + _settings.selectedProps.length];
-			IndigoObject io = ((IndigoCell) (inputRow.getCell(colIdx)))
+			IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
 			      .getIndigoObject();
 			int i;
 

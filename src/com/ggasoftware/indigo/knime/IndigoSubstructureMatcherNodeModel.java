@@ -34,16 +34,6 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
 	protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
 	      final ExecutionContext exec) throws Exception
 	{
-		IndigoObject query;
-		
-		if (_settings.loadFromFile)
-		{
-			query = IndigoCell.indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
-			query.aromatize();
-		}
-		else
-			query = IndigoCell.indigo.loadSmarts(_settings.smarts);
-
 		DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
 
 		BufferedDataContainer validOutputContainer = exec
@@ -59,25 +49,46 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
 		CloseableRowIterator it = inData[0].iterator();
 		int rowNumber = 1;
 
-		while (it.hasNext())
+		try
 		{
-			DataRow inputRow = it.next();
-
-			IndigoObject match = IndigoCell.indigo.substructureMatcher(
-			      ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject())
-			      .match(query);
-
-			if (match != null)
+			IndigoPlugin.lock();
+			
+			IndigoObject query;
+			Indigo indigo = IndigoPlugin.getIndigo();
+			
+			if (_settings.loadFromFile)
 			{
-				validOutputContainer.addRowToTable(inputRow);
-			} else
-			{
-				invalidOutputContainer.addRowToTable(inputRow);
+				query = indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
+				query.aromatize();
 			}
-			exec.checkCanceled();
-			exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-			      "Adding row " + rowNumber);
-			rowNumber++;
+			else
+				query = indigo.loadSmarts(_settings.smarts);
+	
+			while (it.hasNext())
+			{
+				DataRow inputRow = it.next();
+	
+				IndigoObject match = indigo.substructureMatcher(
+				      ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject())
+				      .match(query);
+	
+				if (match != null)
+				{
+					validOutputContainer.addRowToTable(inputRow);
+				}
+				else
+				{
+					invalidOutputContainer.addRowToTable(inputRow);
+				}
+				exec.checkCanceled();
+				exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+				      "Adding row " + rowNumber);
+				rowNumber++;
+			}
+		}
+		finally
+		{
+			IndigoPlugin.unlock();
 		}
 
 		validOutputContainer.close();
@@ -139,13 +150,13 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
 			{
 				if (s.queryFileName == null || s.queryFileName.equals(""))
 					throw new InvalidSettingsException("the query file name must be specified");
-				IndigoCell.indigo.loadQueryMoleculeFromFile(s.queryFileName);
+				IndigoPlugin.getIndigo().loadQueryMoleculeFromFile(s.queryFileName);
 			}
 			else
 			{
 				if (s.smarts == null || s.smarts.equals(""))
 					throw new InvalidSettingsException("the SMARTS expression must be specified");
-				IndigoCell.indigo.loadSmarts(s.smarts);
+				IndigoPlugin.getIndigo().loadSmarts(s.smarts);
 			}
 		}
 		catch (IndigoException e)

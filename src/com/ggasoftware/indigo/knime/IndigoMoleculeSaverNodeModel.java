@@ -97,7 +97,7 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 			}
 			else
 			{
-				IndigoValue iv = (IndigoValue) cell;
+				IndigoMolValue iv = (IndigoMolValue) cell;
 				try
 				{
 					if (_settings.destFormat == Format.SDF)
@@ -190,7 +190,7 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 		{
 			for (DataColumnSpec cs : inSpecs[0])
 			{
-				if (cs.getType().isCompatible(IndigoValue.class))
+				if (cs.getType().isCompatible(IndigoMolValue.class))
 				{
 					if (_settings.colName != null)
 					{
@@ -217,7 +217,7 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
 				      + "' does not exist in input table");
 			}
 			if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
-			      .isCompatible(IndigoValue.class))
+			      .isCompatible(IndigoMolValue.class))
 			{
 				throw new InvalidSettingsException("Column '" + _settings.colName
 				      + "' does not contain Indigo molecules");

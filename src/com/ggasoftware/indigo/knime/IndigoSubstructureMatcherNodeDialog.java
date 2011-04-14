@@ -18,7 +18,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 	private final IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 	
 	private final JRadioButton _buttonSmarts= new JRadioButton("SMARTS", true);
 	private final JRadioButton _buttonFile = new JRadioButton("Query file");

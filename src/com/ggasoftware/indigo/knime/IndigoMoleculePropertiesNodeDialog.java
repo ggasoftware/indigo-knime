@@ -30,7 +30,7 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
 	{
 		super();
 
-		m_selPanel = new ColumnSelectionPanel(IndigoValue.class);
+		m_selPanel = new ColumnSelectionPanel(IndigoMolValue.class);
 		m_filterPanel = new ColumnFilterPanel(false);
 		JPanel panel = new JPanel(new BorderLayout(5, 5));
 		panel.add(m_selPanel, BorderLayout.NORTH);

@@ -62,14 +62,7 @@ public class IndigoMoleculeSimilarityNodeModel extends NodeModel
 		CloseableRowIterator it = inData[0].iterator();
 		int rowNumber = 1;
 
-		IndigoObject mol;
-		if (_settings.loadFromFile)
-			mol = IndigoCell.indigo.loadMoleculeFromFile(_settings.fileName);
-		else
-			mol = IndigoCell.indigo.loadMolecule(_settings.smiles);
-
-		mol.aromatize();
-		
+	
 		String metric = "";
 		
 		if (_settings.metric == Metric.Tanimoto)
@@ -79,27 +72,44 @@ public class IndigoMoleculeSimilarityNodeModel extends NodeModel
 		else if (_settings.metric == Metric.Tversky)
 			metric = "tversky " + _settings.tverskyAlpha + " " + _settings.tverskyBeta;
 		
-		while (it.hasNext())
+		try
 		{
-			DataRow inputRow = it.next();
-			RowKey key = inputRow.getKey();
-			DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-			IndigoObject io = ((IndigoCell) (inputRow.getCell(colIdx))).getIndigoObject().clone();
-			int i;
-
-			io.aromatize();
-			float similarity = IndigoCell.indigo.similarity(mol, io, metric);
+			IndigoPlugin.lock();
+			Indigo indigo = IndigoPlugin.getIndigo();
+			IndigoObject mol;
+			if (_settings.loadFromFile)
+				mol = indigo.loadMoleculeFromFile(_settings.fileName);
+			else
+				mol = indigo.loadMolecule(_settings.smiles);
+	
+			mol.aromatize();
 			
-			for (i = 0; i < inputRow.getNumCells(); i++)
-				cells[i] = inputRow.getCell(i);
-			cells[i++] = new DoubleCell(similarity);
-
-			outputContainer.addRowToTable(new DefaultRow(key, cells));
-			exec.checkCanceled();
-			exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-			      "Adding row " + rowNumber);
-
-			rowNumber++;
+			while (it.hasNext())
+			{
+				DataRow inputRow = it.next();
+				RowKey key = inputRow.getKey();
+				DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+				IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject().clone();
+				int i;
+	
+				io.aromatize();
+				float similarity = indigo.similarity(mol, io, metric);
+				
+				for (i = 0; i < inputRow.getNumCells(); i++)
+					cells[i] = inputRow.getCell(i);
+				cells[i++] = new DoubleCell(similarity);
+	
+				outputContainer.addRowToTable(new DefaultRow(key, cells));
+				exec.checkCanceled();
+				exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+				      "Adding row " + rowNumber);
+	
+				rowNumber++;
+			}
+		}
+		finally
+		{
+			IndigoPlugin.unlock();
 		}
 
 		outputContainer.close();
@@ -160,13 +170,13 @@ public class IndigoMoleculeSimilarityNodeModel extends NodeModel
 			{
 				if (s.fileName == null || s.fileName.equals(""))
 					throw new InvalidSettingsException("the file name must be specified");
-				IndigoCell.indigo.loadMoleculeFromFile(s.fileName);
+				IndigoPlugin.getIndigo().loadMoleculeFromFile(s.fileName);
 			}
 			else
 			{
 				if (s.smiles == null || s.smiles.equals(""))
 					throw new InvalidSettingsException("the SMILES expression must be specified");
-				IndigoCell.indigo.loadMolecule(s.smiles);
+				IndigoPlugin.getIndigo().loadMolecule(s.smiles);
 			}
 		} catch (IndigoException e)
 		{

@@ -4,6 +4,9 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.jface.util.*;
 import org.eclipse.ui.plugin.*;
 import org.osgi.framework.BundleContext;
+import java.util.concurrent.locks.ReentrantLock;
+
+import com.ggasoftware.indigo.Indigo;
 
 import static com.ggasoftware.indigo.knime.IndigoPreferenceInitializer.*;
 
@@ -13,17 +16,36 @@ public class IndigoPlugin extends AbstractUIPlugin
 
 	public static final String PLUGIN_ID = "com.ggasoftware.indigo.knime";
 
+   private static final ReentrantLock _lock = new ReentrantLock();
+	
+	private static Indigo indigo = new Indigo();
+	
 	public IndigoPlugin()
 	{
 		super();
 		plugin = this;
 	}
 
-	private static int bondLength;
-	private static boolean showImplicitHydrogens;
-	private static boolean coloring;
-	private static int molImageWidth;
-	private static int molImageHeight;
+	public static Indigo getIndigo ()
+	{
+		return indigo;
+	}
+	
+   public static void lock()
+   {
+   	_lock.lock();
+   }
+   
+   public static void unlock()
+   {
+   	_lock.unlock();
+   }
+   
+	private static int _bondLength;
+	private static boolean _showImplicitHydrogens;
+	private static boolean _coloring;
+	private static int _molImageWidth;
+	private static int _molImageHeight;
 
 	@Override
 	public void start (final BundleContext context) throws Exception
@@ -35,23 +57,23 @@ public class IndigoPlugin extends AbstractUIPlugin
 			public void propertyChange (final PropertyChangeEvent event)
 			{
 				if (event.getProperty().equals(PREF_BOND_LENGTH))
-					bondLength = pStore.getInt(PREF_BOND_LENGTH);
+					_bondLength = pStore.getInt(PREF_BOND_LENGTH);
 				else if (event.getProperty().equals(PREF_SHOW_IMPLICIT_HYDROGENS))
-					showImplicitHydrogens = pStore.getBoolean(PREF_SHOW_IMPLICIT_HYDROGENS);
+					_showImplicitHydrogens = pStore.getBoolean(PREF_SHOW_IMPLICIT_HYDROGENS);
 				else if (event.getProperty().equals(PREF_COLORING))
-					coloring =  pStore.getBoolean(PREF_COLORING);
+					_coloring =  pStore.getBoolean(PREF_COLORING);
 				else if (event.getProperty().equals(PREF_MOL_IMAGE_WIDTH))
-					molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
+					_molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
 				else if (event.getProperty().equals(PREF_MOL_IMAGE_HEIGHT))
-					molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
+					_molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
 			}
 		});
 
-		bondLength = pStore.getInt(PREF_BOND_LENGTH);
-		showImplicitHydrogens = pStore.getBoolean(PREF_SHOW_IMPLICIT_HYDROGENS);
-		coloring =  pStore.getBoolean(PREF_COLORING);
-		molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
-		molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
+		_bondLength = pStore.getInt(PREF_BOND_LENGTH);
+		_showImplicitHydrogens = pStore.getBoolean(PREF_SHOW_IMPLICIT_HYDROGENS);
+		_coloring =  pStore.getBoolean(PREF_COLORING);
+		_molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
+		_molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
 	}
 
 	@Override
@@ -64,5 +86,30 @@ public class IndigoPlugin extends AbstractUIPlugin
 	public static IndigoPlugin getDefault ()
 	{
 		return plugin;
+	}
+	
+	public float bondLength ()
+	{
+		return _bondLength;
+	}
+	
+	public boolean showImplicitHydrogens ()
+	{
+		return _showImplicitHydrogens;
+	}
+	
+	public boolean coloring ()
+	{
+		return _coloring;
+	}
+	
+	public int molImageWidth ()
+	{
+		return _molImageWidth;
+	}
+	
+	public int molImageHeight ()
+	{
+		return _molImageHeight;
 	}
 }

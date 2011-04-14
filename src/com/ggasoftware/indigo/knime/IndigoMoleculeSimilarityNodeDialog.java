@@ -27,7 +27,7 @@ public class IndigoMoleculeSimilarityNodeDialog extends NodeDialogPane
 {
 	@SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 	private final JRadioButton _buttonSmiles = new JRadioButton("SMILES", true);
 	private final JRadioButton _buttonFile = new JRadioButton("Load from file");
 	private final ButtonGroup  _buttonGroup = new ButtonGroup();

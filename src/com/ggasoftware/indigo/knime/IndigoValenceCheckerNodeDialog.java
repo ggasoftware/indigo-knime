@@ -18,7 +18,7 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
 
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 
 	IndigoValenceCheckerSettings m_settings = new IndigoValenceCheckerSettings();
 

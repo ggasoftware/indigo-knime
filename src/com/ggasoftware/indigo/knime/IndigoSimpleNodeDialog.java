@@ -23,7 +23,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
 
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 
 	private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
 

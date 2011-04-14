@@ -22,7 +22,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 
 	private final JComboBox m_destFormat = new JComboBox(new Object[] {
 	      Format.SDF, Format.Smiles, Format.CanonicalSmiles, Format.CML });

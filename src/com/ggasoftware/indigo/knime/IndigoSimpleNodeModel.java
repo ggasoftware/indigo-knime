@@ -70,7 +70,7 @@ public class IndigoSimpleNodeModel extends NodeModel
 		{
 			_colIndex = colIndex;
 
-			DataType type = IndigoCell.TYPE;
+			DataType type = IndigoMolCell.TYPE;
 
 			if (settings.replaceColumn)
 			{
@@ -89,20 +89,25 @@ public class IndigoSimpleNodeModel extends NodeModel
 		{
 			DataCell cell = row.getCell(_colIndex);
 			if (cell.isMissing())
-			{
 				return cell;
-			} else
+			else
 			{
-				IndigoValue iv = (IndigoValue) cell;
 				try
 				{
+					IndigoPlugin.lock();
+					IndigoMolValue iv = (IndigoMolValue) cell;
 					IndigoObject io = iv.getIndigoObject().clone();
 					_transformer.transform(io);
-					return new IndigoCell(io);
-				} catch (IndigoException ex)
+					return new IndigoMolCell(io);
+				}
+				catch (IndigoException ex)
 				{
 					logger.error("Could not " + _message + ": " + ex.getMessage(), ex);
 					return DataType.getMissingCell();
+				}
+				finally
+				{
+					IndigoPlugin.unlock();
 				}
 			}
 		}
@@ -130,7 +135,7 @@ public class IndigoSimpleNodeModel extends NodeModel
 	{
 		ColumnRearranger crea = new ColumnRearranger(inSpec);
 
-		DataType type = IndigoCell.TYPE;
+		DataType type = IndigoMolCell.TYPE;
 
 		DataColumnSpec cs;
 		if (_settings.replaceColumn)
@@ -169,7 +174,7 @@ public class IndigoSimpleNodeModel extends NodeModel
 		{
 			for (DataColumnSpec cs : inSpecs[0])
 			{
-				if (cs.getType().isCompatible(IndigoValue.class))
+				if (cs.getType().isCompatible(IndigoMolValue.class))
 				{
 					if (_settings.colName != null)
 					{
@@ -194,7 +199,7 @@ public class IndigoSimpleNodeModel extends NodeModel
 				      + "' does not exist in input table");
 			}
 			if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
-			      .isCompatible(IndigoValue.class))
+			      .isCompatible(IndigoMolValue.class))
 			{
 				throw new InvalidSettingsException("Column '" + _settings.colName
 				      + "' does not contain Indigo molecules");

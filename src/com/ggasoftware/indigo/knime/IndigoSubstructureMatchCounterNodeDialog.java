@@ -20,7 +20,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
 	private final IndigoSubstructureMatchCounterSettings _settings = new IndigoSubstructureMatchCounterSettings();
 	@SuppressWarnings("unchecked")
 	private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-	      (Border) null, IndigoValue.class);
+	      (Border) null, IndigoMolValue.class);
 	private final JTextField _newColName = new JTextField(20);
 	
 	private final JComboBox _uniqueness = new JComboBox(new Object[] {Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None});
