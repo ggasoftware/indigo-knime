@@ -16,56 +16,57 @@ public class IndigoDearomatizerNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public IndigoSimpleNodeModel createNodeModel ()
-	{
-		return new IndigoSimpleNodeModel("dearomatize molecule", new IndigoSimpleNodeModel.Transformer()
-		{
-			@Override
-			void transform (IndigoObject io)
-			{
-				io.dearomatize();
-			}
-		});
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public IndigoSimpleNodeModel createNodeModel ()
+   {
+      return new IndigoSimpleNodeModel("dearomatize molecule",
+            new IndigoSimpleNodeModel.Transformer()
+            {
+               @Override
+               void transform (IndigoObject io)
+               {
+                  io.dearomatize();
+               }
+            });
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getNrNodeViews ()
-	{
-		return 1;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public int getNrNodeViews ()
+   {
+      return 1;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public NodeView<IndigoSimpleNodeModel> createNodeView (
-	      final int viewIndex, final IndigoSimpleNodeModel nodeModel)
-	{
-		return null;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public NodeView<IndigoSimpleNodeModel> createNodeView (final int viewIndex,
+         final IndigoSimpleNodeModel nodeModel)
+   {
+      return null;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean hasDialog ()
-	{
-		return true;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean hasDialog ()
+   {
+      return true;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public NodeDialogPane createNodeDialogPane ()
-	{
-		return new IndigoSimpleNodeDialog("dearom");
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public NodeDialogPane createNodeDialogPane ()
+   {
+      return new IndigoSimpleNodeDialog("dearom");
+   }
 }

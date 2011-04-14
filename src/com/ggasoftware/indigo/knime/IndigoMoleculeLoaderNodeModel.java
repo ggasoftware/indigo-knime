@@ -19,248 +19,250 @@ import java.io.File;
 public class IndigoMoleculeLoaderNodeModel extends NodeModel
 {
 
-	private final IndigoMoleculeLoaderSettings m_settings = new IndigoMoleculeLoaderSettings();
+   private final IndigoMoleculeLoaderSettings m_settings = new IndigoMoleculeLoaderSettings();
 
-	protected IndigoMoleculeLoaderNodeModel()
-	{
-		super(1, 2);
-	}
+   protected IndigoMoleculeLoaderNodeModel()
+   {
+      super(1, 2);
+   }
 
-	protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
-	      throws InvalidSettingsException
-	{
-		String newColName = m_settings.newColName;
-		int newColIdx = inputTableSpec.getNumColumns();
-		int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+   protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
+         throws InvalidSettingsException
+   {
+      String newColName = m_settings.newColName;
+      int newColIdx = inputTableSpec.getNumColumns();
+      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
 
-		if (colIdx == -1)
-			throw new InvalidSettingsException("column not found");
+      if (colIdx == -1)
+         throw new InvalidSettingsException("column not found");
 
-		if (m_settings.replaceColumn)
-		{
-			newColName = m_settings.colName;
-			newColIdx = colIdx;
-		}
+      if (m_settings.replaceColumn)
+      {
+         newColName = m_settings.colName;
+         newColIdx = colIdx;
+      }
 
-		DataColumnSpec validOutputColumnSpec = new DataColumnSpecCreator(
-		      newColName, IndigoMolCell.TYPE).createSpec();
-		DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(
-		      newColName, StringCell.TYPE).createSpec();
+      DataColumnSpec validOutputColumnSpec = new DataColumnSpecCreator(
+            newColName, IndigoMolCell.TYPE).createSpec();
+      DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(
+            newColName, StringCell.TYPE).createSpec();
 
-		DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
+      DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
-		if (m_settings.replaceColumn)
-		{
-			validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-			      .getNumColumns()];
-			invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-			      .getNumColumns()];
-		} else
-		{
-			validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-			      .getNumColumns() + 1];
-			invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-			      .getNumColumns() + 1];
-		}
+      if (m_settings.replaceColumn)
+      {
+         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
+               .getNumColumns()];
+         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
+               .getNumColumns()];
+      }
+      else
+      {
+         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
+               .getNumColumns() + 1];
+         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
+               .getNumColumns() + 1];
+      }
 
-		for (int i = 0; i < inputTableSpec.getNumColumns(); i++)
-		{
-			DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
+      for (int i = 0; i < inputTableSpec.getNumColumns(); i++)
+      {
+         DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
 
-			if (m_settings.replaceColumn && i == newColIdx)
-			{
-				validOutputColumnSpecs[i] = validOutputColumnSpec;
-				invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
-			} else
-			{
-				validOutputColumnSpecs[i] = columnSpec;
-				invalidOutputColumnSpecs[i] = columnSpec;
-			}
-		}
+         if (m_settings.replaceColumn && i == newColIdx)
+         {
+            validOutputColumnSpecs[i] = validOutputColumnSpec;
+            invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
+         }
+         else
+         {
+            validOutputColumnSpecs[i] = columnSpec;
+            invalidOutputColumnSpecs[i] = columnSpec;
+         }
+      }
 
-		if (!m_settings.replaceColumn)
-		{
-			validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
-			invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
-		}
+      if (!m_settings.replaceColumn)
+      {
+         validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
+         invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
+      }
 
-		return new DataTableSpec[] { new DataTableSpec(validOutputColumnSpecs),
-		      new DataTableSpec(invalidOutputColumnSpecs) };
-	}
+      return new DataTableSpec[] { new DataTableSpec(validOutputColumnSpecs),
+            new DataTableSpec(invalidOutputColumnSpecs) };
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
-	      final ExecutionContext exec) throws Exception
-	{
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
+         final ExecutionContext exec) throws Exception
+   {
 
-		DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
-		DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
+      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
-		BufferedDataContainer validOutputContainer = exec
-		      .createDataContainer(outputSpecs[0]);
-		BufferedDataContainer invalidOutputContainer = exec
-		      .createDataContainer(outputSpecs[1]);
+      BufferedDataContainer validOutputContainer = exec
+            .createDataContainer(outputSpecs[0]);
+      BufferedDataContainer invalidOutputContainer = exec
+            .createDataContainer(outputSpecs[1]);
 
-		int newColIdx = inputTableSpec.getNumColumns();
-		int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+      int newColIdx = inputTableSpec.getNumColumns();
+      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
 
-		if (colIdx == -1)
-			throw new Exception("column not found");
+      if (colIdx == -1)
+         throw new Exception("column not found");
 
-		if (m_settings.replaceColumn)
-		{
-			newColIdx = colIdx;
-		}
+      if (m_settings.replaceColumn)
+      {
+         newColIdx = colIdx;
+      }
 
-		CloseableRowIterator it = inData[0].iterator();
-		int rowNumber = 1;
+      CloseableRowIterator it = inData[0].iterator();
+      int rowNumber = 1;
 
-		try
-		{
-			IndigoPlugin.lock();
-			Indigo indigo = IndigoPlugin.getIndigo();
-			
-			indigo.setOption("ignore-stereochemistry-errors",
-			      m_settings.ignoreStereochemistryErrors);
-			indigo.setOption("treat-x-as-pseudoatom",
-			      m_settings.treatXAsPseudoatom);
-	
-			while (it.hasNext())
-			{
-				DataRow inputRow = it.next();
-				RowKey key = inputRow.getKey();
-				DataCell[] cells;
-	
-				if (m_settings.replaceColumn)
-					cells = new DataCell[inputRow.getNumCells()];
-				else
-					cells = new DataCell[inputRow.getNumCells() + 1];
-	
-				try
-				{
-					IndigoObject mol = indigo.loadMolecule(inputRow.getCell(
-					      colIdx).toString());
-	
-					for (int i = 0; i < inputRow.getNumCells(); i++)
-					{
-						if (m_settings.replaceColumn && i == newColIdx)
-							cells[i] = new IndigoMolCell(mol);
-						else
-							cells[i] = inputRow.getCell(i);
-					}
-					if (!m_settings.replaceColumn)
-						cells[newColIdx] = new IndigoMolCell(mol);
-	
-					validOutputContainer.addRowToTable(new DefaultRow(key, cells));
-				}
-				catch (IndigoException e)
-				{
-					for (int i = 0; i < inputRow.getNumCells(); i++)
-					{
-						if (m_settings.replaceColumn && i == newColIdx)
-							cells[i] = new StringCell(e.getMessage());
-						else
-							cells[i] = inputRow.getCell(i);
-					}
-					if (!m_settings.replaceColumn)
-						cells[newColIdx] = new StringCell(e.getMessage());
-					invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
-				}
-				exec.checkCanceled();
-				exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-				      "Adding row " + rowNumber);
-	
-				rowNumber++;
-			}
-		}
-		finally
-		{
-			IndigoPlugin.unlock();
-		}
+      try
+      {
+         IndigoPlugin.lock();
+         Indigo indigo = IndigoPlugin.getIndigo();
 
-		validOutputContainer.close();
-		invalidOutputContainer.close();
-		return new BufferedDataTable[] { validOutputContainer.getTable(),
-		      invalidOutputContainer.getTable() };
-	}
+         indigo.setOption("ignore-stereochemistry-errors",
+               m_settings.ignoreStereochemistryErrors);
+         indigo.setOption("treat-x-as-pseudoatom",
+               m_settings.treatXAsPseudoatom);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void reset ()
-	{
-	}
+         while (it.hasNext())
+         {
+            DataRow inputRow = it.next();
+            RowKey key = inputRow.getKey();
+            DataCell[] cells;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
-	      throws InvalidSettingsException
-	{
-		DataTableSpec inputTableSpec = inSpecs[0];
-		return getDataTableSpecs(inputTableSpec);
-	}
+            if (m_settings.replaceColumn)
+               cells = new DataCell[inputRow.getNumCells()];
+            else
+               cells = new DataCell[inputRow.getNumCells() + 1];
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void saveSettingsTo (final NodeSettingsWO settings)
-	{
+            try
+            {
+               IndigoObject mol = indigo.loadMolecule(inputRow.getCell(colIdx)
+                     .toString());
 
-		m_settings.saveSettings(settings);
-	}
+               for (int i = 0; i < inputRow.getNumCells(); i++)
+               {
+                  if (m_settings.replaceColumn && i == newColIdx)
+                     cells[i] = new IndigoMolCell(mol);
+                  else
+                     cells[i] = inputRow.getCell(i);
+               }
+               if (!m_settings.replaceColumn)
+                  cells[newColIdx] = new IndigoMolCell(mol);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
-	      throws InvalidSettingsException
-	{
+               validOutputContainer.addRowToTable(new DefaultRow(key, cells));
+            }
+            catch (IndigoException e)
+            {
+               for (int i = 0; i < inputRow.getNumCells(); i++)
+               {
+                  if (m_settings.replaceColumn && i == newColIdx)
+                     cells[i] = new StringCell(e.getMessage());
+                  else
+                     cells[i] = inputRow.getCell(i);
+               }
+               if (!m_settings.replaceColumn)
+                  cells[newColIdx] = new StringCell(e.getMessage());
+               invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
+            }
+            exec.checkCanceled();
+            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+                  "Adding row " + rowNumber);
 
-		m_settings.loadSettings(settings);
-	}
+            rowNumber++;
+         }
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void validateSettings (final NodeSettingsRO settings)
-	      throws InvalidSettingsException
-	{
+      validOutputContainer.close();
+      invalidOutputContainer.close();
+      return new BufferedDataTable[] { validOutputContainer.getTable(),
+            invalidOutputContainer.getTable() };
+   }
 
-		IndigoMoleculeLoaderSettings s = new IndigoMoleculeLoaderSettings();
-		s.loadSettings(settings);
-		if (!s.replaceColumn
-		      && ((s.newColName == null) || (s.newColName.length() < 1)))
-		{
-			throw new InvalidSettingsException("No name for new column given");
-		}
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void reset ()
+   {
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void loadInternals (final File internDir,
-	      final ExecutionMonitor exec) throws IOException,
-	      CanceledExecutionException
-	{
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
+         throws InvalidSettingsException
+   {
+      DataTableSpec inputTableSpec = inSpecs[0];
+      return getDataTableSpecs(inputTableSpec);
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void saveInternals (final File internDir,
-	      final ExecutionMonitor exec) throws IOException,
-	      CanceledExecutionException
-	{
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void saveSettingsTo (final NodeSettingsWO settings)
+   {
+
+      m_settings.saveSettings(settings);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
+         throws InvalidSettingsException
+   {
+
+      m_settings.loadSettings(settings);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void validateSettings (final NodeSettingsRO settings)
+         throws InvalidSettingsException
+   {
+
+      IndigoMoleculeLoaderSettings s = new IndigoMoleculeLoaderSettings();
+      s.loadSettings(settings);
+      if (!s.replaceColumn
+            && ((s.newColName == null) || (s.newColName.length() < 1)))
+      {
+         throw new InvalidSettingsException("No name for new column given");
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void loadInternals (final File internDir,
+         final ExecutionMonitor exec) throws IOException,
+         CanceledExecutionException
+   {
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void saveInternals (final File internDir,
+         final ExecutionMonitor exec) throws IOException,
+         CanceledExecutionException
+   {
+   }
 }

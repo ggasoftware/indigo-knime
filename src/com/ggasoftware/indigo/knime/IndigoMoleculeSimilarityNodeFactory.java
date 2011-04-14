@@ -14,50 +14,50 @@ public class IndigoMoleculeSimilarityNodeFactory extends
       NodeFactory<IndigoMoleculeSimilarityNodeModel>
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public IndigoMoleculeSimilarityNodeModel createNodeModel()
-	{
-		return new IndigoMoleculeSimilarityNodeModel();
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public IndigoMoleculeSimilarityNodeModel createNodeModel ()
+   {
+      return new IndigoMoleculeSimilarityNodeModel();
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getNrNodeViews()
-	{
-		return 0;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public int getNrNodeViews ()
+   {
+      return 0;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public NodeView<IndigoMoleculeSimilarityNodeModel> createNodeView(
-	      final int viewIndex, final IndigoMoleculeSimilarityNodeModel nodeModel)
-	{
-		return null;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public NodeView<IndigoMoleculeSimilarityNodeModel> createNodeView (
+         final int viewIndex, final IndigoMoleculeSimilarityNodeModel nodeModel)
+   {
+      return null;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean hasDialog()
-	{
-		return true;
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean hasDialog ()
+   {
+      return true;
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public NodeDialogPane createNodeDialogPane()
-	{
-		return new IndigoMoleculeSimilarityNodeDialog();
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public NodeDialogPane createNodeDialogPane ()
+   {
+      return new IndigoMoleculeSimilarityNodeDialog();
+   }
 
 }

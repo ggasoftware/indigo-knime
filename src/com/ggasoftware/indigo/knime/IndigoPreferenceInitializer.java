@@ -11,15 +11,15 @@ public class IndigoPreferenceInitializer extends AbstractPreferenceInitializer
    public static final String PREF_MOL_IMAGE_WIDTH = "knime.indigo.moleculeImageWidth";
    public static final String PREF_MOL_IMAGE_HEIGHT = "knime.indigo.moleculeImageHeight";
 
-	@Override
-	public void initializeDefaultPreferences ()
-	{
-		IPreferenceStore store = IndigoPlugin.getDefault().getPreferenceStore();
-		
-		store.setDefault(PREF_BOND_LENGTH, 40);
-		store.setDefault(PREF_SHOW_IMPLICIT_HYDROGENS, true);
-		store.setDefault(PREF_COLORING, true);
-		store.setDefault(PREF_MOL_IMAGE_WIDTH, 250);
-		store.setDefault(PREF_MOL_IMAGE_HEIGHT, 150);
-	}
+   @Override
+   public void initializeDefaultPreferences ()
+   {
+      IPreferenceStore store = IndigoPlugin.getDefault().getPreferenceStore();
+
+      store.setDefault(PREF_BOND_LENGTH, 40);
+      store.setDefault(PREF_SHOW_IMPLICIT_HYDROGENS, true);
+      store.setDefault(PREF_COLORING, true);
+      store.setDefault(PREF_MOL_IMAGE_WIDTH, 250);
+      store.setDefault(PREF_MOL_IMAGE_HEIGHT, 150);
+   }
 }

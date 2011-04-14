@@ -18,250 +18,256 @@ import com.ggasoftware.indigo.*;
 public class IndigoSimpleNodeModel extends NodeModel
 {
 
-	public static abstract class Transformer
-	{
-		abstract void transform (IndigoObject io);
-	}
-	
-	// the logger instance
-	private static final NodeLogger logger = NodeLogger
-	      .getLogger(IndigoSimpleNodeModel.class);
+   public static abstract class Transformer
+   {
+      abstract void transform (IndigoObject io);
+   }
 
-	IndigoSimpleSettings _settings = new IndigoSimpleSettings();
-	Transformer _transformer;
-	String _message;
+   // the logger instance
+   private static final NodeLogger logger = NodeLogger
+         .getLogger(IndigoSimpleNodeModel.class);
 
-	protected IndigoSimpleNodeModel (String message, Transformer transformer)
-	{
-		super(1, 1);
-		_message = message;
-		_transformer = transformer;
-	}
+   IndigoSimpleSettings _settings = new IndigoSimpleSettings();
+   Transformer _transformer;
+   String _message;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
-	      final ExecutionContext exec) throws Exception
-	{
+   protected IndigoSimpleNodeModel(String message, Transformer transformer)
+   {
+      super(1, 1);
+      _message = message;
+      _transformer = transformer;
+   }
 
-		ColumnRearranger crea = createRearranger(inData[0].getDataTableSpec());
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
+         final ExecutionContext exec) throws Exception
+   {
 
-		return new BufferedDataTable[] { exec.createColumnRearrangeTable(
-		      inData[0], crea, exec) };
-	}
+      ColumnRearranger crea = createRearranger(inData[0].getDataTableSpec());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void reset ()
-	{
-	}
+      return new BufferedDataTable[] { exec.createColumnRearrangeTable(
+            inData[0], crea, exec) };
+   }
 
-	class Converter implements CellFactory
-	{
-		int _colIndex;
-		private final DataColumnSpec[] m_colSpec;
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void reset ()
+   {
+   }
 
-		Converter(final DataTableSpec inSpec, final DataColumnSpec cs,
-		      final IndigoSimpleSettings settings, final int colIndex)
-		{
-			_colIndex = colIndex;
+   class Converter implements CellFactory
+   {
+      int _colIndex;
+      private final DataColumnSpec[] m_colSpec;
 
-			DataType type = IndigoMolCell.TYPE;
+      Converter(final DataTableSpec inSpec, final DataColumnSpec cs,
+            final IndigoSimpleSettings settings, final int colIndex)
+      {
+         _colIndex = colIndex;
 
-			if (settings.replaceColumn)
-			{
-				m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-				      settings.colName, type).createSpec() };
-			} else
-			{
-				m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-				      DataTableSpec
-				            .getUniqueColumnName(inSpec, settings.newColName),
-				      type).createSpec() };
-			}
-		}
+         DataType type = IndigoMolCell.TYPE;
 
-		public DataCell getCell (final DataRow row)
-		{
-			DataCell cell = row.getCell(_colIndex);
-			if (cell.isMissing())
-				return cell;
-			else
-			{
-				try
-				{
-					IndigoPlugin.lock();
-					IndigoMolValue iv = (IndigoMolValue) cell;
-					IndigoObject io = iv.getIndigoObject().clone();
-					_transformer.transform(io);
-					return new IndigoMolCell(io);
-				}
-				catch (IndigoException ex)
-				{
-					logger.error("Could not " + _message + ": " + ex.getMessage(), ex);
-					return DataType.getMissingCell();
-				}
-				finally
-				{
-					IndigoPlugin.unlock();
-				}
-			}
-		}
+         if (settings.replaceColumn)
+         {
+            m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
+                  settings.colName, type).createSpec() };
+         }
+         else
+         {
+            m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
+                  DataTableSpec
+                        .getUniqueColumnName(inSpec, settings.newColName),
+                  type).createSpec() };
+         }
+      }
 
-		@Override
-		public DataCell[] getCells (DataRow row)
-		{
-			return new DataCell[] { getCell(row) };
-		}
+      public DataCell getCell (final DataRow row)
+      {
+         DataCell cell = row.getCell(_colIndex);
+         if (cell.isMissing())
+            return cell;
+         else
+         {
+            try
+            {
+               IndigoPlugin.lock();
+               IndigoMolValue iv = (IndigoMolValue) cell;
+               IndigoObject io = iv.getIndigoObject().clone();
+               _transformer.transform(io);
+               return new IndigoMolCell(io);
+            }
+            catch (IndigoException ex)
+            {
+               logger.error("Could not " + _message + ": " + ex.getMessage(),
+                     ex);
+               return DataType.getMissingCell();
+            }
+            finally
+            {
+               IndigoPlugin.unlock();
+            }
+         }
+      }
 
-		@Override
-		public DataColumnSpec[] getColumnSpecs ()
-		{
-			return m_colSpec;
-		}
+      @Override
+      public DataCell[] getCells (DataRow row)
+      {
+         return new DataCell[] { getCell(row) };
+      }
 
-		@Override
-		public void setProgress (int curRowNr, int rowCount, RowKey lastKey,
-		      ExecutionMonitor exec)
-		{
-		}
-	}
+      @Override
+      public DataColumnSpec[] getColumnSpecs ()
+      {
+         return m_colSpec;
+      }
 
-	private ColumnRearranger createRearranger (final DataTableSpec inSpec)
-	{
-		ColumnRearranger crea = new ColumnRearranger(inSpec);
+      @Override
+      public void setProgress (int curRowNr, int rowCount, RowKey lastKey,
+            ExecutionMonitor exec)
+      {
+      }
+   }
 
-		DataType type = IndigoMolCell.TYPE;
+   private ColumnRearranger createRearranger (final DataTableSpec inSpec)
+   {
+      ColumnRearranger crea = new ColumnRearranger(inSpec);
 
-		DataColumnSpec cs;
-		if (_settings.replaceColumn)
-		{
-			cs = new DataColumnSpecCreator(_settings.colName, type).createSpec();
-		} else
-		{
-			String name = DataTableSpec.getUniqueColumnName(inSpec,
-			      _settings.newColName);
-			cs = new DataColumnSpecCreator(name, type).createSpec();
-		}
+      DataType type = IndigoMolCell.TYPE;
 
-		Converter conv = new Converter(inSpec, cs, _settings,
-		      inSpec.findColumnIndex(_settings.colName));
+      DataColumnSpec cs;
+      if (_settings.replaceColumn)
+      {
+         cs = new DataColumnSpecCreator(_settings.colName, type).createSpec();
+      }
+      else
+      {
+         String name = DataTableSpec.getUniqueColumnName(inSpec,
+               _settings.newColName);
+         cs = new DataColumnSpecCreator(name, type).createSpec();
+      }
 
-		if (_settings.replaceColumn)
-		{
-			crea.replace(conv, _settings.colName);
-		} else
-		{
-			crea.append(conv);
-		}
+      Converter conv = new Converter(inSpec, cs, _settings,
+            inSpec.findColumnIndex(_settings.colName));
 
-		return crea;
-	}
+      if (_settings.replaceColumn)
+      {
+         crea.replace(conv, _settings.colName);
+      }
+      else
+      {
+         crea.append(conv);
+      }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
-	      throws InvalidSettingsException
-	{
+      return crea;
+   }
 
-		if (_settings.colName == null)
-		{
-			for (DataColumnSpec cs : inSpecs[0])
-			{
-				if (cs.getType().isCompatible(IndigoMolValue.class))
-				{
-					if (_settings.colName != null)
-					{
-						setWarningMessage("Selected column '" + _settings.colName
-						      + "' as Indigo column");
-					} else
-					{
-						_settings.colName = cs.getName();
-					}
-				}
-			}
-			if (_settings.colName == null)
-			{
-				throw new InvalidSettingsException(
-				      "No Indigo column in input table");
-			}
-		} else
-		{
-			if (!inSpecs[0].containsName(_settings.colName))
-			{
-				throw new InvalidSettingsException("Column '" + _settings.colName
-				      + "' does not exist in input table");
-			}
-			if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
-			      .isCompatible(IndigoMolValue.class))
-			{
-				throw new InvalidSettingsException("Column '" + _settings.colName
-				      + "' does not contain Indigo molecules");
-			}
-		}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
+         throws InvalidSettingsException
+   {
 
-		return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
-	}
+      if (_settings.colName == null)
+      {
+         for (DataColumnSpec cs : inSpecs[0])
+         {
+            if (cs.getType().isCompatible(IndigoMolValue.class))
+            {
+               if (_settings.colName != null)
+               {
+                  setWarningMessage("Selected column '" + _settings.colName
+                        + "' as Indigo column");
+               }
+               else
+               {
+                  _settings.colName = cs.getName();
+               }
+            }
+         }
+         if (_settings.colName == null)
+         {
+            throw new InvalidSettingsException(
+                  "No Indigo column in input table");
+         }
+      }
+      else
+      {
+         if (!inSpecs[0].containsName(_settings.colName))
+         {
+            throw new InvalidSettingsException("Column '" + _settings.colName
+                  + "' does not exist in input table");
+         }
+         if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
+               .isCompatible(IndigoMolValue.class))
+         {
+            throw new InvalidSettingsException("Column '" + _settings.colName
+                  + "' does not contain Indigo molecules");
+         }
+      }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void saveSettingsTo (final NodeSettingsWO settings)
-	{
-		_settings.saveSettings(settings);
-	}
+      return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
-	      throws InvalidSettingsException
-	{
-		_settings.loadSettings(settings);
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void saveSettingsTo (final NodeSettingsWO settings)
+   {
+      _settings.saveSettings(settings);
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void validateSettings (final NodeSettingsRO settings)
-	      throws InvalidSettingsException
-	{
-		IndigoSimpleSettings s = new IndigoSimpleSettings();
-		s.loadSettings(settings);
-		if (!s.replaceColumn
-		      && ((s.newColName == null) || (s.newColName.length() < 1)))
-		{
-			throw new InvalidSettingsException("No name for new column given");
-		}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
+         throws InvalidSettingsException
+   {
+      _settings.loadSettings(settings);
+   }
 
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void validateSettings (final NodeSettingsRO settings)
+         throws InvalidSettingsException
+   {
+      IndigoSimpleSettings s = new IndigoSimpleSettings();
+      s.loadSettings(settings);
+      if (!s.replaceColumn
+            && ((s.newColName == null) || (s.newColName.length() < 1)))
+      {
+         throw new InvalidSettingsException("No name for new column given");
+      }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void loadInternals (final File internDir,
-	      final ExecutionMonitor exec) throws IOException,
-	      CanceledExecutionException
-	{
-	}
+   }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void saveInternals (final File internDir,
-	      final ExecutionMonitor exec) throws IOException,
-	      CanceledExecutionException
-	{
-	}
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void loadInternals (final File internDir,
+         final ExecutionMonitor exec) throws IOException,
+         CanceledExecutionException
+   {
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void saveInternals (final File internDir,
+         final ExecutionMonitor exec) throws IOException,
+         CanceledExecutionException
+   {
+   }
 }
