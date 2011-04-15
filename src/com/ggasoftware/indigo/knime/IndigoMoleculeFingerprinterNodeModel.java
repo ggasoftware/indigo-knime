@@ -11,15 +11,11 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.RowKey;
 import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
-import org.knime.core.data.def.DoubleCell;
-import org.knime.core.data.vector.bitvector.SparseBitVector;
 import org.knime.core.data.vector.bitvector.SparseBitVectorCell;
 import org.knime.core.data.vector.bitvector.SparseBitVectorCellFactory;
 import org.knime.core.node.*;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.IndigoMoleculeSimilaritySettings.Metric;
+import com.ggasoftware.indigo.*;
 
 /**
  * This is the model implementation of IndigoMoleculeFingerprinter.

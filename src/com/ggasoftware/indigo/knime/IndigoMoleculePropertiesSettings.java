@@ -2,8 +2,6 @@ package com.ggasoftware.indigo.knime;
 
 import org.knime.core.node.*;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
-
 public class IndigoMoleculePropertiesSettings
 {
    public String colName;

@@ -10,17 +10,17 @@ import org.knime.core.node.NodeView;
  * 
  * @author GGA Software Services LLC
  */
-public class IndigoMoleculeSimilarityNodeFactory extends
-      NodeFactory<IndigoMoleculeSimilarityNodeModel>
+public class IndigoFingerprintSimilarityNodeFactory extends
+      NodeFactory<IndigoFingerprintSimilarityNodeModel>
 {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public IndigoMoleculeSimilarityNodeModel createNodeModel ()
+   public IndigoFingerprintSimilarityNodeModel createNodeModel ()
    {
-      return new IndigoMoleculeSimilarityNodeModel();
+      return new IndigoFingerprintSimilarityNodeModel();
    }
 
    /**
@@ -36,8 +36,8 @@ public class IndigoMoleculeSimilarityNodeFactory extends
     * {@inheritDoc}
     */
    @Override
-   public NodeView<IndigoMoleculeSimilarityNodeModel> createNodeView (
-         final int viewIndex, final IndigoMoleculeSimilarityNodeModel nodeModel)
+   public NodeView<IndigoFingerprintSimilarityNodeModel> createNodeView (
+         final int viewIndex, final IndigoFingerprintSimilarityNodeModel nodeModel)
    {
       return null;
    }
@@ -57,7 +57,7 @@ public class IndigoMoleculeSimilarityNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoMoleculeSimilarityNodeDialog();
+      return new IndigoFingerprintSimilarityNodeDialog();
    }
 
 }

@@ -2,7 +2,7 @@ package com.ggasoftware.indigo.knime;
 
 import org.knime.core.node.*;
 
-public class IndigoMoleculeSimilaritySettings
+public class IndigoFingerprintSimilaritySettings
 {
    enum Metric
    {
@@ -10,9 +10,7 @@ public class IndigoMoleculeSimilaritySettings
    }
 
    public String colName;
-   public boolean loadFromFile = false;
-   public String fileName;
-   public String smiles;
+   public String colName2;
    public String newColName;
    public Metric metric;
    public float tverskyAlpha;
@@ -22,9 +20,7 @@ public class IndigoMoleculeSimilaritySettings
          throws InvalidSettingsException
    {
       colName = settings.getString("colName");
-      loadFromFile = settings.getBoolean("loadFromFile");
-      fileName = settings.getString("fileName");
-      smiles = settings.getString("smiles");
+      colName2 = settings.getString("colName2");
       newColName = settings.getString("newColName");
       metric = Metric.valueOf(settings.getString("metric"));
       tverskyAlpha = settings.getFloat("tverskyAlpha");
@@ -34,9 +30,7 @@ public class IndigoMoleculeSimilaritySettings
    public void loadSettingsForDialog (final NodeSettingsRO settings)
    {
       colName = settings.getString("colName", null);
-      loadFromFile = settings.getBoolean("loadFromFile", false);
-      fileName = settings.getString("fileName", null);
-      smiles = settings.getString("smiles", "");
+      colName2 = settings.getString("colName2", null);
       newColName = settings.getString("newColName", "similarity");
       metric = Metric.valueOf(settings.getString("metric",
             Metric.Tanimoto.name()));
@@ -48,11 +42,8 @@ public class IndigoMoleculeSimilaritySettings
    {
       if (colName != null)
          settings.addString("colName", colName);
-      settings.addBoolean("loadFromFile", loadFromFile);
-      if (fileName != null)
-         settings.addString("fileName", fileName);
-      if (smiles != null)
-         settings.addString("smiles", smiles);
+      if (colName2 != null)
+         settings.addString("colName2", colName2);
       if (metric != null)
          settings.addString("metric", metric.name());
       if (newColName != null)
