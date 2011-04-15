@@ -102,12 +102,12 @@ public class IndigoFingerprintSimilarityNodeModel extends NodeModel
             if (ia < ib)
                ia = template.nextSetBit(ia + 1);
             else if (ia > ib)
-               ib = template.nextSetBit(ib + 1);
+               ib = bitvector.nextSetBit(ib + 1);
             else
             {
                c++;
                ia = template.nextSetBit(ia + 1);
-               ib = template.nextSetBit(ib + 1);
+               ib = bitvector.nextSetBit(ib + 1);
             }
          }
          
