@@ -19,7 +19,7 @@ import java.io.File;
 public class IndigoMoleculeLoaderNodeModel extends NodeModel
 {
 
-   private final IndigoMoleculeLoaderSettings m_settings = new IndigoMoleculeLoaderSettings();
+   private final IndigoMoleculeLoaderSettings _settings = new IndigoMoleculeLoaderSettings();
 
    protected IndigoMoleculeLoaderNodeModel()
    {
@@ -29,16 +29,16 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
          throws InvalidSettingsException
    {
-      String newColName = m_settings.newColName;
+      String newColName = _settings.newColName;
       int newColIdx = inputTableSpec.getNumColumns();
-      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
 
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
-      if (m_settings.replaceColumn)
+      if (_settings.replaceColumn)
       {
-         newColName = m_settings.colName;
+         newColName = _settings.colName;
          newColIdx = colIdx;
       }
 
@@ -49,7 +49,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
 
       DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
-      if (m_settings.replaceColumn)
+      if (_settings.replaceColumn)
       {
          validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
                .getNumColumns()];
@@ -68,7 +68,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
       {
          DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
 
-         if (m_settings.replaceColumn && i == newColIdx)
+         if (_settings.replaceColumn && i == newColIdx)
          {
             validOutputColumnSpecs[i] = validOutputColumnSpec;
             invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
@@ -80,7 +80,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
          }
       }
 
-      if (!m_settings.replaceColumn)
+      if (!_settings.replaceColumn)
       {
          validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
          invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
@@ -107,12 +107,12 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
             .createDataContainer(outputSpecs[1]);
 
       int newColIdx = inputTableSpec.getNumColumns();
-      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
 
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      if (m_settings.replaceColumn)
+      if (_settings.replaceColumn)
       {
          newColIdx = colIdx;
       }
@@ -126,9 +126,9 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
          Indigo indigo = IndigoPlugin.getIndigo();
 
          indigo.setOption("ignore-stereochemistry-errors",
-               m_settings.ignoreStereochemistryErrors);
+               _settings.ignoreStereochemistryErrors);
          indigo.setOption("treat-x-as-pseudoatom",
-               m_settings.treatXAsPseudoatom);
+               _settings.treatXAsPseudoatom);
 
          while (it.hasNext())
          {
@@ -136,7 +136,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
             RowKey key = inputRow.getKey();
             DataCell[] cells;
 
-            if (m_settings.replaceColumn)
+            if (_settings.replaceColumn)
                cells = new DataCell[inputRow.getNumCells()];
             else
                cells = new DataCell[inputRow.getNumCells() + 1];
@@ -148,12 +148,12 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
 
                for (int i = 0; i < inputRow.getNumCells(); i++)
                {
-                  if (m_settings.replaceColumn && i == newColIdx)
+                  if (_settings.replaceColumn && i == newColIdx)
                      cells[i] = new IndigoMolCell(mol);
                   else
                      cells[i] = inputRow.getCell(i);
                }
-               if (!m_settings.replaceColumn)
+               if (!_settings.replaceColumn)
                   cells[newColIdx] = new IndigoMolCell(mol);
 
                validOutputContainer.addRowToTable(new DefaultRow(key, cells));
@@ -162,12 +162,12 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
             {
                for (int i = 0; i < inputRow.getNumCells(); i++)
                {
-                  if (m_settings.replaceColumn && i == newColIdx)
+                  if (_settings.replaceColumn && i == newColIdx)
                      cells[i] = new StringCell(e.getMessage());
                   else
                      cells[i] = inputRow.getCell(i);
                }
-               if (!m_settings.replaceColumn)
+               if (!_settings.replaceColumn)
                   cells[newColIdx] = new StringCell(e.getMessage());
                invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
             }
@@ -215,7 +215,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
 
-      m_settings.saveSettings(settings);
+      _settings.saveSettings(settings);
    }
 
    /**
@@ -226,7 +226,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
          throws InvalidSettingsException
    {
 
-      m_settings.loadSettings(settings);
+      _settings.loadSettings(settings);
    }
 
    /**

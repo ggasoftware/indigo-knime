@@ -21,18 +21,14 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
 {
 
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox m_colName = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _colName = new ColumnSelectionComboxBox(
          (Border) null, SdfValue.class, MolValue.class, SmilesValue.class);
 
-   private final JCheckBox m_treatXAsPseudoatom = new JCheckBox();
-
-   private final JCheckBox m_ignoreStereochemistryErrors = new JCheckBox();
-
-   private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
-
-   private final JTextField m_newColName = new JTextField(20);
-
-   IndigoMoleculeLoaderSettings m_settings = new IndigoMoleculeLoaderSettings();
+   private final JCheckBox _treatXAsPseudoatom = new JCheckBox();
+   private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox();
+   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JTextField _newColName = new JTextField(20);
+   IndigoMoleculeLoaderSettings _settings = new IndigoMoleculeLoaderSettings();
 
    /**
     * New pane for configuring IndigoMoleculeLoader node dialog. This is just a
@@ -51,47 +47,47 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
       c.gridy = 0;
       p.add(new JLabel("Molecule column   "), c);
       c.gridx = 1;
-      p.add(m_colName, c);
+      p.add(_colName, c);
 
       c.gridy++;
 
       c.gridx = 0;
-      p.add(m_appendColumn, c);
+      p.add(_appendColumn, c);
       c.gridx = 1;
-      p.add(m_newColName, c);
+      p.add(_newColName, c);
 
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Treat X as pseudoatom"), c);
       c.gridx = 1;
-      p.add(m_treatXAsPseudoatom, c);
+      p.add(_treatXAsPseudoatom, c);
 
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Ignore stereochemistry errors"), c);
       c.gridx = 1;
-      p.add(m_ignoreStereochemistryErrors, c);
+      p.add(_ignoreStereochemistryErrors, c);
 
-      m_appendColumn.addChangeListener(new ChangeListener()
+      _appendColumn.addChangeListener(new ChangeListener()
       {
          public void stateChanged (final ChangeEvent e)
          {
-            if (m_appendColumn.isSelected())
+            if (_appendColumn.isSelected())
             {
-               m_newColName.setEnabled(true);
-               if ("".equals(m_newColName.getText()))
+               _newColName.setEnabled(true);
+               if ("".equals(_newColName.getText()))
                {
-                  m_newColName.setText(m_colName.getSelectedColumn()
+                  _newColName.setText(_colName.getSelectedColumn()
                         + " (Indigo)");
                }
             }
             else
             {
-               m_newColName.setEnabled(false);
+               _newColName.setEnabled(false);
             }
          }
       });
-      m_newColName.setEnabled(m_appendColumn.isSelected());
+      _newColName.setEnabled(_appendColumn.isSelected());
 
       addTab("Standard settings", p);
    }
@@ -103,16 +99,16 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      m_settings.loadSettingsForDialog(settings);
+      _settings.loadSettingsForDialog(settings);
 
-      m_colName.update(specs[0], m_settings.colName);
-      m_appendColumn.setSelected(!m_settings.replaceColumn);
-      m_newColName.setEnabled(!m_settings.replaceColumn);
-      m_newColName
-            .setText(m_settings.newColName != null ? m_settings.newColName : "");
-      m_treatXAsPseudoatom.setSelected(m_settings.treatXAsPseudoatom);
-      m_ignoreStereochemistryErrors
-            .setSelected(m_settings.ignoreStereochemistryErrors);
+      _colName.update(specs[0], _settings.colName);
+      _appendColumn.setSelected(!_settings.replaceColumn);
+      _newColName.setEnabled(!_settings.replaceColumn);
+      _newColName
+            .setText(_settings.newColName != null ? _settings.newColName : "");
+      _treatXAsPseudoatom.setSelected(_settings.treatXAsPseudoatom);
+      _ignoreStereochemistryErrors
+            .setSelected(_settings.ignoreStereochemistryErrors);
    }
 
    /**
@@ -122,12 +118,12 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      m_settings.colName = m_colName.getSelectedColumn();
-      m_settings.replaceColumn = !m_appendColumn.isSelected();
-      m_settings.newColName = m_newColName.getText();
-      m_settings.saveSettings(settings);
-      m_settings.treatXAsPseudoatom = m_treatXAsPseudoatom.isSelected();
-      m_settings.ignoreStereochemistryErrors = m_ignoreStereochemistryErrors
+      _settings.colName = _colName.getSelectedColumn();
+      _settings.replaceColumn = !_appendColumn.isSelected();
+      _settings.newColName = _newColName.getText();
+      _settings.treatXAsPseudoatom = _treatXAsPseudoatom.isSelected();
+      _settings.ignoreStereochemistryErrors = _ignoreStereochemistryErrors
             .isSelected();
+      _settings.saveSettings(settings);
    }
 }

@@ -21,17 +21,13 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 {
 
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
-
-   private final JComboBox m_destFormat = new JComboBox(new Object[] {
+   private final JComboBox _destFormat = new JComboBox(new Object[] {
          Format.SDF, Format.Smiles, Format.CanonicalSmiles, Format.CML });
-
-   private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
-
-   private final JTextField m_newColName = new JTextField(20);
-
-   private final IndigoMoleculeSaverSettings m_settings = new IndigoMoleculeSaverSettings();
+   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JTextField _newColName = new JTextField(20);
+   private final IndigoMoleculeSaverSettings _settings = new IndigoMoleculeSaverSettings();
 
    /**
     * New pane for configuring the IndigoMoleculeSaver node.
@@ -50,42 +46,42 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       c.gridy = 0;
       p.add(new JLabel("Indigo column   "), c);
       c.gridx = 1;
-      p.add(m_molColumn, c);
+      p.add(_molColumn, c);
 
       c.gridy++;
       c.gridx = 0;
-      p.add(m_appendColumn, c);
+      p.add(_appendColumn, c);
       c.gridx = 1;
-      p.add(m_newColName, c);
+      p.add(_newColName, c);
 
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Destination format   "), c);
       c.gridx = 1;
-      p.add(m_destFormat, c);
+      p.add(_destFormat, c);
 
-      m_appendColumn.addChangeListener(new ChangeListener()
+      _appendColumn.addChangeListener(new ChangeListener()
       {
          public void stateChanged (final ChangeEvent e)
          {
-            if (m_appendColumn.isSelected())
+            if (_appendColumn.isSelected())
             {
-               m_newColName.setEnabled(true);
-               if ("".equals(m_newColName.getText()))
+               _newColName.setEnabled(true);
+               if ("".equals(_newColName.getText()))
                {
-                  m_newColName.setText(m_molColumn.getSelectedColumn()
+                  _newColName.setText(_molColumn.getSelectedColumn()
                         + " (saved)");
                }
             }
             else
             {
-               m_newColName.setEnabled(false);
+               _newColName.setEnabled(false);
             }
          }
       });
-      m_newColName.setEnabled(m_appendColumn.isSelected());
+      _newColName.setEnabled(_appendColumn.isSelected());
 
-      m_destFormat.setRenderer(new DefaultListCellRenderer()
+      _destFormat.setRenderer(new DefaultListCellRenderer()
       {
          @Override
          public Component getListCellRendererComponent (final JList list,
@@ -133,13 +129,13 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      m_settings.loadSettingsForDialog(settings);
+      _settings.loadSettingsForDialog(settings);
 
-      m_molColumn.update(specs[0], m_settings.colName);
-      m_appendColumn.setSelected(!m_settings.replaceColumn);
-      m_newColName.setEnabled(!m_settings.replaceColumn);
-      m_newColName.setText(m_settings.newColName);
-      m_destFormat.setSelectedItem(m_settings.destFormat);
+      _molColumn.update(specs[0], _settings.colName);
+      _appendColumn.setSelected(!_settings.replaceColumn);
+      _newColName.setEnabled(!_settings.replaceColumn);
+      _newColName.setText(_settings.newColName);
+      _destFormat.setSelectedItem(_settings.destFormat);
    }
 
    /**
@@ -149,10 +145,10 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      m_settings.colName = m_molColumn.getSelectedColumn();
-      m_settings.replaceColumn = !m_appendColumn.isSelected();
-      m_settings.newColName = m_newColName.getText();
-      m_settings.destFormat = ((Format) m_destFormat.getSelectedItem());
-      m_settings.saveSettings(settings);
+      _settings.colName = _molColumn.getSelectedColumn();
+      _settings.replaceColumn = !_appendColumn.isSelected();
+      _settings.newColName = _newColName.getText();
+      _settings.destFormat = ((Format) _destFormat.getSelectedItem());
+      _settings.saveSettings(settings);
    }
 }

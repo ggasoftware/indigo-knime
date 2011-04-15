@@ -14,13 +14,14 @@
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeSimilarityNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSimilarityNodeFactory"/>
+	    <node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
 	</extension>
  	<extension point="org.knime.workbench.repository.categories">
 		<category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/chemistry">
       	</category>
  	</extension>
  	<extension point="org.eclipse.equinox.preferences.preferences">
- 		<initializer class="com.ggasoftware.indigo.knime.IndigoPreferenceInitializer" />
+ 		<initializer class="com.ggasoftware.indigo.knime.IndigoPreferenceInitializer"/>
  	</extension>
  	<extension point="org.eclipse.ui.preferencePages">
  		<page category="org.knime.chem.preferences" class="com.ggasoftware.indigo.knime.IndigoPreferencePage" id="com.ggasoftware.indigo.knime.preferences" name="Indigo"/>

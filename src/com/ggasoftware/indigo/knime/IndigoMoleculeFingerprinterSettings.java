@@ -2,12 +2,11 @@ package com.ggasoftware.indigo.knime;
 
 import org.knime.core.node.*;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
-
-public class IndigoMoleculePropertiesSettings
+public class IndigoMoleculeFingerprinterSettings
 {
+   public int fpSizeQWords;
    public String colName;
-   public String[] selectedProps;
+   public String newColName;
 
    /**
     * Loads the settings from the given node settings object.
@@ -20,8 +19,9 @@ public class IndigoMoleculePropertiesSettings
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
+      fpSizeQWords = settings.getInt("fpSizeQWords");
       colName = settings.getString("colName");
-      selectedProps = settings.getStringArray("selectedProps");
+      newColName = settings.getString("newColName");
    }
 
    /**
@@ -33,8 +33,9 @@ public class IndigoMoleculePropertiesSettings
     */
    public void loadSettingsForDialog (final NodeSettingsRO settings)
    {
+      fpSizeQWords = settings.getInt("fpSizeQWords", 8);
       colName = settings.getString("colName", null);
-      selectedProps = settings.getStringArray("selectedProps", new String[]{});
+      newColName = settings.getString("newColName", null);
    }
 
    /**
@@ -45,7 +46,8 @@ public class IndigoMoleculePropertiesSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
+      settings.addInt("fpSizeQWords", fpSizeQWords);
       settings.addString("colName", colName);
-      settings.addStringArray("selectedProps", selectedProps);
+      settings.addString("newColName", newColName);
    }
 }
