@@ -22,15 +22,12 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
 {
 
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
-   private final JCheckBox m_appendColumn = new JCheckBox("Append Column");
-
-   private final JTextField m_newColName = new JTextField(20);
-
-   private final IndigoSimpleSettings m_settings = new IndigoSimpleSettings();
-
+   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JTextField _newColName = new JTextField(20);
+   private final IndigoSimpleSettings _settings = new IndigoSimpleSettings();
    private final String _desc;
 
    protected IndigoSimpleNodeDialog (String desc)
@@ -49,34 +46,34 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
       c.gridy = 0;
       p.add(new JLabel("Indigo column   "), c);
       c.gridx = 1;
-      p.add(m_molColumn, c);
+      p.add(_molColumn, c);
 
       c.gridy++;
       c.gridx = 0;
-      p.add(m_appendColumn, c);
+      p.add(_appendColumn, c);
       c.gridx = 1;
-      p.add(m_newColName, c);
+      p.add(_newColName, c);
 
-      m_appendColumn.addChangeListener(new ChangeListener()
+      _appendColumn.addChangeListener(new ChangeListener()
       {
          public void stateChanged (final ChangeEvent e)
          {
-            if (m_appendColumn.isSelected())
+            if (_appendColumn.isSelected())
             {
-               m_newColName.setEnabled(true);
-               if ("".equals(m_newColName.getText()))
+               _newColName.setEnabled(true);
+               if ("".equals(_newColName.getText()))
                {
-                  m_newColName.setText(m_molColumn.getSelectedColumn() + " ("
+                  _newColName.setText(_molColumn.getSelectedColumn() + " ("
                         + _desc + ")");
                }
             }
             else
             {
-               m_newColName.setEnabled(false);
+               _newColName.setEnabled(false);
             }
          }
       });
-      m_newColName.setEnabled(m_appendColumn.isSelected());
+      _newColName.setEnabled(_appendColumn.isSelected());
 
       addTab("Standard settings", p);
    }
@@ -88,12 +85,12 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      m_settings.loadSettingsForDialog(settings);
+      _settings.loadSettingsForDialog(settings);
 
-      m_molColumn.update(specs[0], m_settings.colName);
-      m_appendColumn.setSelected(!m_settings.replaceColumn);
-      m_newColName.setEnabled(!m_settings.replaceColumn);
-      m_newColName.setText(m_settings.newColName);
+      _molColumn.update(specs[0], _settings.colName);
+      _appendColumn.setSelected(!_settings.replaceColumn);
+      _newColName.setEnabled(!_settings.replaceColumn);
+      _newColName.setText(_settings.newColName);
    }
 
    /**
@@ -103,9 +100,9 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      m_settings.colName = m_molColumn.getSelectedColumn();
-      m_settings.replaceColumn = !m_appendColumn.isSelected();
-      m_settings.newColName = m_newColName.getText();
-      m_settings.saveSettings(settings);
+      _settings.colName = _molColumn.getSelectedColumn();
+      _settings.replaceColumn = !_appendColumn.isSelected();
+      _settings.newColName = _newColName.getText();
+      _settings.saveSettings(settings);
    }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./indigo.png" type="Other">
+    <name>Scaffold Finder</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>This node finds the maximum common scaffold(s) of an arbitrary amount of the input molecules.</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+        
+        <option name="Molecules column">Column containing molecules</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="In-Port name">Indigo molecules</inPort>
+        <outPort index="0" name="Out-Port name">Query molecules that are the maximum common scaffold(s).</outPort>
+    </ports>    
+</knimeNode>

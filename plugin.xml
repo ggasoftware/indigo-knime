@@ -17,6 +17,7 @@
 	    <node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"/>
 		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory"/>
+		<node category-path="/chemistry/indigo" factory-class="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory"/>
 	</extension>
  	<extension point="org.knime.workbench.repository.categories">
 		<category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/chemistry">

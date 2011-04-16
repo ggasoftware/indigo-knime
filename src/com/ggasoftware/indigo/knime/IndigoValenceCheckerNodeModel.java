@@ -16,7 +16,7 @@ import org.knime.core.node.*;
  */
 public class IndigoValenceCheckerNodeModel extends NodeModel
 {
-   private final IndigoValenceCheckerSettings m_settings = new IndigoValenceCheckerSettings();
+   private final IndigoValenceCheckerSettings _settings = new IndigoValenceCheckerSettings();
 
    /**
     * Constructor for the node model.
@@ -29,13 +29,13 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
          throws InvalidSettingsException
    {
-      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
 
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
       DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(
-            m_settings.colName, StringCell.TYPE).createSpec();
+            _settings.colName, StringCell.TYPE).createSpec();
       DataColumnSpec[] invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
             .getNumColumns()];
 
@@ -69,7 +69,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
       BufferedDataContainer invalidOutputContainer = exec
             .createDataContainer(outputSpecs[1]);
 
-      int colIdx = inputTableSpec.findColumnIndex(m_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -150,7 +150,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      m_settings.saveSettings(settings);
+      _settings.saveSettings(settings);
 
    }
 
@@ -161,7 +161,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      m_settings.loadSettings(settings);
+      _settings.loadSettings(settings);
    }
 
    /**
