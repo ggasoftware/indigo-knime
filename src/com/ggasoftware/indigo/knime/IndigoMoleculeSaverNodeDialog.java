@@ -12,19 +12,13 @@ import org.knime.core.node.util.ColumnSelectionComboxBox;
 
 import com.ggasoftware.indigo.knime.IndigoMoleculeSaverSettings.Format;
 
-/**
- * <code>NodeDialog</code> for the "IndigoMoleculeSaver" Node.
- * 
- * @author GGA Software Services LLC
- */
 public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
 {
 
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
-   private final JComboBox _destFormat = new JComboBox(new Object[] {
-         Format.SDF, Format.Smiles, Format.CanonicalSmiles, Format.CML });
+         (Border) null, IndigoMolValue.class, IndigoQueryMolValue.class);
+   private JComboBox _destFormat;
    private final JCheckBox _appendColumn = new JCheckBox("Append Column");
    private final JTextField _newColName = new JTextField(20);
    private final IndigoMoleculeSaverSettings _settings = new IndigoMoleculeSaverSettings();
@@ -33,9 +27,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
     * New pane for configuring the IndigoMoleculeSaver node.
     */
    @SuppressWarnings("serial")
-   protected IndigoMoleculeSaverNodeDialog()
+   protected IndigoMoleculeSaverNodeDialog (boolean query)
    {
-
       JPanel p = new JPanel(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
@@ -58,6 +51,11 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(new JLabel("Destination format   "), c);
       c.gridx = 1;
+      if (query)
+         _destFormat = new JComboBox(new Object[] {Format.Mol, Format.Smiles});
+      else
+         _destFormat = new JComboBox(new Object[] {
+               Format.Mol, Format.Smiles, Format.CanonicalSmiles, Format.CML });
       p.add(_destFormat, c);
 
       _appendColumn.addChangeListener(new ChangeListener()
@@ -90,10 +88,10 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
          {
             super.getListCellRendererComponent(list, value, index, isSelected,
                   cellHasFocus);
-            if (value == Format.SDF)
+            if (value == Format.Mol)
             {
-               setIcon(SdfValue.UTILITY.getIcon());
-               setText("SDF");
+               setIcon(MolValue.UTILITY.getIcon());
+               setText("MOL");
             }
             else if (value == Format.Smiles)
             {

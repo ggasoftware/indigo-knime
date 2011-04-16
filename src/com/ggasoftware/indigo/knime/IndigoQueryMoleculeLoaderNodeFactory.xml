@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
 <knimeNode icon="./indigo.png" type="Manipulator">
-    <name>Molecule to Indigo</name>
+    <name>Query Molecule to Indigo</name>
     
     <shortDescription>
-        
     </shortDescription>
     
     <fullDescription>
         <intro><p>Converts the elements in one of the input table's columns into an internal
-        format (IndigoMolCell), which can then be rendered as molecule or used for further computations.
-        The target column must contain string representations of molecules (SDF, Smiles, CML).</p>
+        format (IndigoQueryMolCell), which can then be rendered as molecule or used for further computations.
+        The target column must contain string representations of molecules (SDF, Smiles, SMARTS).</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to parse and display structures.</p></intro>
         
         <option name="Molecule Column">The column that contains the molecules.</option>

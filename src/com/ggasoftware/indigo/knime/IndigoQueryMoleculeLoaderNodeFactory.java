@@ -1,16 +1,8 @@
 package com.ggasoftware.indigo.knime;
 
-import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
-import org.knime.core.node.NodeView;
+import org.knime.core.node.*;
 
-/**
- * <code>NodeFactory</code> for the "IndigoMoleculeLoader" Node.
- * 
- * 
- * @author
- */
-public class IndigoMoleculeLoaderNodeFactory extends
+public class IndigoQueryMoleculeLoaderNodeFactory extends
       NodeFactory<IndigoMoleculeLoaderNodeModel>
 {
 
@@ -20,7 +12,7 @@ public class IndigoMoleculeLoaderNodeFactory extends
    @Override
    public IndigoMoleculeLoaderNodeModel createNodeModel ()
    {
-      return new IndigoMoleculeLoaderNodeModel(false);
+      return new IndigoMoleculeLoaderNodeModel(true);
    }
 
    /**
@@ -57,7 +49,6 @@ public class IndigoMoleculeLoaderNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoMoleculeLoaderNodeDialog(false);
+      return new IndigoMoleculeLoaderNodeDialog(true);
    }
-
 }

@@ -4,23 +4,18 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
-/**
- * <code>NodeFactory</code> for the "IndigoMoleculeLoader" Node.
- * 
- * 
- * @author
- */
-public class IndigoMoleculeLoaderNodeFactory extends
-      NodeFactory<IndigoMoleculeLoaderNodeModel>
+
+public class IndigoQueryMoleculeSaverNodeFactory extends
+      NodeFactory<IndigoMoleculeSaverNodeModel>
 {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public IndigoMoleculeLoaderNodeModel createNodeModel ()
+   public IndigoMoleculeSaverNodeModel createNodeModel ()
    {
-      return new IndigoMoleculeLoaderNodeModel(false);
+      return new IndigoMoleculeSaverNodeModel(true);
    }
 
    /**
@@ -36,8 +31,8 @@ public class IndigoMoleculeLoaderNodeFactory extends
     * {@inheritDoc}
     */
    @Override
-   public NodeView<IndigoMoleculeLoaderNodeModel> createNodeView (
-         final int viewIndex, final IndigoMoleculeLoaderNodeModel nodeModel)
+   public NodeView<IndigoMoleculeSaverNodeModel> createNodeView (
+         final int viewIndex, final IndigoMoleculeSaverNodeModel nodeModel)
    {
       return null;
    }
@@ -57,7 +52,7 @@ public class IndigoMoleculeLoaderNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoMoleculeLoaderNodeDialog(false);
+      return new IndigoMoleculeSaverNodeDialog(true);
    }
 
 }

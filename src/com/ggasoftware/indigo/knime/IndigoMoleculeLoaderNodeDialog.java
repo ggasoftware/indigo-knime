@@ -4,8 +4,10 @@ import java.awt.*;
 import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
+import org.knime.chem.types.CMLValue;
 import org.knime.chem.types.MolValue;
 import org.knime.chem.types.SdfValue;
+import org.knime.chem.types.SmartsValue;
 import org.knime.chem.types.SmilesValue;
 
 import javax.swing.*;
@@ -19,11 +21,7 @@ import javax.swing.event.*;
  */
 public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
 {
-
-   @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _colName = new ColumnSelectionComboxBox(
-         (Border) null, SdfValue.class, MolValue.class, SmilesValue.class);
-
+   private ColumnSelectionComboxBox _colName;
    private final JCheckBox _treatXAsPseudoatom = new JCheckBox();
    private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox();
    private final JCheckBox _appendColumn = new JCheckBox("Append Column");
@@ -34,7 +32,8 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
     * New pane for configuring IndigoMoleculeLoader node dialog. This is just a
     * suggestion to demonstrate possible default dialog components.
     */
-   protected IndigoMoleculeLoaderNodeDialog()
+   @SuppressWarnings("unchecked")
+   protected IndigoMoleculeLoaderNodeDialog (boolean query)
    {
       super();
 
@@ -45,7 +44,18 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
       c.insets = new Insets(2, 2, 2, 2);
       c.gridx = 0;
       c.gridy = 0;
-      p.add(new JLabel("Molecule column   "), c);
+      if (query)
+      {
+         p.add(new JLabel("Query molecule column"), c);
+         _colName = new ColumnSelectionComboxBox(
+               (Border) null, SdfValue.class, MolValue.class, SmilesValue.class, SmartsValue.class);
+      }
+      else
+      {
+         p.add(new JLabel("Molecule column   "), c);
+         _colName = new ColumnSelectionComboxBox(
+               (Border) null, SdfValue.class, MolValue.class, SmilesValue.class, CMLValue.class);
+      }
       c.gridx = 1;
       p.add(_colName, c);
 
@@ -82,9 +92,7 @@ public class IndigoMoleculeLoaderNodeDialog extends NodeDialogPane
                }
             }
             else
-            {
                _newColName.setEnabled(false);
-            }
          }
       });
       _newColName.setEnabled(_appendColumn.isSelected());

@@ -2,6 +2,7 @@ package com.ggasoftware.indigo.knime;
 
 import java.io.IOException;
 
+import org.knime.chem.types.SmartsCell;
 import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
@@ -11,19 +12,15 @@ import com.ggasoftware.indigo.*;
 
 import java.io.File;
 
-/**
- * This is the model implementation of IndigoMoleculeLoader.
- * 
- * @author GGA Software Services LLC
- */
 public class IndigoMoleculeLoaderNodeModel extends NodeModel
 {
-
    private final IndigoMoleculeLoaderSettings _settings = new IndigoMoleculeLoaderSettings();
+   boolean _query;
 
-   protected IndigoMoleculeLoaderNodeModel()
+   protected IndigoMoleculeLoaderNodeModel (boolean query)
    {
       super(1, 2);
+      _query = query;
    }
 
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
@@ -42,26 +39,27 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
          newColIdx = colIdx;
       }
 
-      DataColumnSpec validOutputColumnSpec = new DataColumnSpecCreator(
-            newColName, IndigoMolCell.TYPE).createSpec();
-      DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(
-            newColName, StringCell.TYPE).createSpec();
+      DataType newtype;
+      
+      if (_query)
+         newtype = IndigoQueryMolCell.TYPE;
+      else
+         newtype = IndigoMolCell.TYPE;
+      
+      DataColumnSpec validOutputColumnSpec = new DataColumnSpecCreator(newColName, newtype).createSpec();
+      DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(newColName, StringCell.TYPE).createSpec();
 
       DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
       if (_settings.replaceColumn)
       {
-         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-               .getNumColumns()];
-         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-               .getNumColumns()];
+         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
+         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
       }
       else
       {
-         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-               .getNumColumns() + 1];
-         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
-               .getNumColumns() + 1];
+         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
+         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
       }
 
       for (int i = 0; i < inputTableSpec.getNumColumns(); i++)
@@ -97,7 +95,6 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-
       DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
@@ -113,9 +110,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
          throw new Exception("column not found");
 
       if (_settings.replaceColumn)
-      {
          newColIdx = colIdx;
-      }
 
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
@@ -143,18 +138,27 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
 
             try
             {
-               IndigoObject mol = indigo.loadMolecule(inputRow.getCell(colIdx)
-                     .toString());
-
+               DataCell molcell = inputRow.getCell(colIdx);
+               
                for (int i = 0; i < inputRow.getNumCells(); i++)
                {
                   if (_settings.replaceColumn && i == newColIdx)
-                     cells[i] = new IndigoMolCell(mol);
+                  {
+                     if (_query)
+                        cells[i] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType().equals(SmartsCell.TYPE)));
+                     else
+                        cells[i] = new IndigoMolCell(indigo.loadMolecule(molcell.toString()));
+                  }
                   else
                      cells[i] = inputRow.getCell(i);
                }
                if (!_settings.replaceColumn)
-                  cells[newColIdx] = new IndigoMolCell(mol);
+               {
+                  if (_query)
+                     cells[newColIdx] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType() == SmartsCell.TYPE));
+                  else
+                     cells[newColIdx] = new IndigoMolCell(indigo.loadMolecule(molcell.toString()));
+               }
 
                validOutputContainer.addRowToTable(new DefaultRow(key, cells));
             }

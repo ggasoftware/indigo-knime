@@ -47,24 +47,18 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    protected void setValue (final Object value)
    {
       if (value instanceof IndigoMolValue)
-      { // when used directly on CDKCell
          _object = ((IndigoMolValue) value).getIndigoObject();
-      }
+      if (value instanceof IndigoQueryMolValue)
+         _object = ((IndigoQueryMolValue) value).getIndigoObject();
       else if (value instanceof SmilesValue)
-      {
          _object = IndigoPlugin.getIndigo().loadMolecule(
                ((SmilesValue) value).getSmilesValue());
-      }
       else if (value instanceof MolValue)
-      {
          _object = IndigoPlugin.getIndigo().loadMolecule(
                ((MolValue) value).getMolValue());
-      }
       else if (value instanceof SdfValue)
-      {
          _object = IndigoPlugin.getIndigo().loadMolecule(
                ((SdfValue) value).getSdfValue());
-      }
    }
 
    /**

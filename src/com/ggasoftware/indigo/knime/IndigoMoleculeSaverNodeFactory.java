@@ -20,7 +20,7 @@ public class IndigoMoleculeSaverNodeFactory extends
    @Override
    public IndigoMoleculeSaverNodeModel createNodeModel ()
    {
-      return new IndigoMoleculeSaverNodeModel();
+      return new IndigoMoleculeSaverNodeModel(false);
    }
 
    /**
@@ -57,7 +57,7 @@ public class IndigoMoleculeSaverNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoMoleculeSaverNodeDialog();
+      return new IndigoMoleculeSaverNodeDialog(false);
    }
 
 }

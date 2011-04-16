@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
-<knimeNode icon="./indigo.png" type="Manipulator">
+<knimeNode icon="./indigo.png" type="Other">
     <name>Substructure Matcher</name>
-    
     <shortDescription>
         
     </shortDescription>
     
     <fullDescription>
         <intro>
-        <p>This node accepts a table with Indigo molecules and divides it into two sets, one with all
-           molecules that contain the specified query molecule as a substructure, the other with all molecules that do not contain it.</p>
+        <p>This node accepts a table with Indigo molecules, a table with a single query molecule, and divides the first table
+           into two sets, one with all rows that contain the specified query molecule as a substructure, the other with all
+           molecules that do not contain it.</p>
 		<p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p>        
         </intro>
-        <option name="Indigo column">The column that contains Indigo molecules</option>
-        <option name="Query file">File (usually a Molfile) to load the query from</option>
+        <option name="Molecules column">The column that contains Indigo molecules</option>
+        <option name="Query molecules column">The column that contains the query molecule</option>
     </fullDescription>
     
     <ports>
         <inPort index="0" name="Input data">Table containing Indigo molecules</inPort>
+        <inPort index="1" name="Input data">Table containing the query molecule</inPort>
         <outPort index="0" name="Matched">Rows with matched molecules</outPort>
         <outPort index="1" name="Unmatched">Rows with unmatched molecules</outPort>
     </ports>    

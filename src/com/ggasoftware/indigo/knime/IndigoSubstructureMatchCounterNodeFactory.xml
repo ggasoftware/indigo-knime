@@ -11,10 +11,9 @@
         <intro><p>This node counts the number of unique independent matches of a given query file in each molecule of the input table</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
         
-        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="Molecules column">The column that contains Indigo molecules.</option>
+        <option name="Query molecule column">The column that contains the query molecule.</option>
         <option name="New column">Name of the new column to append.</option>
-        <option name="Query file">File (usually a Molfile) to load the query from</option>
-        <option name="SMARTS">Specify the query as a SMARTS expression</option>
         <option name="Uniqueness"><ul><li>By atoms: "CCC" matches "C1CC1" once</li>
     								  <li>By bonds: "CCC" matches "C1CC1" three times</li>
     							      <li>None: "CCC" matches "C1CC1" six times</li></ul>
@@ -22,7 +21,8 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input structures">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Substructure match counters">The same as input, plus an extra column with match counters</outPort>
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
+        <inPort index="1" name="Query molecule">Table containing the query molecule</inPort>
+        <outPort index="0" name="Substructure match counters">The same as input molecules, plus an extra column with match counters</outPort>
     </ports>    
 </knimeNode>

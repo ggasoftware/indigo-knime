@@ -3,23 +3,18 @@ package com.ggasoftware.indigo.knime;
 import com.ggasoftware.indigo.*;
 import java.io.IOException;
 
-import org.knime.core.data.DataCellDataInput;
-import org.knime.core.data.DataCellDataOutput;
-import org.knime.core.data.DataCellSerializer;
-import org.knime.core.data.DataType;
-import org.knime.core.data.DataCell;
+import org.knime.core.data.*;
 import org.knime.core.node.NodeLogger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+@SuppressWarnings("serial")
 public class IndigoMolCell extends DataCell implements IndigoMolValue
 {
-   private static final long serialVersionUID = 4639666561132594069L;
-
    private static final NodeLogger LOGGER = NodeLogger
          .getLogger(IndigoMolCell.class);
 
-   private static class IndigoSerializer implements
+   private static class Serializer implements
          DataCellSerializer<IndigoMolCell>
    {
       /**
@@ -73,7 +68,7 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       }
    }
 
-   private static final DataCellSerializer<IndigoMolCell> SERIALIZER = new IndigoSerializer();
+   private static final DataCellSerializer<IndigoMolCell> SERIALIZER = new Serializer();
 
    public static final DataCellSerializer<IndigoMolCell> getCellSerializer ()
    {
@@ -83,7 +78,7 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
    private IndigoObject _object;
    public static final DataType TYPE = DataType.getType(IndigoMolCell.class);
 
-   public IndigoMolCell(IndigoObject obj)
+   public IndigoMolCell (IndigoObject obj)
    {
       _object = obj;
    }

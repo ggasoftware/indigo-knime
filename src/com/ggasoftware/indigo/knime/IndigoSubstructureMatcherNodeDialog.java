@@ -3,31 +3,20 @@ package com.ggasoftware.indigo.knime;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 
 import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
-/**
- * <code>NodeDialog</code> for the "IndigoSmartsMatcher" Node.
- * 
- * @author GGA Software Services LLC
- */
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
    private final IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
-
-   private final JRadioButton _buttonSmarts = new JRadioButton("SMARTS", true);
-   private final JRadioButton _buttonFile = new JRadioButton("Query file");
-   private final ButtonGroup _buttonGroup = new ButtonGroup();
-   private final FilesHistoryPanel _fileName = new FilesHistoryPanel(
-         "class com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeDialog",
-         "mol", "smi", "smiles");
-   private final JTextField _smarts = new JTextField(20);
+   @SuppressWarnings("unchecked")
+   private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
+         (Border) null, IndigoQueryMolValue.class);
 
    /**
     * New pane for configuring the IndigoSmartsMatcher node.
@@ -48,35 +37,11 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_molColumn, c);
 
-      _buttonGroup.add(_buttonFile);
-      _buttonGroup.add(_buttonSmarts);
-
       c.gridy++;
       c.gridx = 0;
-      p.add(_buttonSmarts, c);
+      p.add(new JLabel("Query molecule column"), c);
       c.gridx = 1;
-      p.add(_smarts, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_buttonFile, c);
-      c.gridx = 1;
-      p.add(_fileName, c);
-
-      _buttonSmarts.addChangeListener(new ChangeListener()
-      {
-         @Override
-         public void stateChanged (ChangeEvent e)
-         {
-            boolean b = _buttonSmarts.isSelected();
-
-            _smarts.setEnabled(b);
-            _fileName.setEnabled(!b);
-         }
-      });
-
-      _buttonSmarts.setSelected(true);
-      _fileName.setEnabled(false);
+      p.add(_molColumn2, c);
 
       addTab("Standard settings", p);
    }
@@ -87,25 +52,16 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    {
       _settings.loadSettingsForDialog(settings);
 
-      _fileName.setSelectedFile(_settings.queryFileName);
       _molColumn.update(specs[0], _settings.colName);
-      _smarts.setText(_settings.smarts);
-      _fileName.setSelectedFile(_settings.queryFileName);
-      if (_settings.loadFromFile)
-         _buttonFile.setSelected(true);
-      else
-         _buttonSmarts.setSelected(true);
+      _molColumn2.update(specs[1], _settings.colName2);
    }
 
    @Override
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.queryFileName = _fileName.getSelectedFile();
       _settings.colName = _molColumn.getSelectedColumn();
-      _settings.smarts = _smarts.getText();
-      _settings.loadFromFile = _buttonFile.isSelected();
-      _settings.smarts = _smarts.getText();
+      _settings.colName2 = _molColumn2.getSelectedColumn();
 
       _settings.saveSettings(settings);
    }

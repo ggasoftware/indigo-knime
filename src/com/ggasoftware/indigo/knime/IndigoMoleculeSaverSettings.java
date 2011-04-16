@@ -8,7 +8,7 @@ public class IndigoMoleculeSaverSettings
 {
    public enum Format
    {
-      SDF, Smiles, CanonicalSmiles, CML
+      Mol, Smiles, CanonicalSmiles, CML
    }
 
    public String colName = "Molecule";
@@ -45,7 +45,7 @@ public class IndigoMoleculeSaverSettings
       replaceColumn = settings.getBoolean("replaceColumn", true);
       newColName = settings.getString("newColName", "");
       destFormat = Format.valueOf(settings.getString("destFormat",
-            Format.SDF.name()));
+            Format.Mol.name()));
    }
 
    /**

@@ -19,12 +19,14 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
 {
    IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoSubstructureMatcherNodeModel.class);
+   
    /**
     * Constructor for the node model.
     */
    protected IndigoSubstructureMatcherNodeModel()
    {
-      super(1, 2);
+      super(2, 2);
    }
 
    /**
@@ -35,6 +37,7 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
          final ExecutionContext exec) throws Exception
    {
       DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec2 = inData[0].getDataTableSpec();
 
       BufferedDataContainer validOutputContainer = exec
             .createDataContainer(inputTableSpec);
@@ -46,6 +49,23 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
+      int colIdx2 = inputTableSpec2.findColumnIndex(_settings.colName2);
+
+      if (colIdx2 == -1)
+         throw new Exception("query column not found");
+      
+      IndigoObject query;
+      
+      {
+         CloseableRowIterator it = inData[1].iterator();
+         if (!it.hasNext())
+            throw new Exception("no query molecule found in the data source");
+         DataRow row = it.next();
+         query = ((IndigoQueryMolValue)row.getCell(colIdx2)).getIndigoObject();
+         if (it.hasNext())
+            LOGGER.warn("second data source contains more than one row; ignoring all others");
+      }
+      
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
@@ -53,23 +73,13 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
       {
          IndigoPlugin.lock();
 
-         IndigoObject query;
          Indigo indigo = IndigoPlugin.getIndigo();
-
-         if (_settings.loadFromFile)
-         {
-            query = indigo.loadQueryMoleculeFromFile(_settings.queryFileName);
-            query.aromatize();
-         }
-         else
-            query = indigo.loadSmarts(_settings.smarts);
 
          while (it.hasNext())
          {
             DataRow inputRow = it.next();
 
-            IndigoObject match = indigo.substructureMatcher(
-                  ((IndigoMolCell) (inputRow.getCell(colIdx)))
+            IndigoObject match = indigo.substructureMatcher(((IndigoMolCell) (inputRow.getCell(colIdx)))
                         .getIndigoObject()).match(query);
 
             if (match != null)
@@ -144,27 +154,10 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
       IndigoSubstructureMatcherSettings s = new IndigoSubstructureMatcherSettings();
       s.loadSettings(settings);
 
-      try
-      {
-         if (s.loadFromFile)
-         {
-            if (s.queryFileName == null || s.queryFileName.equals(""))
-               throw new InvalidSettingsException(
-                     "the query file name must be specified");
-            IndigoPlugin.getIndigo().loadQueryMoleculeFromFile(s.queryFileName);
-         }
-         else
-         {
-            if (s.smarts == null || s.smarts.equals(""))
-               throw new InvalidSettingsException(
-                     "the SMARTS expression must be specified");
-            IndigoPlugin.getIndigo().loadSmarts(s.smarts);
-         }
-      }
-      catch (IndigoException e)
-      {
-         throw new InvalidSettingsException(e.getMessage());
-      }
+      if (s.colName == null || s.colName.length() < 1)
+         throw new InvalidSettingsException("column name must be specified");
+      if (s.colName2 == null || s.colName2.length() < 1)
+         throw new InvalidSettingsException("query column name must be specified");
    }
 
    /**

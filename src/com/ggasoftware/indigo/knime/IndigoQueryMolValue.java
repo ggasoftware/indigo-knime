@@ -7,7 +7,7 @@ import org.knime.core.data.renderer.*;
 
 import com.ggasoftware.indigo.IndigoObject;
 
-public interface IndigoMolValue extends DataValue
+public interface IndigoQueryMolValue extends DataValue
 {
    IndigoObject getIndigoObject ();
 
@@ -42,8 +42,7 @@ public interface IndigoMolValue extends DataValue
             final DataColumnSpec spec)
       {
          return new DefaultDataValueRendererFamily(
-               new IndigoMolValueRenderer(), new MultiLineStringValueRenderer(
-                     "String"));
+               new IndigoMolValueRenderer(), new MultiLineStringValueRenderer("String"));
       }
    }
 }
