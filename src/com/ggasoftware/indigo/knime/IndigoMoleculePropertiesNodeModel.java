@@ -238,7 +238,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = spec.findColumnIndex(_settings.colName);
+      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName);
 
       if (colIdx == -1)
          throw new Exception("column not found");

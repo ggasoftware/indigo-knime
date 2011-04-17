@@ -19,7 +19,7 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
-   private final JComboBox _method = new JComboBox(new Object[] {Method.Exact});
+   private final JComboBox _method = new JComboBox(new Object[] {Method.Exact, Method.Approximate});
    private final JTextField _newColName = new JTextField(20);
 
    private final IndigoScaffoldFinderSettings _settings = new IndigoScaffoldFinderSettings();

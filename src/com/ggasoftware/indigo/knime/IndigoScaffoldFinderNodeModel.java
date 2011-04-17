@@ -22,7 +22,7 @@ public class IndigoScaffoldFinderNodeModel extends NodeModel
    {
       super(1, 1);
    }
-
+   
    /**
     * {@inheritDoc}
     */
@@ -79,7 +79,7 @@ public class IndigoScaffoldFinderNodeModel extends NodeModel
             DataCell[] cells = new DataCell[1];
             String molfile = scaf.molfile();
             cells[0] = new IndigoQueryMolCell(molfile, false);
-            outputContainer.addRowToTable(new DefaultRow("Row" + i, cells));
+            outputContainer.addRowToTable(new DefaultRow("Row" + i++, cells));
          }
       }
 

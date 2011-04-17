@@ -14,7 +14,7 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Indigo molecules</inPort>
-        <outPort index="0" name="Out-Port name">Query molecules that are the maximum common scaffold(s).</outPort>
+        <inPort index="0" name="Input data">Indigo molecules</inPort>
+        <outPort index="0" name="Scaffolds">Query molecules that are the maximum common scaffold(s).</outPort>
     </ports>    
 </knimeNode>
