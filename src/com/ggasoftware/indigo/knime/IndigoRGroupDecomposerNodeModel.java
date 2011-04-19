@@ -28,14 +28,14 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
 
    protected DataTableSpec calcDataTableSpec (DataTableSpec inSpec)
    {
-      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 9];
+      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + _settings.numRGroups];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      for (i = 1; i <=  9; i++)
+      for (i = 1; i <= _settings.numRGroups; i++)
          specs[inSpec.getNumColumns() + i - 1] =
             new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoQueryMolCell.TYPE).createSpec();
 
@@ -112,13 +112,13 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
       {
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + 9];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + _settings.numRGroups];
          int i;
 
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
 
-         for (i = 1; i <= 9; i++)
+         for (i = 1; i <= _settings.numRGroups; i++)
             cells[inputRow.getNumCells() + i - 1] =  DataType.getMissingCell();
          
          if (!deco_iter.hasNext())
@@ -136,7 +136,7 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
             {
                IndigoObject frag = frag_iter.next();
                int index = rg.index();
-               if (index >= 1 && index <= 9)
+               if (index >= 1 && index <= _settings.numRGroups)
                   cells[inputRow.getNumCells() + index - 1] = new IndigoQueryMolCell(frag.molfile(), false);
             }
          }
@@ -207,6 +207,8 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
          throw new InvalidSettingsException("query column name must be specified");
       if (s.newColPrefix == null || s.newColPrefix.length() < 1)
          throw new InvalidSettingsException("prefix must be specified");
+      if (s.numRGroups < 1 || s.numRGroups > 32)
+         throw new InvalidSettingsException("R-Groups number should be in range [1,32]");
    }
 
    /**

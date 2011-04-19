@@ -4,14 +4,11 @@ import org.knime.core.node.*;
 
 public class IndigoScaffoldFinderSettings
 {
-   public enum Method
-   {
-      Exact, Approximate
-   }
-   
    public String colName;
    public String newColName;
-   public Method method = Method.Exact;
+   public boolean tryExactMethod = true;
+   public int maxIterExact = -1;
+   public int maxIterApprox = -1;
 
    /**
     * Loads the settings from the given node settings object.
@@ -25,7 +22,9 @@ public class IndigoScaffoldFinderSettings
    {
       colName = settings.getString("colName");
       newColName = settings.getString("newColName");
-      method = Method.valueOf(settings.getString("method"));
+      tryExactMethod = settings.getBoolean("tryExactMethod");
+      maxIterExact = settings.getInt("maxIterExact");
+      maxIterApprox = settings.getInt("maxIterApprox");
    }
 
    /**
@@ -38,7 +37,9 @@ public class IndigoScaffoldFinderSettings
    {
       colName = settings.getString("colName", null);
       newColName = settings.getString("newColName", "Scaffold");
-      method = Method.valueOf(settings.getString("method", Method.Exact.name()));
+      tryExactMethod = settings.getBoolean("tryExactMethod", true);
+      maxIterExact = settings.getInt("maxIterExact", 50000);
+      maxIterApprox = settings.getInt("maxIterApprox", 10000);
    }
 
    /**
@@ -49,8 +50,14 @@ public class IndigoScaffoldFinderSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
-      settings.addString("newColName", newColName);
-      settings.addString("method", method.name());
+      if (colName != null)
+         settings.addString("colName", colName);
+      if (newColName != null)
+         settings.addString("newColName", newColName);
+      settings.addBoolean("tryExactMethod", tryExactMethod);
+      if (maxIterExact >= 0)
+         settings.addInt("maxIterExact", maxIterExact);
+      if (maxIterApprox >= 0)
+         settings.addInt("maxIterApprox", maxIterApprox);
    }
 }

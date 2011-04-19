@@ -7,9 +7,10 @@ import org.knime.core.node.NodeSettingsWO;
 public class IndigoRGroupDecomposerSettings
 {
    public String colName;
-   public String colName2;
+   public String colName2 ;
    public String newColPrefix;
-   public boolean aromatize;
+   public boolean aromatize = true;
+   public int numRGroups = 0;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -18,6 +19,7 @@ public class IndigoRGroupDecomposerSettings
       colName2 = settings.getString("colName2");
       newColPrefix = settings.getString("newColPrefix");
       aromatize = settings.getBoolean("aromatize");
+      numRGroups = settings.getInt("numRGroups");
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -26,13 +28,19 @@ public class IndigoRGroupDecomposerSettings
       colName2 = settings.getString("colName2", null);
       newColPrefix = settings.getString("newColPrefix", "R-Group #");
       aromatize = settings.getBoolean("aromatize", true);
+      numRGroups = settings.getInt("numRGroups", 9);
    }
 
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
-      settings.addString("colName2", colName2);
-      settings.addString("newColPrefix", newColPrefix);
+      if (colName != null)
+         settings.addString("colName", colName);
+      if (colName2 != null)
+         settings.addString("colName2", colName2);
+      if (newColPrefix != null)
+         settings.addString("newColPrefix", newColPrefix);
+      if (numRGroups > 0)
+         settings.addInt("numRGroups", numRGroups);
       settings.addBoolean("aromatize", aromatize);
    }
 }

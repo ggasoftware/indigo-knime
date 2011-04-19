@@ -6,12 +6,12 @@ import java.awt.Insets;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
-
-import com.ggasoftware.indigo.knime.IndigoScaffoldFinderSettings.Method;
 
 public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
 {
@@ -19,7 +19,10 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
-   private final JComboBox _method = new JComboBox(new Object[] {Method.Exact, Method.Approximate});
+   private final JCheckBox _tryExact = new JCheckBox("Try exact method");
+   private final JSpinner _exactIterations = new JSpinner();
+   private final JSpinner _approxIterations = new JSpinner();
+   
    private final JTextField _newColName = new JTextField(20);
 
    private final IndigoScaffoldFinderSettings _settings = new IndigoScaffoldFinderSettings();
@@ -51,9 +54,29 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
       
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("Method"), c);
+      p.add(_tryExact, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(new JLabel("Maximum number of iterations for exact method (0 to no limit)"), c);
       c.gridx = 1;
-      p.add(_method, c);
+      ((JSpinner.DefaultEditor)_exactIterations.getEditor()).getTextField().setColumns(8);
+      p.add(_exactIterations, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(new JLabel("Maximum number of iterations for approximate method"), c);
+      c.gridx = 1;
+      ((JSpinner.DefaultEditor)_approxIterations.getEditor()).getTextField().setColumns(8);
+      p.add(_approxIterations, c);
+      
+      _tryExact.addChangeListener(new ChangeListener() {
+         @Override
+         public void stateChanged (ChangeEvent arg0)
+         {
+            _exactIterations.setEnabled(_tryExact.isSelected());
+         }
+      });
       
       addTab("Standard settings", p);
    }
@@ -64,7 +87,9 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
    {
       _settings.colName = _molColumn.getSelectedColumn();
       _settings.newColName = _newColName.getText();
-      _settings.method= ((Method)_method.getSelectedItem());
+      _settings.tryExactMethod = _tryExact.isSelected();
+      _settings.maxIterApprox = ((Number)_approxIterations.getValue()).intValue();
+      _settings.maxIterExact = ((Number)_exactIterations.getValue()).intValue();
 
       _settings.saveSettings(settings);
    }
@@ -77,6 +102,10 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
 
       _molColumn.update(specs[0], _settings.colName);
       _newColName.setText(_settings.newColName);
-      _method.setSelectedItem(_settings.method);
+      _tryExact.setSelected(_settings.tryExactMethod);
+      _exactIterations.setValue(_settings.maxIterExact);
+      _approxIterations.setValue(_settings.maxIterApprox);
+      
+      _exactIterations.setEnabled(_tryExact.isSelected());
    }
 }

@@ -9,7 +9,6 @@ import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
 import com.ggasoftware.indigo.*;
-import com.ggasoftware.indigo.knime.IndigoScaffoldFinderSettings.Method;
 
 public class IndigoScaffoldFinderNodeModel extends NodeModel
 {
@@ -58,14 +57,23 @@ public class IndigoScaffoldFinderNodeModel extends NodeModel
             IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(colIdx);
             arr.arrayAdd(molcell.getIndigoObject());
          }
-         String param;
+         IndigoObject extracted = null;
          
-         if (_settings.method == Method.Exact)
-            param = "exact";
-         else
-            param = "approx";
+         if (_settings.tryExactMethod)
+         {
+            try
+            {
+               extracted = indigo.extractCommonScaffold(arr, "exact " + _settings.maxIterExact);
+            }
+            catch (IndigoException e)
+            {
+            }
+         }
          
-         scaffolds = indigo.extractCommonScaffold(arr, param).allScaffolds();
+         if (extracted == null)
+            extracted = indigo.extractCommonScaffold(arr, "approx " + _settings.maxIterApprox);
+         
+         scaffolds = extracted.allScaffolds();
       }
       finally
       {
