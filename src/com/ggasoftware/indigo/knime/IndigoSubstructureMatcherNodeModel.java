@@ -2,9 +2,12 @@ package com.ggasoftware.indigo.knime;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.*;
+import org.knime.core.data.def.DefaultRow;
 import org.knime.core.data.def.StringCell;
 import org.knime.core.node.*;
 
@@ -61,7 +64,7 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
       DataTableSpec inputTableSpec2 = inData[1].getDataTableSpec();
 
       BufferedDataContainer validOutputContainer = exec
-            .createDataContainer(inputTableSpec);
+            .createDataContainer(getDataTableSpec(inputTableSpec));
       BufferedDataContainer invalidOutputContainer = exec
             .createDataContainer(inputTableSpec);
 
@@ -96,21 +99,95 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
 
          Indigo indigo = IndigoPlugin.getIndigo();
 
+         boolean first = true;
+         int natoms_align = 0;
+         int[] atoms = null;
+         float[] xyz = null;
+         
          while (it.hasNext())
          {
             DataRow inputRow = it.next();
+            IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
 
-            IndigoObject match = indigo.substructureMatcher(((IndigoMolCell) (inputRow.getCell(colIdx)))
-                        .getIndigoObject()).match(query);
-
+            if (_settings.appendColumn)
+               target = target.clone();
+            
+            IndigoObject match = indigo.substructureMatcher(target).match(query);
+            
             if (match != null)
             {
-               validOutputContainer.addRowToTable(inputRow);
+               if (_settings.highlight)
+               {
+                  for (IndigoObject atom : query.iterateAtoms())
+                  {
+                     IndigoObject mapped = match.mapAtom(atom);
+                     if (mapped != null)
+                        mapped.highlight();
+                  }
+                  for (IndigoObject bond : query.iterateBonds())
+                  {
+                     IndigoObject mapped = match.mapBond(bond);
+                     if (mapped != null)
+                        mapped.highlight();
+                  }
+               }
+               
+               if (_settings.align)
+               {
+                  int i = 0;
+                  
+                  if (first)
+                  {
+                     for (IndigoObject atom : query.iterateAtoms())
+                     {
+                        IndigoObject mapped = match.mapAtom(atom);
+                        if (mapped != null && (mapped.isPseudoatom() || mapped.atomicNumber() != 1))
+                           natoms_align++;
+                     }
+                     if (natoms_align > 1)
+                     {
+                        atoms = new int[natoms_align];
+                        xyz = new float[natoms_align * 3];
+                        
+                        for (IndigoObject atom : query.iterateAtoms())
+                        {
+                           IndigoObject mapped = match.mapAtom(atom);
+                           if (mapped != null && (mapped.isPseudoatom() || mapped.atomicNumber() != 1))
+                              System.arraycopy(mapped.xyz(), 0, xyz, i++ * 3, 3);
+                        }
+                     }
+                     first = false;
+                  }
+                  else
+                  {
+                     if (atoms != null)
+                     {
+                        for (IndigoObject atom : query.iterateAtoms())
+                        {
+                           IndigoObject mapped = match.mapAtom(atom);
+                           if (mapped != null && (mapped.isPseudoatom() || mapped.atomicNumber() != 1))
+                              atoms[i++] = mapped.index();
+                        }
+      
+                        target.alignAtoms(atoms, xyz);
+                     }
+                  }               
+               }
+               if (_settings.appendColumn)
+               {
+                  DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+                  int i;
+                  
+                  for (i = 0; i < inputRow.getNumCells(); i++)
+                     cells[i] = inputRow.getCell(i);
+                  cells[i] = new IndigoMolCell(target);
+                  validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
+               }
+               else
+                  validOutputContainer.addRowToTable(inputRow);
             }
             else
-            {
                invalidOutputContainer.addRowToTable(inputRow);
-            }
             exec.checkCanceled();
             exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
                   "Adding row " + rowNumber);
