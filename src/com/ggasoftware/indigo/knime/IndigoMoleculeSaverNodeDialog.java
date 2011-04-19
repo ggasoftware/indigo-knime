@@ -1,6 +1,9 @@
 package com.ggasoftware.indigo.knime;
 
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
@@ -21,12 +24,12 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
    private JComboBox _destFormat;
    private final JCheckBox _appendColumn = new JCheckBox("Append Column");
    private final JTextField _newColName = new JTextField(20);
+   private final JCheckBox _generateCoords = new JCheckBox("Generate coordinates if needed");
    private final IndigoMoleculeSaverSettings _settings = new IndigoMoleculeSaverSettings();
 
    /**
     * New pane for configuring the IndigoMoleculeSaver node.
     */
-   @SuppressWarnings("serial")
    protected IndigoMoleculeSaverNodeDialog (boolean query)
    {
       JPanel p = new JPanel(new GridBagLayout());
@@ -57,7 +60,25 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
          _destFormat = new JComboBox(new Object[] {
                Format.Mol, Format.Smiles, Format.CanonicalSmiles, Format.CML });
       p.add(_destFormat, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_generateCoords, c);
+      _generateCoords.setSelected(true);
 
+      _destFormat.addItemListener(new ItemListener()
+      {
+         @Override
+         public void itemStateChanged (ItemEvent arg0)
+         {
+            Format selected = (Format)_destFormat.getSelectedItem(); 
+            if (selected == Format.CML || selected == Format.Mol)
+               _generateCoords.setEnabled(true);
+            else
+               _generateCoords.setEnabled(false);
+         }
+      });
+      
       _appendColumn.addChangeListener(new ChangeListener()
       {
          public void stateChanged (final ChangeEvent e)
@@ -79,44 +100,6 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       });
       _newColName.setEnabled(_appendColumn.isSelected());
 
-      _destFormat.setRenderer(new DefaultListCellRenderer()
-      {
-         @Override
-         public Component getListCellRendererComponent (final JList list,
-               final Object value, final int index, final boolean isSelected,
-               final boolean cellHasFocus)
-         {
-            super.getListCellRendererComponent(list, value, index, isSelected,
-                  cellHasFocus);
-            if (value == Format.Mol)
-            {
-               setIcon(MolValue.UTILITY.getIcon());
-               setText("MOL");
-            }
-            else if (value == Format.Smiles)
-            {
-               setIcon(SmilesValue.UTILITY.getIcon());
-               setText("SMILES");
-            }
-            else if (value == Format.CanonicalSmiles)
-            {
-               setIcon(SmilesValue.UTILITY.getIcon());
-               setText("Canonical SMILES");
-            }
-            else if (value == Format.CML)
-            {
-               setIcon(CMLValue.UTILITY.getIcon());
-               setText("CML");
-            }
-            else
-            {
-               setIcon(null);
-               setText("");
-            }
-            return this;
-         }
-      });
-
       addTab("Standard settings", p);
    }
 
@@ -134,6 +117,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       _newColName.setEnabled(!_settings.replaceColumn);
       _newColName.setText(_settings.newColName);
       _destFormat.setSelectedItem(_settings.destFormat);
+      _generateCoords.setSelected(_settings.generateCoords);
    }
 
    /**
@@ -146,7 +130,8 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       _settings.colName = _molColumn.getSelectedColumn();
       _settings.replaceColumn = !_appendColumn.isSelected();
       _settings.newColName = _newColName.getText();
-      _settings.destFormat = ((Format) _destFormat.getSelectedItem());
+      _settings.destFormat = ((Format)_destFormat.getSelectedItem());
+      _settings.generateCoords = _generateCoords.isSelected();
       _settings.saveSettings(settings);
    }
 }

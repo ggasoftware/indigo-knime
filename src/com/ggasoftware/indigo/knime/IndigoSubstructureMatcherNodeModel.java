@@ -2,13 +2,10 @@ package com.ggasoftware.indigo.knime;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.data.def.DefaultRow;
-import org.knime.core.data.def.StringCell;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;

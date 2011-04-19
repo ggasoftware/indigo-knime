@@ -11,10 +11,11 @@ public class IndigoMoleculeSaverSettings
       Mol, Smiles, CanonicalSmiles, CML
    }
 
-   public String colName = "Molecule";
+   public String colName;
    public Format destFormat = Format.Smiles;
    public boolean replaceColumn = true;
    public String newColName;
+   public boolean generateCoords = true;
 
    /**
     * Loads the settings from the given node settings object.
@@ -31,6 +32,7 @@ public class IndigoMoleculeSaverSettings
       replaceColumn = settings.getBoolean("replaceColumn");
       newColName = settings.getString("newColName");
       destFormat = Format.valueOf(settings.getString("destFormat"));
+      generateCoords = settings.getBoolean("generateCoords");
    }
 
    /**
@@ -44,8 +46,8 @@ public class IndigoMoleculeSaverSettings
       colName = settings.getString("colName", null);
       replaceColumn = settings.getBoolean("replaceColumn", true);
       newColName = settings.getString("newColName", "");
-      destFormat = Format.valueOf(settings.getString("destFormat",
-            Format.Mol.name()));
+      destFormat = Format.valueOf(settings.getString("destFormat", Format.Mol.name()));
+      generateCoords = settings.getBoolean("generateCoords", true);
    }
 
    /**
@@ -56,9 +58,12 @@ public class IndigoMoleculeSaverSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
+      if (colName != null)
+         settings.addString("colName", colName);
       settings.addBoolean("replaceColumn", replaceColumn);
-      settings.addString("newColName", newColName);
+      if (newColName != null)
+         settings.addString("newColName", newColName);
       settings.addString("destFormat", destFormat.name());
+      settings.addBoolean("generateCoords", generateCoords);
    }
 }

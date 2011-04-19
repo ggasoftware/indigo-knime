@@ -108,6 +108,14 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
             try
             {
                IndigoPlugin.lock();
+               
+               if (_settings.destFormat == Format.Mol || _settings.destFormat == Format.CML)
+                  if (_settings.generateCoords && !io.hasCoord())
+                  {
+                     io = io.clone();
+                     io.layout();
+                  }
+               
                if (_settings.destFormat == Format.Mol)
                   return MolCellFactory.create(io.molfile());
                if (_settings.destFormat == Format.Smiles)
