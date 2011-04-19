@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.*;
+import org.knime.core.data.def.StringCell;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
@@ -28,7 +29,27 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
    {
       super(2, 2);
    }
+   
+   protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
+   {
+      DataColumnSpec[] specs;
+      
+      if (_settings.appendColumn)
+         specs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
+      else
+         specs = new DataColumnSpec[inputTableSpec.getNumColumns()];
 
+      int i;
+      
+      for (i = 0; i < inputTableSpec.getNumColumns(); i++)
+         specs[i] = inputTableSpec.getColumnSpec(i);
+      
+      if (_settings.appendColumn)
+         specs[i] = new DataColumnSpecCreator(_settings.newColName, IndigoMolCell.TYPE).createSpec();
+      
+      return new DataTableSpec(specs);
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -37,7 +58,7 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
          final ExecutionContext exec) throws Exception
    {
       DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
-      DataTableSpec inputTableSpec2 = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec2 = inData[1].getDataTableSpec();
 
       BufferedDataContainer validOutputContainer = exec
             .createDataContainer(inputTableSpec);
@@ -122,7 +143,7 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      return new DataTableSpec[] { inSpecs[0], inSpecs[0] };
+      return new DataTableSpec[] { getDataTableSpec(inSpecs[0]), inSpecs[0] };
    }
 
    /**
@@ -158,6 +179,10 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
          throw new InvalidSettingsException("column name must be specified");
       if (s.colName2 == null || s.colName2.length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
+      if (s.appendColumn && (s.newColName == null || s.newColName.length() < 1))
+         throw new InvalidSettingsException("new column name must be specified");
+      if (s.appendColumn && !s.highlight && !s.align)
+         throw new InvalidSettingsException("without highlighting or alignment, appending new column makes no sense");
    }
 
    /**

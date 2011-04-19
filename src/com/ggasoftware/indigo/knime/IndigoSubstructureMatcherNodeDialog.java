@@ -3,6 +3,8 @@ package com.ggasoftware.indigo.knime;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.knime.core.data.*;
 import org.knime.core.node.*;
@@ -17,7 +19,29 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
+   private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
+   private final JCheckBox _align = new JCheckBox("Align matched structures");
+   private final JCheckBox _appendColumn = new JCheckBox("Append column");
+   private final JTextField _newColName = new JTextField(20);
 
+   private final ChangeListener _changeListener = new ChangeListener() {
+      public void stateChanged (ChangeEvent e)
+      {
+         boolean enabled = _highlight.isSelected() || _align.isSelected();
+         _newColName.setEnabled(enabled);
+         _appendColumn.setEnabled(enabled);
+         
+         if (!enabled)
+            _appendColumn.setSelected(false);
+         
+         if (_appendColumn.isEnabled())
+            _newColName.setEnabled(_appendColumn.isSelected());
+         
+         if (_newColName.isEnabled() && _newColName.getText().length() < 1)
+            _newColName.setText(_molColumn.getSelectedColumn() + " (matched)");
+      }
+   };
+   
    /**
     * New pane for configuring the IndigoSmartsMatcher node.
     */
@@ -43,6 +67,29 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_molColumn2, c);
 
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_highlight, c);
+
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_align, c);
+      
+      _align.addChangeListener(_changeListener);
+      _highlight.addChangeListener(_changeListener);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_appendColumn, c);
+      c.gridx = 1;
+      p.add(_newColName, c);
+      
+      _appendColumn.addChangeListener(_changeListener);
+      _align.setSelected(false);
+      _highlight.setSelected(false);
+      _appendColumn.setEnabled(false);
+      _newColName.setEnabled(false);
+      
       addTab("Standard settings", p);
    }
 
@@ -54,6 +101,10 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 
       _molColumn.update(specs[0], _settings.colName);
       _molColumn2.update(specs[1], _settings.colName2);
+      _newColName.setText(_settings.newColName);
+      _align.setSelected(_settings.align);
+      _highlight.setSelected(_settings.highlight);
+      _appendColumn.setSelected(_settings.appendColumn);
    }
 
    @Override
@@ -62,6 +113,10 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    {
       _settings.colName = _molColumn.getSelectedColumn();
       _settings.colName2 = _molColumn2.getSelectedColumn();
+      _settings.appendColumn = _appendColumn.isSelected();
+      _settings.highlight = _highlight.isSelected();
+      _settings.align = _align.isSelected();
+      _settings.newColName = _newColName.getText();
 
       _settings.saveSettings(settings);
    }
