@@ -1,3 +1,17 @@
+/****************************************************************************
+ * Copyright (C) 2011 GGA Software Services LLC
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 3 as published by the Free Software
+ * Foundation.
+ *
+ * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ ***************************************************************************/
+
 package com.ggasoftware.indigo.knime;
 
 import java.io.File;
@@ -8,12 +22,6 @@ import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
 
-/**
- * This is the model implementation of IndigoValenceChecker.
- * 
- * 
- * @author GGA Software Services LLC
- */
 public class IndigoValenceCheckerNodeModel extends NodeModel
 {
    private final IndigoValenceCheckerSettings _settings = new IndigoValenceCheckerSettings();
@@ -151,7 +159,6 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
       _settings.saveSettings(settings);
-
    }
 
    /**

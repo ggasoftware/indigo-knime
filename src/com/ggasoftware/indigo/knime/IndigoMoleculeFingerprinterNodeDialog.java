@@ -1,3 +1,17 @@
+/****************************************************************************
+ * Copyright (C) 2011 GGA Software Services LLC
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 3 as published by the Free Software
+ * Foundation.
+ *
+ * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ ***************************************************************************/
+
 package com.ggasoftware.indigo.knime;
 
 import java.awt.*;
@@ -10,19 +24,6 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
-
-
-/**
- * <code>NodeDialog</code> for the "IndigoMoleculeFingerprinter" Node.
- * 
- * 
- * This node dialog derives from {@link DefaultNodeSettingsPane} which allows
- * creation of a simple dialog with standard components. If you need a more
- * complex dialog please derive directly from
- * {@link org.knime.core.node.NodeDialogPane}.
- * 
- * @author
- */
 public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
 {
    @SuppressWarnings("unchecked")
