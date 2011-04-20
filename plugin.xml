@@ -28,7 +28,7 @@
  		<initializer class="com.ggasoftware.indigo.knime.IndigoPreferenceInitializer"/>
  	</extension>
  	<extension point="org.eclipse.ui.preferencePages">
- 		<page category="org.knime.chem.preferences" class="com.ggasoftware.indigo.knime.IndigoPreferencePage" id="com.ggasoftware.indigo.knime.preferences" name="Indigo"/>
+		<page category="org.knime.chem.preferences" class="com.ggasoftware.indigo.knime.IndigoPreferencePage" id="com.ggasoftware.indigo.knime.preferences" name="Indigo"/>
  	</extension>
  	<extension point="org.knime.product.splashExtension">
  		<splashExtension icon="src/com/ggasoftware/indigo/knime/indigo-splash.png" id="indigo" tooltip="Indigo" />
