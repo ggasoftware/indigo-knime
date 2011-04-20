@@ -18,7 +18,7 @@ import org.knime.core.node.*;
 
 public class IndigoMoleculeFingerprinterSettings
 {
-   public int fpSizeQWords;
+   public int fpSizeQWords = 8;
    public String colName;
    public String newColName;
 
