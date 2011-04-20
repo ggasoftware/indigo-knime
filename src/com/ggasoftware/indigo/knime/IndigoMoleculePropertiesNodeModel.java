@@ -6,6 +6,7 @@ import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
+
 import com.ggasoftware.indigo.*;
 import java.io.*;
 import java.util.*;
@@ -211,8 +212,11 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
       super(1, 1);
    }
 
-   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
+   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
    {
+      if (_settings.selectedProps == null)
+         throw new InvalidSettingsException("properties not selected");
+      
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns()
             + _settings.selectedProps.length];
 
@@ -312,7 +316,6 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-
       _settings.loadSettings(settings);
    }
 

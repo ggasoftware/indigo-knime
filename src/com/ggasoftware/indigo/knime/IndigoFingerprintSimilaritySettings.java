@@ -13,8 +13,8 @@ public class IndigoFingerprintSimilaritySettings
    public String colName2;
    public String newColName;
    public Metric metric;
-   public float tverskyAlpha;
-   public float tverskyBeta;
+   public float tverskyAlpha = 0.5f;
+   public float tverskyBeta = 0.5f;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException

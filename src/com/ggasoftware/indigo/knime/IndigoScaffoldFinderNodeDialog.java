@@ -65,7 +65,7 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
       
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("Maximum number of iterations for approximate method"), c);
+      p.add(new JLabel("Number of iterations for approximate method"), c);
       c.gridx = 1;
       ((JSpinner.DefaultEditor)_approxIterations.getEditor()).getTextField().setColumns(8);
       p.add(_approxIterations, c);

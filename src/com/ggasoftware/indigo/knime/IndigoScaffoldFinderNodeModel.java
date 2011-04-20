@@ -8,6 +8,7 @@ import org.knime.core.data.*;
 import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
+
 import com.ggasoftware.indigo.*;
 
 public class IndigoScaffoldFinderNodeModel extends NodeModel
@@ -110,6 +111,8 @@ public class IndigoScaffoldFinderNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      if (_settings.newColName == null || _settings.newColName.length() < 1)
+         throw new InvalidSettingsException("New column name must be specified");
       DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName, IndigoQueryMolCell.TYPE).createSpec();
       return new DataTableSpec[] { new DataTableSpec(spec) };
    }

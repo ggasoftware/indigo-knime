@@ -138,6 +138,8 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
                int index = rg.index();
                if (index >= 1 && index <= _settings.numRGroups)
                   cells[inputRow.getNumCells() + index - 1] = new IndigoQueryMolCell(frag.molfile(), false);
+               else
+                  LOGGER.warn("rgroup index " + index + "is out of range for the given settings");
             }
          }
          outputContainer.addRowToTable(new DefaultRow(key, cells));

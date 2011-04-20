@@ -32,6 +32,9 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
+      if (_settings.newColName == null || _settings.newColName.length() < 1)
+         throw new InvalidSettingsException("New column name must be specified");
+      
       DataColumnSpec[] specs;
       
       if (_settings.appendColumn)

@@ -43,7 +43,9 @@ public class IndigoMoleculePropertiesSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
-      settings.addStringArray("selectedProps", selectedProps);
+      if (colName != null)
+         settings.addString("colName", colName);
+      if (selectedProps != null)
+         settings.addStringArray("selectedProps", selectedProps);
    }
 }

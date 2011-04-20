@@ -105,10 +105,13 @@ public class IndigoMoleculeFingerprinterNodeModel extends NodeModel
    {
    }
 
-   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
+   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
    {
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
 
+      if (_settings.newColName == null || _settings.newColName.length() < 1)
+         throw new InvalidSettingsException("No new column name specified");
+      
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)

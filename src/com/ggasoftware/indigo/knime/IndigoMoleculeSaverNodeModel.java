@@ -221,33 +221,23 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
             if (cs.getType().isCompatible(cls))
             {
                if (_settings.colName != null)
-               {
                   setWarningMessage("Selected column '" + _settings.colName
                         + "' as Indigo column");
-               }
                else
-               {
                   _settings.colName = cs.getName();
-               }
             }
          }
          if (_settings.colName == null)
-         {
             throw new InvalidSettingsException("No Indigo column in input table");
-         }
       }
       else
       {
          if (!inSpecs[0].containsName(_settings.colName))
-         {
             throw new InvalidSettingsException("Column '" + _settings.colName
                   + "' does not exist in input table");
-         }
          if (!inSpecs[0].getColumnSpec(_settings.colName).getType().isCompatible(cls))
-         {
             throw new InvalidSettingsException("Column '" + _settings.colName
                   + "' does not contain Indigo molecules");
-         }
       }
 
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };

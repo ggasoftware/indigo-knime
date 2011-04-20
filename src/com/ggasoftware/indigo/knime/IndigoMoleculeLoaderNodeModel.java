@@ -26,6 +26,11 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
          throws InvalidSettingsException
    {
+      if (_settings.colName == null || _settings.colName.length() < 1)
+         throw new InvalidSettingsException("Column name not specified");
+      if (_settings.newColName == null || _settings.newColName.length() < 1)
+         throw new InvalidSettingsException("No new column name specified");
+      
       String newColName = _settings.newColName;
       int newColIdx = inputTableSpec.getNumColumns();
       int colIdx = inputTableSpec.findColumnIndex(_settings.colName);

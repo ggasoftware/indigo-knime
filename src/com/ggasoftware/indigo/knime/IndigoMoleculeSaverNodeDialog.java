@@ -22,7 +22,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class, IndigoQueryMolValue.class);
    private JComboBox _destFormat;
-   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
    private final JCheckBox _generateCoords = new JCheckBox("Generate coordinates if needed");
    private final IndigoMoleculeSaverSettings _settings = new IndigoMoleculeSaverSettings();

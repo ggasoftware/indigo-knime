@@ -70,16 +70,19 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
       _alpha.setColumns(3);
       _beta.setColumns(3);
 
-      _metricsPanel.add(_metrics);
-      _metricsPanel.add(_alphaLabel);
-      _metricsPanel.add(_alpha);
-      _metricsPanel.add(_betaLabel);
-      _metricsPanel.add(_beta);
-
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Metric"), c);
       c.gridx = 1;
+      p.add(_metrics, c);
+      c.gridy++;
+      c.gridx = 0;
+      p.add(new JLabel(), c);
+      c.gridx = 1;
+      _metricsPanel.add(_alphaLabel);
+      _metricsPanel.add(_alpha);
+      _metricsPanel.add(_betaLabel);
+      _metricsPanel.add(_beta);
       p.add(_metricsPanel, c);
 
       addTab("Standard settings", p);

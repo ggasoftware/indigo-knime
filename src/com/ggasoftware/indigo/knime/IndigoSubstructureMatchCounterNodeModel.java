@@ -107,8 +107,11 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    {
    }
 
-   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec)
+   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
    {
+      if (_settings.newColName == null || _settings.newColName.length() < 1)
+         throw new InvalidSettingsException("New column name must be specified");
+      
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
 
       int i;
