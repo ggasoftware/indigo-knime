@@ -42,8 +42,9 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    {
       if (_settings.colName == null || _settings.colName.length() < 1)
          throw new InvalidSettingsException("Column name not specified");
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
-         throw new InvalidSettingsException("No new column name specified");
+      if (!_settings.replaceColumn)
+         if (_settings.newColName == null || _settings.newColName.length() < 1)
+            throw new InvalidSettingsException("No new column name specified");
       
       String newColName = _settings.newColName;
       int newColIdx = inputTableSpec.getNumColumns();
@@ -237,7 +238,6 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-
       _settings.saveSettings(settings);
    }
 
@@ -258,14 +258,11 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected void validateSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-
       IndigoMoleculeLoaderSettings s = new IndigoMoleculeLoaderSettings();
       s.loadSettings(settings);
-      if (!s.replaceColumn
-            && ((s.newColName == null) || (s.newColName.length() < 1)))
-      {
-         throw new InvalidSettingsException("No name for new column given");
-      }
+      if (!s.replaceColumn)
+         if (s.newColName == null || s.newColName.length() < 1)
+            throw new InvalidSettingsException("No name for new column given");
    }
 
    /**

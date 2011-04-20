@@ -20,7 +20,7 @@ public class IndigoMoleculeLoaderSettings
 {
    public String colName;
    public boolean replaceColumn = true;
-   public String newColName = "";
+   public String newColName;
    public boolean treatXAsPseudoatom = true;
    public boolean ignoreStereochemistryErrors = true;
 
@@ -53,10 +53,9 @@ public class IndigoMoleculeLoaderSettings
    {
       colName = settings.getString("colName", null);
       replaceColumn = settings.getBoolean("replaceColumn", true);
-      newColName = settings.getString("newColName", "");
+      newColName = settings.getString("newColName", null);
       treatXAsPseudoatom = settings.getBoolean("treatXAsPseudoatom", true);
-      ignoreStereochemistryErrors = settings.getBoolean(
-            "ignoreStereochemistryErrors", true);
+      ignoreStereochemistryErrors = settings.getBoolean("ignoreStereochemistryErrors", true);
    }
 
    /**
@@ -67,9 +66,11 @@ public class IndigoMoleculeLoaderSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
+      if (colName != null)
+         settings.addString("colName", colName);
       settings.addBoolean("replaceColumn", replaceColumn);
-      settings.addString("newColName", newColName);
+      if (newColName != null)
+         settings.addString("newColName", newColName);
       settings.addBoolean("treatXAsPseudoatom", treatXAsPseudoatom);
       settings.addBoolean("ignoreStereochemistryErrors",
             ignoreStereochemistryErrors);
