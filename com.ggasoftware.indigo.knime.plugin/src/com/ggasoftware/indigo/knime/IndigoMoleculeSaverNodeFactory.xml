@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./indigo.png" type="Manipulator">
+    <name>Indigo to Molecule</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>Converts the Indigo molecules in one of the input table's columns into various string representations (SDF, SMILES, CML).</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+        
+        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="Append column">Appends a new column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+        <option name="Destination format">Select the destination format here (Molfile, SMILES, Canonical SMILES, CML). Canonical SMILES implies
+        automatic aromatization of the structures.</option>
+        <option name="Generate coordinates if needed">Applicable only when the output format is Molfile or CML</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input data">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Converted results">Table with the molecules' converted string representations </outPort>
+    </ports>    
+</knimeNode>

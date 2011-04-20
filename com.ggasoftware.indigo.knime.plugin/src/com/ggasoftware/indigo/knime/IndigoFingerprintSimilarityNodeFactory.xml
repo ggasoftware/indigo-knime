@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="./indigo.png" type="Other">
+    <name>Fingerprint Similarity</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        <p>This node calculates the values of structural similarity of input fingerprints against a given template fingerprint.</p>
+        </intro>
+        
+        <option name="Fingerprints column">The column that contains the fingerprints.</option>
+        <option name="Template fingerprint column">The column that contains a single template fingerprint.</option>
+        <option name="New column">Name of the new column that contains similarity values.</option>
+        <option name="Metric">Metric for similarity computation.</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input fingerprints">Table containing fingerprints</inPort>
+        <inPort index="1" name="Template fingerprint">Table containing a single template fingerprint</inPort>
+        <outPort index="0" name="Similarity values">The same as input fingerprints, plus an extra column with similarity values</outPort>
+    </ports>    
+</knimeNode>
