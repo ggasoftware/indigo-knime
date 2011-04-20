@@ -24,12 +24,11 @@ import javax.swing.border.*;
 
 public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
 {
-
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox m_molColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
-   IndigoValenceCheckerSettings m_settings = new IndigoValenceCheckerSettings();
+   IndigoValenceCheckerSettings _settings = new IndigoValenceCheckerSettings();
 
    protected IndigoValenceCheckerNodeDialog()
    {
@@ -45,7 +44,7 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
       c.gridy = 0;
       p.add(new JLabel("Indigo column   "), c);
       c.gridx = 1;
-      p.add(m_molColumn, c);
+      p.add(_molColumn, c);
 
       addTab("Standard settings", p);
    }
@@ -57,9 +56,9 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      m_settings.loadSettingsForDialog(settings);
+      _settings.loadSettingsForDialog(settings);
 
-      m_molColumn.update(specs[0], m_settings.colName);
+      _molColumn.update(specs[0], _settings.colName);
    }
 
    /**
@@ -69,7 +68,7 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      m_settings.colName = m_molColumn.getSelectedColumn();
-      m_settings.saveSettings(settings);
+      _settings.colName = _molColumn.getSelectedColumn();
+      _settings.saveSettings(settings);
    }
 }
