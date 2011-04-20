@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Indigo extensions for KNIME Workbench
-Bundle-SymbolicName: com.ggasoftware.indigo.knime;singleton:=true
+Bundle-SymbolicName: com.ggasoftware.indigo.knime.plugin;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: com.ggasoftware.indigo.knime.jar,lib/indigo.jar,lib/indigo-renderer.jar,lib/jna.jar
 Bundle-Vendor: GGA Software Services LLC
