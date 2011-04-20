@@ -172,12 +172,13 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
          }
       });
 
-      // TODO: Hydrogen count
-      /*
-       * calculators.put("Hydrogen count", new IntPropertyCalculator () { public
-       * DataCell calculate (IndigoObject io) { return new
-       * IntCell(io.countAtoms() - io.countHeavyAtoms()); }});
-       */
+      calculators.put("Hydrogen count", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countHydrogens());
+         }
+      });
 
       calculators.put("Molecular weight", new DoublePropertyCalculator()
       {
@@ -298,9 +299,6 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
    @Override
    protected void reset ()
    {
-      // TODO Code executed on reset.
-      // Models build during execute are cleared here.
-      // Also data handled in load/saveInternals will be erased here.
    }
 
    /**
