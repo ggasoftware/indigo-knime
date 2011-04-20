@@ -22,9 +22,9 @@ public class IndigoRGroupDecomposerSettings
 {
    public String colName;
    public String colName2 ;
-   public String newColPrefix;
+   public String newColPrefix = "R-Group #";
    public boolean aromatize = true;
-   public int numRGroups = 0;
+   public int numRGroups = 6;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -42,7 +42,7 @@ public class IndigoRGroupDecomposerSettings
       colName2 = settings.getString("colName2", null);
       newColPrefix = settings.getString("newColPrefix", "R-Group #");
       aromatize = settings.getBoolean("aromatize", true);
-      numRGroups = settings.getInt("numRGroups", 9);
+      numRGroups = settings.getInt("numRGroups", 6);
    }
 
    public void saveSettings (final NodeSettingsWO settings)

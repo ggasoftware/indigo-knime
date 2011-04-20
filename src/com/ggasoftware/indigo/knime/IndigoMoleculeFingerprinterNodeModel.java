@@ -31,7 +31,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 
-public class IndigoMoleculeFingerprinterNodeModel extends NodeModel
+public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
 {
 
    private final IndigoMoleculeFingerprinterSettings _settings = new IndigoMoleculeFingerprinterSettings();
@@ -137,6 +137,9 @@ public class IndigoMoleculeFingerprinterNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      if (_settings.newColName == null)
+         _settings.newColName = _settings.colName + " (fingerprint)";
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 

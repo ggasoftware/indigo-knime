@@ -25,8 +25,8 @@ public class IndigoFingerprintSimilaritySettings
 
    public String colName;
    public String colName2;
-   public String newColName;
-   public Metric metric;
+   public String newColName = "similarity";
+   public Metric metric = Metric.Tanimoto;
    public float tverskyAlpha = 0.5f;
    public float tverskyBeta = 0.5f;
 

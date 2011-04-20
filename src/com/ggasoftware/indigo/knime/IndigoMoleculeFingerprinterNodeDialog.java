@@ -16,7 +16,6 @@ package com.ggasoftware.indigo.knime;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -31,7 +30,7 @@ public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
          (Border) null, IndigoMolValue.class);
    private final JTextField _newColName = new JTextField(16);
 
-   private final JFormattedTextField _size = new JFormattedTextField(NumberFormat.getIntegerInstance());
+   private final JSpinner _size = new JSpinner(new SpinnerNumberModel(8, 1, 1000000, 1));
    private final IndigoMoleculeFingerprinterSettings _settings = new IndigoMoleculeFingerprinterSettings();
    
    /**
@@ -62,7 +61,7 @@ public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(new JLabel("Fingerprint size in qwords:"), c);
       c.gridx = 1;
-      _size.setColumns(3);
+      ((JSpinner.DefaultEditor)_size.getEditor()).getTextField().setColumns(2);
       p.add(_size, c);
 
       _molColumn.addItemListener(new ItemListener() {

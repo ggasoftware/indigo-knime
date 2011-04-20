@@ -30,7 +30,7 @@ public class IndigoSubstructureMatcherSettings
    {
       colName = settings.getString("colName");
       colName2 = settings.getString("colName2");
-      newColName = settings.getString("newColName");
+      newColName = settings.getString("newColName", null);
       align = settings.getBoolean("align");
       highlight = settings.getBoolean("highlight");
       appendColumn = settings.getBoolean("appendColumn");

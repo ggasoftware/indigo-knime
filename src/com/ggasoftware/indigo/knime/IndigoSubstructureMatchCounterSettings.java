@@ -25,8 +25,8 @@ public class IndigoSubstructureMatchCounterSettings
 
    public String colName;
    public String colName2;
-   public String newColName;
-   Uniqueness uniqueness;
+   public String newColName = "Number of matches";
+   Uniqueness uniqueness = Uniqueness.Atoms;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException

@@ -19,7 +19,7 @@ import org.knime.core.node.*;
 public class IndigoScaffoldFinderSettings
 {
    public String colName;
-   public String newColName;
+   public String newColName = "Scaffold";
    public boolean tryExactMethod = true;
    public int maxIterExact = -1;
    public int maxIterApprox = -1;

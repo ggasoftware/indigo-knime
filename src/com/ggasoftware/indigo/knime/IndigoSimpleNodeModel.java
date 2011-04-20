@@ -23,7 +23,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 
-public class IndigoSimpleNodeModel extends NodeModel
+public class IndigoSimpleNodeModel extends IndigoNodeModel
 {
 
    public static abstract class Transformer
@@ -181,45 +181,7 @@ public class IndigoSimpleNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-
-      if (_settings.colName == null)
-      {
-         for (DataColumnSpec cs : inSpecs[0])
-         {
-            if (cs.getType().isCompatible(IndigoMolValue.class))
-            {
-               if (_settings.colName != null)
-               {
-                  setWarningMessage("Selected column '" + _settings.colName
-                        + "' as Indigo column");
-               }
-               else
-               {
-                  _settings.colName = cs.getName();
-               }
-            }
-         }
-         if (_settings.colName == null)
-         {
-            throw new InvalidSettingsException(
-                  "No Indigo column in input table");
-         }
-      }
-      else
-      {
-         if (!inSpecs[0].containsName(_settings.colName))
-         {
-            throw new InvalidSettingsException("Column '" + _settings.colName
-                  + "' does not exist in input table");
-         }
-         if (!inSpecs[0].getColumnSpec(_settings.colName).getType()
-               .isCompatible(IndigoMolValue.class))
-         {
-            throw new InvalidSettingsException("Column '" + _settings.colName
-                  + "' does not contain Indigo molecules");
-         }
-      }
-
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
    }
 
@@ -251,12 +213,8 @@ public class IndigoSimpleNodeModel extends NodeModel
    {
       IndigoSimpleSettings s = new IndigoSimpleSettings();
       s.loadSettings(settings);
-      if (!s.replaceColumn
-            && ((s.newColName == null) || (s.newColName.length() < 1)))
-      {
+      if (!s.replaceColumn && ((s.newColName == null) || (s.newColName.length() < 1)))
          throw new InvalidSettingsException("No name for new column given");
-      }
-
    }
 
    /**

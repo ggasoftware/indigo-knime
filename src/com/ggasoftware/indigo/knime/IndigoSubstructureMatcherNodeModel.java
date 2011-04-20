@@ -24,7 +24,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 
-public class IndigoSubstructureMatcherNodeModel extends NodeModel
+public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 {
    IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 
@@ -40,8 +40,9 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
-         throw new InvalidSettingsException("New column name must be specified");
+      if (_settings.appendColumn)
+         if (_settings.newColName == null || _settings.newColName.length() < 1)
+            throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
       
@@ -231,6 +232,8 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, IndigoQueryMolValue.class);
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]), inSpecs[0] };
    }
 

@@ -25,7 +25,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 
-public class IndigoScaffoldFinderNodeModel extends NodeModel
+public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
 {
    IndigoScaffoldFinderSettings _settings = new IndigoScaffoldFinderSettings();
 
@@ -126,7 +126,8 @@ public class IndigoScaffoldFinderNodeModel extends NodeModel
          throws InvalidSettingsException
    {
       if (_settings.newColName == null || _settings.newColName.length() < 1)
-         throw new InvalidSettingsException("New column name must be specified");
+         _settings.newColName = "Scaffold";
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
       DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName, IndigoQueryMolCell.TYPE).createSpec();
       return new DataTableSpec[] { new DataTableSpec(spec) };
    }

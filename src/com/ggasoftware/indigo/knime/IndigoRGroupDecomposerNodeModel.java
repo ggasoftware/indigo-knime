@@ -25,7 +25,7 @@ import org.knime.core.node.*;
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.IndigoObject;
 
-public class IndigoRGroupDecomposerNodeModel extends NodeModel
+public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
 {
 
    IndigoRGroupDecomposerSettings _settings = new IndigoRGroupDecomposerSettings();
@@ -185,6 +185,8 @@ public class IndigoRGroupDecomposerNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, IndigoQueryMolValue.class);
       return new DataTableSpec[] { calcDataTableSpec(inSpecs[0]), calcDataTableSpec2() };
    }
 

@@ -25,7 +25,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.knime.IndigoFingerprintSimilaritySettings.Metric;
 
-public class IndigoFingerprintSimilarityNodeModel extends NodeModel
+public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
 {
    IndigoFingerprintSimilaritySettings _settings = new IndigoFingerprintSimilaritySettings();
 
@@ -167,6 +167,8 @@ public class IndigoFingerprintSimilarityNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, BitVectorValue.class);
+      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, BitVectorValue.class);
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 

@@ -248,7 +248,6 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-
       _settings.loadSettings(settings);
    }
 

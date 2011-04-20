@@ -25,7 +25,7 @@ import com.ggasoftware.indigo.*;
 import java.io.*;
 import java.util.*;
 
-public class IndigoMoleculePropertiesNodeModel extends NodeModel
+public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 {
 
    private final IndigoMoleculePropertiesSettings _settings = new IndigoMoleculePropertiesSettings();
@@ -308,6 +308,7 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -317,7 +318,6 @@ public class IndigoMoleculePropertiesNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-
       _settings.saveSettings(settings);
    }
 

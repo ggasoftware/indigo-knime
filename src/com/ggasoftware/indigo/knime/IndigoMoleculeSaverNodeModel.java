@@ -26,7 +26,7 @@ import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.IndigoMoleculeSaverSettings.Format;
 
-public class IndigoMoleculeSaverNodeModel extends NodeModel
+public class IndigoMoleculeSaverNodeModel extends IndigoNodeModel
 {
    private final IndigoMoleculeSaverSettings _settings = new IndigoMoleculeSaverSettings();
 
@@ -214,40 +214,10 @@ public class IndigoMoleculeSaverNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-
-      Class<? extends DataValue> cls;
-      
       if (_query)
-         cls = IndigoQueryMolValue.class;
+         _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoQueryMolValue.class);
       else
-         cls = IndigoMolValue.class;
-      
-      if (_settings.colName == null)
-      {
-         for (DataColumnSpec cs : inSpecs[0])
-         {
-            if (cs.getType().isCompatible(cls))
-            {
-               if (_settings.colName != null)
-                  setWarningMessage("Selected column '" + _settings.colName
-                        + "' as Indigo column");
-               else
-                  _settings.colName = cs.getName();
-            }
-         }
-         if (_settings.colName == null)
-            throw new InvalidSettingsException("No Indigo column in input table");
-      }
-      else
-      {
-         if (!inSpecs[0].containsName(_settings.colName))
-            throw new InvalidSettingsException("Column '" + _settings.colName
-                  + "' does not exist in input table");
-         if (!inSpecs[0].getColumnSpec(_settings.colName).getType().isCompatible(cls))
-            throw new InvalidSettingsException("Column '" + _settings.colName
-                  + "' does not contain Indigo molecules");
-      }
-
+         _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
    }
 
