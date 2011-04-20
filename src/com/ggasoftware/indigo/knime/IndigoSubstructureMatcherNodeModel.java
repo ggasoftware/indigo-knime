@@ -144,6 +144,9 @@ public class IndigoSubstructureMatcherNodeModel extends NodeModel
                {
                   int i = 0;
                   
+                  if (!target.hasCoord())
+                     target.layout();
+                  
                   if (first)
                   {
                      for (IndigoObject atom : query.iterateAtoms())
