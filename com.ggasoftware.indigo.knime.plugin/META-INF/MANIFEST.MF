@@ -8,8 +8,9 @@ Bundle-Vendor: GGA Software Services LLC
 Require-Bundle: org.eclipse.core.runtime,
  org.knime.workbench.core,
  org.knime.workbench.repository,
- org.knime.base
+ org.knime.base,
+ org.knime.chem.types;bundle-version="2.3.0"
 Export-Package: com.ggasoftware.indigo.knime
-Import-Package: org.knime.chem.types
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.ggasoftware.indigo.knime.IndigoPlugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
