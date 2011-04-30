@@ -14,6 +14,9 @@
 
 package com.ggasoftware.indigo.knime.hremover;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
@@ -26,6 +29,14 @@ public class IndigoHydrogenRemoverNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
 {
 
+   static int[] toIntArray (List<Integer> list)
+   {
+      int[] arr = new int[list.size()];
+      for (int i = 0; i < list.size(); i++)
+         arr[i] = list.get(i).intValue();
+      return arr;
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -38,7 +49,29 @@ public class IndigoHydrogenRemoverNodeFactory extends
                @Override
                public void transform (IndigoObject io)
                {
-                  io.foldHydrogens();
+                  ArrayList<Integer> indices = new ArrayList<Integer>();
+
+                  for (IndigoObject atom : io.iterateAtoms())
+                  {
+                     if (atom.isPseudoatom() || atom.isRSite())
+                        continue;
+                     if (atom.atomicNumber() == 1 && atom.isotope() == 0)
+                     {
+                        boolean has_stereo = false;
+                        for (IndigoObject nei : atom.iterateNeighbors())
+                        {
+                           if (nei.bond().bondStereo() != 0)
+                              has_stereo = true;
+                        }
+                        if (!has_stereo)
+                           indices.add(atom.index());
+                     }
+                  }
+
+                  if (indices.size() > 0)
+                  {
+                     io.removeAtoms(toIntArray(indices));
+                  }
                }
             });
    }
