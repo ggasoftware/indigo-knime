@@ -3,8 +3,8 @@
 
 <plugin>
 	<extension point="org.knime.workbench.repository.nodes">
-    	<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.convert.molloader.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
-    	<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.convert.molsaver.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
+    	<node category-path="/community/indigo/translators" factory-class="com.ggasoftware.indigo.knime.convert.molloader.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
+    	<node category-path="/community/indigo/translators" factory-class="com.ggasoftware.indigo.knime.convert.molsaver.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.molprop.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.valence.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.arom.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
@@ -15,14 +15,17 @@
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilarityNodeFactory" id="com.ggasoftware.indigo.knime.IndigoFingerprintSimilarityNodeFactory"/>
 	    <node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.molfp.IndigoMoleculeFingerprinterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
-		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.convert.molloader.IndigoQueryMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"/>
-		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.convert.molsaver.IndigoQueryMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory"/>
+		<node category-path="/community/indigo/translators" factory-class="com.ggasoftware.indigo.knime.convert.molloader.IndigoQueryMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"/>
+		<node category-path="/community/indigo/translators" factory-class="com.ggasoftware.indigo.knime.convert.molsaver.IndigoQueryMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.scaffold.IndigoScaffoldFinderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.rgdecomp.IndigoRGroupDecomposerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoRGroupDecomposerNodeFactory"/>
 	</extension>
 	
  	<extension point="org.knime.workbench.repository.categories">
       <category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/community" />
+ 	</extension>
+ 	<extension point="org.knime.workbench.repository.categories">
+      <category description="Translators" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="translators" name="Translators" path="/community/indigo" />
  	</extension>
  	<extension point="org.eclipse.equinox.preferences.preferences">
  		<initializer class="com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer"/>
