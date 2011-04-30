@@ -28,6 +28,7 @@ import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
 
 public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 {
@@ -126,7 +127,21 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             if (_settings.appendColumn)
                target = target.clone();
             
-            IndigoObject match = indigo.substructureMatcher(target).match(query);
+            String mode = "";
+            
+            if (_settings.mode == Mode.Resonance)
+               mode = "RES";
+            else if (_settings.mode == Mode.Tautomer)
+            {
+               mode = "TAU R* R-C";
+
+               indigo.clearTautomerRules();
+               indigo.setTautomerRule(1, "N,O,P,S,As,Se,Sb,Te", "N,O,P,S,As,Se,Sb,Te");
+               indigo.setTautomerRule(2, "0C", "N,O,P,S");
+               indigo.setTautomerRule(3, "1C", "N,O");
+            }
+            
+            IndigoObject match = indigo.substructureMatcher(target, mode).match(query);
             
             if (match != null)
             {

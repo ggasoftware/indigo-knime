@@ -18,8 +18,14 @@ import org.knime.core.node.*;
 
 public class IndigoSubstructureMatcherSettings
 {
+   enum Mode
+   {
+      Normal, Tautomer, Resonance
+   }
+   
    public String colName;
    public String colName2;
+   public Mode mode = Mode.Normal;
    public boolean align = false;
    public boolean highlight = false;
    public boolean appendColumn = false;
@@ -34,6 +40,7 @@ public class IndigoSubstructureMatcherSettings
       align = settings.getBoolean("align");
       highlight = settings.getBoolean("highlight");
       appendColumn = settings.getBoolean("appendColumn");
+      mode = Mode.valueOf(settings.getString("mode"));
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -41,6 +48,7 @@ public class IndigoSubstructureMatcherSettings
       colName = settings.getString("colName", null);
       colName2 = settings.getString("colName2", null);
       newColName = settings.getString("newColName", null);
+      mode = Mode.valueOf(settings.getString("mode", Mode.Normal.name()));
       align = settings.getBoolean("align", false);
       highlight = settings.getBoolean("highlight", false);
       appendColumn = settings.getBoolean("appendColumn", false);
@@ -54,6 +62,8 @@ public class IndigoSubstructureMatcherSettings
          settings.addString("colName2", colName2);
       if (newColName != null)
          settings.addString("newColName", newColName);
+      if (mode != null)
+         settings.addString("mode", mode.name());
       settings.addBoolean("appendColumn", appendColumn);
       settings.addBoolean("align", align);
       settings.addBoolean("highlight", highlight);

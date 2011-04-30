@@ -15,6 +15,9 @@
 package com.ggasoftware.indigo.knime.submatcher;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ChangeEvent;
@@ -26,6 +29,7 @@ import org.knime.core.node.util.*;
 
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
 
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
@@ -36,6 +40,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
+   private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
    private final JCheckBox _align = new JCheckBox("Align matched structures");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -86,6 +91,12 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 
       c.gridy++;
       c.gridx = 0;
+      p.add(new JLabel("Mode: "), c);
+      c.gridx = 1;
+      p.add(_mode, c);
+      
+      c.gridy++;
+      c.gridx = 0;
       p.add(_highlight, c);
 
       c.gridy++;
@@ -122,6 +133,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _align.setSelected(_settings.align);
       _highlight.setSelected(_settings.highlight);
       _appendColumn.setSelected(_settings.appendColumn);
+      _mode.setSelectedItem(_settings.mode);
    }
 
    @Override
@@ -134,6 +146,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _settings.highlight = _highlight.isSelected();
       _settings.align = _align.isSelected();
       _settings.newColName = _newColName.getText();
+      _settings.mode = (Mode)_mode.getSelectedItem();
 
       _settings.saveSettings(settings);
    }
