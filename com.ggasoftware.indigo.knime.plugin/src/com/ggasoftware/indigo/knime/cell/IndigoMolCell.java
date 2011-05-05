@@ -41,10 +41,7 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       {
          try
          {
-            BASE64Encoder encoder = new BASE64Encoder();
-            String str = encoder.encodeBuffer(cell.getIndigoObject()
-                  .serialize());
-            out.writeUTF(str);
+            out.writeUTF(cell.getIndigoObject().molfile());
          }
          catch (IndigoException ex)
          {
@@ -63,23 +60,17 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
 
          try
          {
-            BASE64Decoder decoder = new BASE64Decoder();
-            byte[] buf = decoder.decodeBuffer(str);
-            try
-            {
-               IndigoPlugin.lock();
-               return new IndigoMolCell(IndigoPlugin.getIndigo().unserialize(
-                     buf));
-            }
-            finally
-            {
-               IndigoPlugin.unlock();
-            }
+            IndigoPlugin.lock();
+            return new IndigoMolCell(IndigoPlugin.getIndigo().loadMolecule(str));
          }
          catch (IndigoException ex)
          {
             LOGGER.error("Error while deserializing Indigo object", ex);
             throw new IOException(ex.getMessage());
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
          }
       }
    }
