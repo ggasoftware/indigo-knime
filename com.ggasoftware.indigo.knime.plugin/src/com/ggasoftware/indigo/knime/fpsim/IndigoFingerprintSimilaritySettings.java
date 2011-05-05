@@ -23,12 +23,18 @@ public class IndigoFingerprintSimilaritySettings
       Tanimoto, EuclidSub, Tversky
    }
 
+   enum Aggregation
+   {
+      Minimum, Maximum, Average
+   }
+   
    public String colName;
    public String colName2;
    public String newColName = "similarity";
    public Metric metric = Metric.Tanimoto;
    public float tverskyAlpha = 0.5f;
    public float tverskyBeta = 0.5f;
+   public Aggregation aggregation = Aggregation.Average;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -37,6 +43,7 @@ public class IndigoFingerprintSimilaritySettings
       colName2 = settings.getString("colName2");
       newColName = settings.getString("newColName");
       metric = Metric.valueOf(settings.getString("metric"));
+      aggregation = Aggregation.valueOf(settings.getString("aggregation"));
       tverskyAlpha = settings.getFloat("tverskyAlpha");
       tverskyBeta = settings.getFloat("tverskyBeta");
    }
@@ -48,6 +55,8 @@ public class IndigoFingerprintSimilaritySettings
       newColName = settings.getString("newColName", "similarity");
       metric = Metric.valueOf(settings.getString("metric",
             Metric.Tanimoto.name()));
+      aggregation = Aggregation.valueOf(settings.getString("aggregation",
+            Aggregation.Average.name()));
       tverskyAlpha = settings.getFloat("tverskyAlpha", 0.5f);
       tverskyBeta = settings.getFloat("tverskyBeta", 0.5f);
    }
@@ -60,6 +69,8 @@ public class IndigoFingerprintSimilaritySettings
          settings.addString("colName2", colName2);
       if (metric != null)
          settings.addString("metric", metric.name());
+      if (aggregation != null)
+         settings.addString("aggregation", aggregation.name());
       if (newColName != null)
          settings.addString("newColName", newColName);
       settings.addFloat("tverskyAlpha", tverskyAlpha);

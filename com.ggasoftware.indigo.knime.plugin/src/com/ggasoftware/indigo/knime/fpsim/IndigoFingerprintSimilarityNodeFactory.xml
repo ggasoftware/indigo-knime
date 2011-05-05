@@ -15,6 +15,9 @@
         <option name="Template fingerprint column">The column that contains a single template fingerprint.</option>
         <option name="New column">Name of the new column that contains similarity values.</option>
         <option name="Metric">Metric for similarity computation.</option>
+        <option name="Aggregation type">When there are multiple template fingerprints in the second data source,
+        it can calculate minimum, maximum, or average similarity values.
+        If there is only one template fingerprint, this option has no effect.</option>
     </fullDescription>
     
     <ports>

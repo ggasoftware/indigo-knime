@@ -26,6 +26,7 @@ import org.knime.core.data.vector.bitvector.BitVectorValue;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Aggregation;
 import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Metric;
 
 public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
@@ -39,6 +40,8 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    private final JTextField _newColumn = new JTextField(20);
    private final JComboBox _metrics = new JComboBox(new Object[] {
          Metric.Tanimoto, Metric.EuclidSub, Metric.Tversky });
+   private final JComboBox _aggregation = new JComboBox(new Object[] {
+         Aggregation.Average, Aggregation.Minimum, Aggregation.Maximum});
    JLabel _alphaLabel = new JLabel("alpha:");
    JLabel _betaLabel = new JLabel("beta:");
    JFormattedTextField _alpha = new JFormattedTextField(
@@ -93,6 +96,12 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
       _metricsPanel.add(_betaLabel);
       _metricsPanel.add(_beta);
       p.add(_metricsPanel, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(new JLabel("Aggregation type"), c);
+      c.gridx = 1;
+      p.add(_aggregation, c);
 
       addTab("Standard settings", p);
 
@@ -117,7 +126,6 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
             }
          }
       });
-
    }
 
    /**
@@ -129,6 +137,7 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    {
       _settings.loadSettingsForDialog(settings);
       _metrics.setSelectedItem(_settings.metric);
+      _aggregation.setSelectedItem(_settings.aggregation);
       _newColumn.setText(_settings.newColName);
       _fpColumn.update(specs[0], _settings.colName);
       _fpColumn2.update(specs[1], _settings.colName2);
@@ -144,6 +153,7 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
          throws InvalidSettingsException
    {
       _settings.metric = (Metric) _metrics.getSelectedItem();
+      _settings.aggregation = (Aggregation) _aggregation.getSelectedItem();
       _settings.newColName = _newColumn.getText();
       _settings.colName = _fpColumn.getSelectedColumn();
       _settings.colName2 = _fpColumn2.getSelectedColumn();

@@ -16,6 +16,7 @@ package com.ggasoftware.indigo.knime.fpsim;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.CloseableRowIterator;
@@ -24,14 +25,13 @@ import org.knime.core.data.vector.bitvector.*;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
+import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Aggregation;
 import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Metric;
 
 public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
 {
    IndigoFingerprintSimilaritySettings _settings = new IndigoFingerprintSimilaritySettings();
 
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoFingerprintSimilarityNodeModel.class);
-   
    /**
     * Constructor for the node model.
     */
@@ -58,6 +58,42 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
       return new DataTableSpec(specs);
    }
 
+   protected float _calcSimilarity (BitVectorValue bitvector, BitVectorValue template) throws Exception
+   {
+      if (bitvector.length() != template.length())
+         throw new Exception("fingerprint's length does not match the template");
+      
+      long a = template.cardinality();
+      long b = bitvector.cardinality();
+      long c = 0;
+      
+      long ia = template.nextSetBit(0), ib = bitvector.nextSetBit(0);
+      
+      while (ia != -1 && ib != -1)
+      {
+         if (ia < ib)
+            ia = template.nextSetBit(ia + 1);
+         else if (ia > ib)
+            ib = bitvector.nextSetBit(ib + 1);
+         else
+         {
+            c++;
+            ia = template.nextSetBit(ia + 1);
+            ib = bitvector.nextSetBit(ib + 1);
+         }
+      }
+      
+      if (c == 0)
+         return 0;
+      else if (_settings.metric == Metric.Tanimoto)
+         return (float)c / (a + b - c);
+      else if (_settings.metric == Metric.EuclidSub)
+         return (float)c / a;
+      else
+         return (float)c / (_settings.tverskyAlpha * (a - c) +
+                            _settings.tverskyBeta  * (b - c) + c); 
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -77,17 +113,20 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
       int colIdx2 = spec2.findColumnIndex(_settings.colName2);
       if (colIdx2 == -1)
          throw new Exception("second column not found");
-      
-      BitVectorValue template = null;
+
+      ArrayList<BitVectorValue> templates = new ArrayList<BitVectorValue>(); 
       
       {
          CloseableRowIterator it = inData[1].iterator();
+         
          if (!it.hasNext())
             throw new Exception("no template fingerprint found in the data source");
-         DataRow row = it.next();
-         template = ((BitVectorValue)row.getCell(colIdx2));
-         if (it.hasNext())
-            LOGGER.warn("second data source contains more than one row; ignoring all others");
+
+         while (it.hasNext())
+         {
+            DataRow row = it.next();
+            templates.add((BitVectorValue)row.getCell(colIdx2));
+         }
       }
       
       CloseableRowIterator it = inData[0].iterator();
@@ -100,46 +139,40 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
          BitVectorValue bitvector = (BitVectorValue)inputRow.getCell(colIdx);
 
-         if (bitvector.length() != template.length())
-            throw new Exception("fingerprint's length does not match the template");
+         float result = 0;
+         int count = 0;
          
-         long a = template.cardinality();
-         long b = bitvector.cardinality();
-         long c = 0;
+         if (_settings.aggregation == Aggregation.Minimum)
+            result = 1000000;
          
-         long ia = template.nextSetBit(0), ib = bitvector.nextSetBit(0);
-         
-         while (ia != -1 && ib != -1)
+         for (BitVectorValue template : templates)
          {
-            if (ia < ib)
-               ia = template.nextSetBit(ia + 1);
-            else if (ia > ib)
-               ib = bitvector.nextSetBit(ib + 1);
-            else
+            float sim = _calcSimilarity(bitvector, template);
+            
+            switch (_settings.aggregation)
             {
-               c++;
-               ia = template.nextSetBit(ia + 1);
-               ib = bitvector.nextSetBit(ib + 1);
+               case Minimum:
+                  if (sim < result)
+                     result = sim;
+                  break;
+               case Maximum:
+                  if (sim > result)
+                     result = sim;
+                  break;
+               case Average:
+                  result += sim;
             }
+            count++;
          }
-         
-         float similarity;
-         
-         if (c == 0)
-            similarity = 0;
-         else if (_settings.metric == Metric.Tanimoto)
-            similarity = (float)c / (a + b - c);
-         else if (_settings.metric == Metric.EuclidSub)
-            similarity = (float)c / a;
-         else
-            similarity = (float)c / (_settings.tverskyAlpha * (a - c) +
-                                     _settings.tverskyBeta  * (b - c) + c); 
+
+         if (_settings.aggregation == Aggregation.Average)
+            result /= count;
          
          int i;
          
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
-         cells[i++] = new DoubleCell(similarity);
+         cells[i++] = new DoubleCell(result);
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
