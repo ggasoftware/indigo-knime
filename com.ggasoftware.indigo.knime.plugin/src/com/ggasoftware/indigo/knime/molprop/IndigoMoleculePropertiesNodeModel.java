@@ -73,7 +73,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 
    static
    {
-      calculators.put("Atoms count", new IntPropertyCalculator()
+      calculators.put("Number of visible atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -81,12 +81,22 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Aromatic atoms count", new IntPropertyCalculator()
+      calculators.put("Total number of atoms", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countHeavyAtoms() + io.countHydrogens());
+         }
+      });
+      
+      calculators.put("Number of aromatic atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
             int count = 0;
 
+            io = io.clone();
+            io.aromatize();
             for (IndigoObject atom : io.iterateAtoms())
                for (IndigoObject nei : atom.iterateNeighbors())
                   if (nei.bond().bondOrder() == 4)
@@ -98,20 +108,32 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Aromatic bonds count", new IntPropertyCalculator()
+      calculators.put("Number of aliphatic atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
             int count = 0;
 
-            for (IndigoObject bond : io.iterateBonds())
-               if (bond.bondOrder() == 4)
+            io = io.clone();
+            io.aromatize();
+            for (IndigoObject atom : io.iterateAtoms())
+            {
+               boolean aromatic = false;
+               
+               for (IndigoObject nei : atom.iterateNeighbors())
+                  if (nei.bond().bondOrder() == 4)
+                  {
+                     aromatic = true;
+                     break;
+                  }
+               if (!aromatic)
                   count++;
+            }
             return new IntCell(count);
          }
       });
-
-      calculators.put("Bonds count", new IntPropertyCalculator()
+      
+      calculators.put("Number of bonds", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -119,7 +141,37 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Heavy atoms count", new IntPropertyCalculator()
+      calculators.put("Number of aromatic bonds", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+
+            io = io.clone();
+            io.aromatize();
+            for (IndigoObject bond : io.iterateBonds())
+               if (bond.bondOrder() == 4)
+                  count++;
+            return new IntCell(count);
+         }
+      });
+
+      calculators.put("Number of aliphatic bonds", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+
+            io = io.clone();
+            io.aromatize();
+            for (IndigoObject bond : io.iterateBonds())
+               if (bond.bondOrder() != 4)
+                  count++;
+            return new IntCell(count);
+         }
+      });
+      
+      calculators.put("Number of heavy atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -184,6 +236,48 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
+      calculators.put("Number of carbons", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+            
+            for (IndigoObject atom : io.iterateAtoms())
+            {
+               if (atom.isRSite() || atom.isPseudoatom())
+                  continue;
+               
+               int number = atom.atomicNumber();
+               
+               if (number == 6)
+                  count++;
+            }
+               
+            return new IntCell(count);
+         }
+      });
+      
+      calculators.put("Number of heteroatoms", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+            
+            for (IndigoObject atom : io.iterateAtoms())
+            {
+               if (atom.isRSite() || atom.isPseudoatom())
+                  continue;
+               
+               int number = atom.atomicNumber();
+               
+               if (number > 1 && number != 6)
+                  count++;
+            }
+               
+            return new IntCell(count);
+         }
+      });
+      
       calculators.put("Molecular weight", new DoublePropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
