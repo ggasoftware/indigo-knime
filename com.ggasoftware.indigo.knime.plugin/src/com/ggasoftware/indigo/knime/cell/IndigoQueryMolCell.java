@@ -101,7 +101,21 @@ public class IndigoQueryMolCell extends DataCell implements IndigoQueryMolValue
    @Override
    public String toString ()
    {
-      return null;
+      try
+      {
+         IndigoPlugin.lock();
+         
+         // Return the name if it is present
+         if (_object.name() != null && _object.name().length() > 0)
+            return _object.name();
+         
+         // Otherwise, return the unique Indigo's object ID
+         return "<Indigo object #" + _object.self + ">";
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
    }
 
    @Override

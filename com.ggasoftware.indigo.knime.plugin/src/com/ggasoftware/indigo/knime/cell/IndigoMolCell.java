@@ -102,12 +102,54 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
    @Override
    public String toString ()
    {
-      return null;
+      try
+      {
+         IndigoPlugin.lock();
+         
+         // Return the name if it is present
+         if (_object.name() != null && _object.name().length() > 0)
+            return _object.name();
+         
+         // Otherwise, return a SMILES string if it can be calculated
+         try
+         {
+            return _object.smiles();
+         }
+         catch (IndigoException e)
+         {
+            // If SMILES is not an option, return the unique Indigo's object ID
+            return "<Indigo object #" + _object.self + ">";
+         }
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
    }
 
    @Override
    protected boolean equalsDataCell (DataCell dc)
    {
+      IndigoMolCell other = (IndigoMolCell)dc;
+      
+      try
+      {
+         IndigoPlugin.lock();
+         
+         IndigoObject match = IndigoPlugin.getIndigo().exactMatch(_object, other._object);
+         
+         if (match != null)
+            return true;
+      }
+      catch (IndigoException e)
+      {
+         // ignore the exception; default to the false result
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
+      
       return false;
    }
 
