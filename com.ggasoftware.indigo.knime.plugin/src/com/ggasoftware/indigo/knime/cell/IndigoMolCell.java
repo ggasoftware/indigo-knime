@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import org.knime.core.data.*;
 import org.knime.core.node.NodeLogger;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 @SuppressWarnings("serial")
 public class IndigoMolCell extends DataCell implements IndigoMolValue
