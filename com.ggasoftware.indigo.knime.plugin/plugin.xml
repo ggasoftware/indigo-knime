@@ -34,6 +34,6 @@
 		<page category="org.knime.chem.preferences" class="com.ggasoftware.indigo.knime.plugin.IndigoPreferencePage" id="com.ggasoftware.indigo.knime.preferences" name="Indigo"/>
  	</extension>
  	<extension point="org.knime.product.splashExtension">
- 		<splashExtension icon="src/com/ggasoftware/indigo/knime/indigo-splash.png" id="indigo" tooltip="Indigo" />
+ 		<splashExtension icon="icons/indigo-splash.png" id="indigo" tooltip="Indigo" />
  	</extension> 
 </plugin>
