@@ -95,7 +95,10 @@ public class IndigoQueryMolCell extends DataCell implements IndigoQueryMolValue
       if (smarts)
          _object = indigo.loadSmarts(query);
       else
+      {
          _object = indigo.loadQueryMolecule(query);
+         _object.aromatize();
+      }
    }
 
    @Override
