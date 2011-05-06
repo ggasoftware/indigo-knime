@@ -39,12 +39,28 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       {
          try
          {
-            out.writeUTF(cell.getIndigoObject().molfile());
+            IndigoPlugin.lock();
+            IndigoObject io = cell.getIndigoObject();
+            try
+            {
+               if (!io.hasCoord())
+                  io.layout();
+               io.markEitherCisTrans();
+            }
+            catch (IndigoException e)
+            {
+            }
+            
+            out.writeUTF(io.molfile());
          }
          catch (IndigoException ex)
          {
             LOGGER.error("Error while serializing Indigo object", ex);
             throw new IOException(ex.getMessage());
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
          }
       }
 

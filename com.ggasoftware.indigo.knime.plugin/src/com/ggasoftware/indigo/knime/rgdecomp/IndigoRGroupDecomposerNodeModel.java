@@ -142,27 +142,36 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          for (i = 1; i <= _settings.numRGroups; i++)
             cells[inputRow.getNumCells() + i - 1] =  DataType.getMissingCell();
          
-         if (!deco_iter.hasNext())
+         try
          {
-            LOGGER.error("deco iterator ended unexpectedly");
-            break;
-         }
-         
-         IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
-         
-         for (IndigoObject rg : deco_mol.iterateRGroups())
-         {
-            IndigoObject frag_iter = rg.iterateRGroupFragments();
-            if (frag_iter.hasNext())
+            IndigoPlugin.lock();
+            if (!deco_iter.hasNext())
             {
-               IndigoObject frag = frag_iter.next();
-               int index = rg.index();
-               if (index >= 1 && index <= _settings.numRGroups)
-                  cells[inputRow.getNumCells() + index - 1] = new IndigoQueryMolCell(frag.molfile(), false);
-               else
-                  LOGGER.warn("rgroup index " + index + " is out of range for the given settings");
+               LOGGER.error("deco iterator ended unexpectedly");
+               break;
+            }
+            
+            IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
+            
+            for (IndigoObject rg : deco_mol.iterateRGroups())
+            {
+               IndigoObject frag_iter = rg.iterateRGroupFragments();
+               if (frag_iter.hasNext())
+               {
+                  IndigoObject frag = frag_iter.next();
+                  int index = rg.index();
+                  if (index >= 1 && index <= _settings.numRGroups)
+                     cells[inputRow.getNumCells() + index - 1] = new IndigoQueryMolCell(frag.molfile(), false);
+                  else
+                     LOGGER.warn("rgroup index " + index + " is out of range for the given settings");
+               }
             }
          }
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+       
          outputContainer.addRowToTable(new DefaultRow(key, cells));
       }
       

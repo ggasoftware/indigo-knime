@@ -25,6 +25,7 @@ import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
+import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 import java.io.*;
 import java.util.*;
@@ -401,8 +402,16 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
 
-         for (String prop : _settings.selectedProps)
-            cells[i++] = calculators.get(prop).calculate(io);
+         try
+         {
+            IndigoPlugin.lock();
+            for (String prop : _settings.selectedProps)
+               cells[i++] = calculators.get(prop).calculate(io);
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();

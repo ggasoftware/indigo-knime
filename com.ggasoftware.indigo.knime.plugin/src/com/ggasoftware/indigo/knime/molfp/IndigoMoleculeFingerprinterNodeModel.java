@@ -67,42 +67,45 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      try
+      while (it.hasNext())
       {
-         IndigoPlugin.lock();
+         DataRow inputRow = it.next();
+         RowKey key = inputRow.getKey();
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+         IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+         int i;
+         String fp;
 
-         IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords);
-         IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
-         IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
-         IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
-         
-         while (it.hasNext())
+         try
          {
-            DataRow inputRow = it.next();
-            RowKey key = inputRow.getKey();
-            DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-            IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
-                  .getIndigoObject().clone();
-            int i;
+            IndigoPlugin.lock();
 
+            IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords);
+            IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
+            IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
+            IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
+            io = io.clone();
             io.aromatize();
-            String fp = io.fingerprint("sim").toString().substring(6);
-
-            for (i = 0; i < inputRow.getNumCells(); i++)
-               cells[i] = inputRow.getCell(i);
-            cells[i++] = new SparseBitVectorCellFactory(fp).createDataCell();
-
-            outputContainer.addRowToTable(new DefaultRow(key, cells));
-            exec.checkCanceled();
-            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-                  "Adding row " + rowNumber);
-
-            rowNumber++;
+         
+            fp = io.fingerprint("sim").toString();
          }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+         String fpsub = fp.substring(6);
+
+         for (i = 0; i < inputRow.getNumCells(); i++)
+            cells[i] = inputRow.getCell(i);
+         
+         cells[i++] = new SparseBitVectorCellFactory(fpsub).createDataCell();
+
+         outputContainer.addRowToTable(new DefaultRow(key, cells));
+         exec.checkCanceled();
+         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+               "Adding row " + rowNumber);
+
+         rowNumber++;
       }
 
       outputContainer.close();

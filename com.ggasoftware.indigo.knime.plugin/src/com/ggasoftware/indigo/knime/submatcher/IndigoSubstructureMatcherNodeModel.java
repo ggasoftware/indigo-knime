@@ -108,43 +108,50 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      try
+      Indigo indigo = IndigoPlugin.getIndigo();
+
+      boolean first = true;
+      int natoms_align = 0;
+      int[] atoms = null;
+      float[] xyz = null;
+      
+      while (it.hasNext())
       {
-         IndigoPlugin.lock();
+         DataRow inputRow = it.next();
+         IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
 
-         Indigo indigo = IndigoPlugin.getIndigo();
-
-         boolean first = true;
-         int natoms_align = 0;
-         int[] atoms = null;
-         float[] xyz = null;
+         String mode = "";
          
-         while (it.hasNext())
+         IndigoObject match = null;
+         
+         try
          {
-            DataRow inputRow = it.next();
-            IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
-
-            if (_settings.appendColumn)
-               target = target.clone();
-            
-            String mode = "";
-            
+            IndigoPlugin.lock();
+            target = target.clone();
             if (_settings.mode == Mode.Resonance)
                mode = "RES";
             else if (_settings.mode == Mode.Tautomer)
             {
                mode = "TAU R* R-C";
-
+   
                indigo.clearTautomerRules();
                indigo.setTautomerRule(1, "N,O,P,S,As,Se,Sb,Te", "N,O,P,S,As,Se,Sb,Te");
                indigo.setTautomerRule(2, "0C", "N,O,P,S");
                indigo.setTautomerRule(3, "1C", "N,O");
             }
             
-            IndigoObject match = indigo.substructureMatcher(target, mode).match(query);
-            
-            if (match != null)
+            match = indigo.substructureMatcher(target, mode).match(query);
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+         
+         if (match != null)
+         {
+            try
             {
+               IndigoPlugin.lock();
                if (_settings.highlight)
                {
                   for (IndigoObject atom : query.iterateAtoms())
@@ -203,32 +210,44 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
                         target.alignAtoms(atoms, xyz);
                      }
-                  }               
+                  }
                }
-               if (_settings.appendColumn)
-               {
-                  DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-                  int i;
-                  
-                  for (i = 0; i < inputRow.getNumCells(); i++)
-                     cells[i] = inputRow.getCell(i);
-                  cells[i] = new IndigoMolCell(target);
-                  validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
-               }
-               else
-                  validOutputContainer.addRowToTable(inputRow);
+            }
+            finally
+            {
+               IndigoPlugin.unlock();
+            }
+            if (_settings.appendColumn)
+            {
+               DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+               int i;
+               
+               for (i = 0; i < inputRow.getNumCells(); i++)
+                  cells[i] = inputRow.getCell(i);
+               cells[i] = new IndigoMolCell(target);
+               validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
             }
             else
-               invalidOutputContainer.addRowToTable(inputRow);
-            exec.checkCanceled();
-            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-                  "Adding row " + rowNumber);
-            rowNumber++;
+            {
+               DataCell[] cells = new DataCell[inputRow.getNumCells()];
+               int i;
+               
+               for (i = 0; i < inputRow.getNumCells(); i++)
+               {
+                  if (i == colIdx)
+                     cells[i] = new IndigoMolCell(target);
+                  else
+                     cells[i] = inputRow.getCell(i);
+               }
+               validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
+            }
          }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
+         else
+            invalidOutputContainer.addRowToTable(inputRow);
+         exec.checkCanceled();
+         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+               "Adding row " + rowNumber);
+         rowNumber++;
       }
 
       validOutputContainer.close();

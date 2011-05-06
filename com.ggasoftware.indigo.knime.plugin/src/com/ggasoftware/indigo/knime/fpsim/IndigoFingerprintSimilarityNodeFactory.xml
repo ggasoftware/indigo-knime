@@ -8,21 +8,22 @@
     
     <fullDescription>
         <intro>
-        <p>This node calculates the values of structural similarity of input fingerprints against a given template fingerprint.</p>
+        <p>This node calculates the values of structural similarity of input fingerprints against a given template fingerprint.
+        It also can take multiple template fingerprints and aggregate the similarity values.</p>
         </intro>
         
         <option name="Fingerprints column">The column that contains the fingerprints.</option>
-        <option name="Template fingerprint column">The column that contains a single template fingerprint.</option>
+        <option name="Template fingerprint column">The column that contains template fingerprint(s).</option>
         <option name="New column">Name of the new column that contains similarity values.</option>
         <option name="Metric">Metric for similarity computation.</option>
-        <option name="Aggregation type">When there are multiple template fingerprints in the second data source,
+        <option name="Aggregation type">When there are multiple template fingerprints in the second port,
         it can calculate minimum, maximum, or average similarity values.
         If there is only one template fingerprint, this option has no effect.</option>
     </fullDescription>
     
     <ports>
         <inPort index="0" name="Input fingerprints">Table containing fingerprints</inPort>
-        <inPort index="1" name="Template fingerprint">Table containing a single template fingerprint</inPort>
+        <inPort index="1" name="Template fingerprint">Table containing template fingerprint(s)</inPort>
         <outPort index="0" name="Similarity values">The same as input fingerprints, plus an extra column with similarity values</outPort>
     </ports>    
 </knimeNode>

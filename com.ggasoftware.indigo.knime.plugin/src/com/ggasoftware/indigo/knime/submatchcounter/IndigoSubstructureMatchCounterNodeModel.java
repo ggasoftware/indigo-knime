@@ -75,41 +75,40 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      try
+      Indigo indigo = IndigoPlugin.getIndigo();
+
+      while (it.hasNext())
       {
-         IndigoPlugin.lock();
-         Indigo indigo = IndigoPlugin.getIndigo();
+         DataRow inputRow = it.next();
+         RowKey key = inputRow.getKey();
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
+         IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
+               .getIndigoObject();
+         int i;
 
-         indigo.setOption("embedding-uniqueness", _settings.uniqueness.name()
-               .toLowerCase());
+         for (i = 0; i < inputRow.getNumCells(); i++)
+            cells[i] = inputRow.getCell(i);
 
-         while (it.hasNext())
+         try
          {
-            DataRow inputRow = it.next();
-            RowKey key = inputRow.getKey();
-            DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-            IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
-                  .getIndigoObject();
-            int i;
-
-            for (i = 0; i < inputRow.getNumCells(); i++)
-               cells[i] = inputRow.getCell(i);
-
+            IndigoPlugin.lock();
+            indigo.setOption("embedding-uniqueness", _settings.uniqueness.name()
+                  .toLowerCase());
             IndigoObject matcher = indigo.substructureMatcher(io);
 
             cells[i++] = new IntCell(matcher.countMatches(query));
-
-            outputContainer.addRowToTable(new DefaultRow(key, cells));
-            exec.checkCanceled();
-            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-                  "Adding row " + rowNumber);
-
-            rowNumber++;
          }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+
+         outputContainer.addRowToTable(new DefaultRow(key, cells));
+         exec.checkCanceled();
+         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+               "Adding row " + rowNumber);
+
+         rowNumber++;
       }
 
       outputContainer.close();

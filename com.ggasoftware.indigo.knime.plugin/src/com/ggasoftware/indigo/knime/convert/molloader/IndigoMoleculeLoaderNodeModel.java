@@ -138,76 +138,88 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      try
+      Indigo indigo = IndigoPlugin.getIndigo();
+
+      while (it.hasNext())
       {
-         IndigoPlugin.lock();
-         Indigo indigo = IndigoPlugin.getIndigo();
+         DataRow inputRow = it.next();
+         RowKey key = inputRow.getKey();
+         DataCell[] cells;
 
-         indigo.setOption("ignore-stereochemistry-errors",
-               _settings.ignoreStereochemistryErrors);
-         indigo.setOption("treat-x-as-pseudoatom",
-               _settings.treatXAsPseudoatom);
+         if (_settings.replaceColumn)
+            cells = new DataCell[inputRow.getNumCells()];
+         else
+            cells = new DataCell[inputRow.getNumCells() + 1];
 
-         while (it.hasNext())
+         DataCell molcell = inputRow.getCell(colIdx);
+         DataCell newcell = null;
+         String message = null;
+
+         try
          {
-            DataRow inputRow = it.next();
-            RowKey key = inputRow.getKey();
-            DataCell[] cells;
+            IndigoPlugin.lock();
+            indigo.setOption("ignore-stereochemistry-errors",
+                  _settings.ignoreStereochemistryErrors);
+            indigo.setOption("treat-x-as-pseudoatom",
+                  _settings.treatXAsPseudoatom);
 
-            if (_settings.replaceColumn)
-               cells = new DataCell[inputRow.getNumCells()];
+            if (_query)
+               newcell = new IndigoQueryMolCell(molcell.toString(), (molcell.getType().equals(SmartsCell.TYPE)));
             else
-               cells = new DataCell[inputRow.getNumCells() + 1];
-
-            try
+               newcell = new IndigoMolCell(indigo.loadMolecule(molcell.toString()));
+         }
+         catch (IndigoException e)
+         {
+            message = e.getMessage();
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+         
+         if (newcell != null)
+         {
+            for (int i = 0; i < inputRow.getNumCells(); i++)
             {
-               DataCell molcell = inputRow.getCell(colIdx);
-               
-               for (int i = 0; i < inputRow.getNumCells(); i++)
-               {
-                  if (_settings.replaceColumn && i == newColIdx)
-                  {
-                     if (_query)
-                        cells[i] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType().equals(SmartsCell.TYPE)));
-                     else
-                        cells[i] = new IndigoMolCell(indigo.loadMolecule(molcell.toString()));
-                  }
-                  else
-                     cells[i] = inputRow.getCell(i);
-               }
-               if (!_settings.replaceColumn)
+               if (_settings.replaceColumn && i == newColIdx)
                {
                   if (_query)
-                     cells[newColIdx] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType() == SmartsCell.TYPE));
+                     cells[i] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType().equals(SmartsCell.TYPE)));
                   else
-                     cells[newColIdx] = new IndigoMolCell(indigo.loadMolecule(molcell.toString()));
+                     cells[i] = newcell;
                }
-
-               validOutputContainer.addRowToTable(new DefaultRow(key, cells));
+               else
+                  cells[i] = inputRow.getCell(i);
             }
-            catch (IndigoException e)
+            if (!_settings.replaceColumn)
             {
-               for (int i = 0; i < inputRow.getNumCells(); i++)
-               {
-                  if (_settings.replaceColumn && i == newColIdx)
-                     cells[i] = new StringCell(e.getMessage());
-                  else
-                     cells[i] = inputRow.getCell(i);
-               }
-               if (!_settings.replaceColumn)
-                  cells[newColIdx] = new StringCell(e.getMessage());
-               invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
+               if (_query)
+                  cells[newColIdx] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType() == SmartsCell.TYPE));
+               else
+                  cells[newColIdx] = newcell;
             }
-            exec.checkCanceled();
-            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-                  "Adding row " + rowNumber);
 
-            rowNumber++;
+            validOutputContainer.addRowToTable(new DefaultRow(key, cells));
          }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
+         else
+         {
+            for (int i = 0; i < inputRow.getNumCells(); i++)
+            {
+               if (_settings.replaceColumn && i == newColIdx)
+                  cells[i] = new StringCell(message);
+               else
+                  cells[i] = inputRow.getCell(i);
+            }
+            if (!_settings.replaceColumn)
+               cells[newColIdx] = new StringCell(message);
+            invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
+         }
+         
+         exec.checkCanceled();
+         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+               "Adding row " + rowNumber);
+
+         rowNumber++;
       }
 
       validOutputContainer.close();
