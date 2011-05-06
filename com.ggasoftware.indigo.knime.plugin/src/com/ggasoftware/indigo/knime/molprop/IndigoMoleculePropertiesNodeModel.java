@@ -171,6 +171,31 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
       
+      calculators.put("Number of aromatic rings", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+            
+            io = io.clone();
+            io.aromatize();
+            
+            for (IndigoObject ring : io.iterateSSSR())
+            {
+               boolean arom = true;
+               
+               for (IndigoObject bond : ring.iterateBonds())
+                  if (bond.bondOrder() != 4)
+                     arom = false;
+               
+               if (arom)
+                  count++;
+            }
+            
+            return new IntCell(count);
+         }
+      });
+      
       calculators.put("Number of heavy atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
@@ -309,7 +334,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
             return new StringCell(io.grossFormula());
          }
       });
-
+      
       for (String key : calculators.keySet())
       {
          DataType type = ((PropertyCalculator) calculators.get(key)).type();
