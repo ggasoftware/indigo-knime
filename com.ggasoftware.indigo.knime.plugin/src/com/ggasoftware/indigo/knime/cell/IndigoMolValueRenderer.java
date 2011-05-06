@@ -37,7 +37,7 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    private static final Font NO_2D_FONT = new Font(Font.SANS_SERIF,
          Font.ITALIC, 12);
 
-   IndigoObject _object;
+   IndigoObject _object = null;
 
    private static IndigoRenderer renderer = new IndigoRenderer(
          IndigoPlugin.getIndigo());
@@ -61,10 +61,13 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    @Override
    protected void setValue (final Object value)
    {
+      _object = null;
+      
       if (value instanceof IndigoMolValue)
          _object = ((IndigoMolValue) value).getIndigoObject();
-      if (value instanceof IndigoQueryMolValue)
+      else if (value instanceof IndigoQueryMolValue)
          _object = ((IndigoQueryMolValue) value).getIndigoObject();
+      /*
       else if (value instanceof SmilesValue)
          _object = IndigoPlugin.getIndigo().loadMolecule(
                ((SmilesValue) value).getSmilesValue());
@@ -73,7 +76,7 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
                ((MolValue) value).getMolValue());
       else if (value instanceof SdfValue)
          _object = IndigoPlugin.getIndigo().loadMolecule(
-               ((SdfValue) value).getSdfValue());
+               ((SdfValue) value).getSdfValue());*/
    }
 
    /**
