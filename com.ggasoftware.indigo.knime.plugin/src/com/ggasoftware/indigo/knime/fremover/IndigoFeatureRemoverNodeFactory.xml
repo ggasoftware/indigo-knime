@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="../indigo.png" type="Manipulator">
+    <name>Feature Remover</name>
+    <shortDescription>
+    </shortDescription>    
+    <fullDescription>
+        <intro><p>This nodes removes selected features from the given molecules</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+        <option name="Molecule Column">The column that contains the molecules.</option>
+        <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+        
+        <option name="Isotopes">Discard the isotopes in the structure</option>
+        <option name="Chirality">Remove information about chiral centers</option>
+        <option name="Cis-trans">Remove information about cis-trans double bonds</option>
+        <option name="Highlighting">Reset the highlighting on the molecule's atoms and bonds</option>
+        <option name="Pseudoatoms">Remove the pseudoatoms, placing implicit hydrogens instead</option>
+        <option name="R-sites">Remove the R-sites, placing implicit hydrogens instead</option>
+        <option name="Attachment points">Remove the R-group fragment's attachment points, placing implicit hydrogens instead</option>
+        <option name="Repeating units">Make the polymer non-polymer by removing its brackets</option>
+        <option name="Data S-groups">Remove attached and detached data sgroups</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="In-Port name">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Out-Port name">The same as input, but with selected features removed</outPort>
+    </ports>    
+</knimeNode>
