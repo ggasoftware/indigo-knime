@@ -22,6 +22,9 @@ import java.io.IOException;
 import org.knime.core.data.*;
 import org.knime.core.node.NodeLogger;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 @SuppressWarnings("serial")
 public class IndigoMolCell extends DataCell implements IndigoMolValue
 {
@@ -40,18 +43,9 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
          try
          {
             IndigoPlugin.lock();
-            IndigoObject io = cell.getIndigoObject();
-            try
-            {
-               if (!io.hasCoord())
-                  io.layout();
-               io.markEitherCisTrans();
-            }
-            catch (IndigoException e)
-            {
-            }
-            
-            out.writeUTF(io.molfile());
+            BASE64Encoder encoder = new BASE64Encoder();
+            String str = encoder.encodeBuffer(cell.getIndigoObject().serialize());
+            out.writeUTF(str);            
          }
          catch (IndigoException ex)
          {
@@ -72,14 +66,16 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       {
          String str = input.readUTF();
 
+         BASE64Decoder decoder = new BASE64Decoder();
+         byte[] buf = decoder.decodeBuffer(str);
          try
          {
             IndigoPlugin.lock();
-            return new IndigoMolCell(IndigoPlugin.getIndigo().loadMolecule(str));
+            return new IndigoMolCell(IndigoPlugin.getIndigo().unserialize(buf));
          }
          catch (IndigoException ex)
          {
-            LOGGER.error("Error while deserializing Indigo object", ex);
+            LOGGER.error("Error while unserializing Indigo object", ex);
             throw new IOException(ex.getMessage());
          }
          finally
