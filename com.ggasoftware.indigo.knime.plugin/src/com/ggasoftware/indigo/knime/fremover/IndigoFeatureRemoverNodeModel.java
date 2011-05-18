@@ -51,7 +51,8 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
          {
             io.clearStereocenters();
             for (IndigoObject bond : io.iterateBonds())
-               bond.resetStereo();
+               if (bond.bondOrder() == 1)
+                  bond.resetStereo();
          }
       });
       removers.put("Cis-trans", new Remover ()

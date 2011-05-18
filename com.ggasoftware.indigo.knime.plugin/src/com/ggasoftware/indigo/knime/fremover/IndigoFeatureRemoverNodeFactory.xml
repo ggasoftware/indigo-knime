@@ -22,7 +22,7 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Out-Port name">The same as input, but with selected features removed</outPort>
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Output molecules">The same as input, but with selected features removed</outPort>
     </ports>    
 </knimeNode>
