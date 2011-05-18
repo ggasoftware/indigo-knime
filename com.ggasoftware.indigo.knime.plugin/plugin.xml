@@ -22,10 +22,10 @@
 	</extension>
 	
  	<extension point="org.knime.workbench.repository.categories">
-      <category description="Indigo" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="indigo" name="Indigo" path="/community" />
+      <category description="Indigo" icon="icons/indigo.png" level-id="indigo" name="Indigo" path="/community" />
  	</extension>
  	<extension point="org.knime.workbench.repository.categories">
-      <category description="Translators" icon="src/com/ggasoftware/indigo/knime/indigo.png" level-id="translators" name="Translators" path="/community/indigo" />
+      <category description="Translators" icon="icons/indigo-translators.png" level-id="translators" name="Translators" path="/community/indigo" />
  	</extension>
  	<extension point="org.eclipse.equinox.preferences.preferences">
  		<initializer class="com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer"/>

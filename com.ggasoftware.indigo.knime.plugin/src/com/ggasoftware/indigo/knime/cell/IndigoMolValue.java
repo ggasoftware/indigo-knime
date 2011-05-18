@@ -32,7 +32,7 @@ public interface IndigoMolValue extends DataValue
    {
       /** Singleton icon to be used to display this cell type. */
       private static final Icon ICON = loadIcon(
-            com.ggasoftware.indigo.knime.cell.IndigoMolValue.class, "../indigo.png");
+            com.ggasoftware.indigo.knime.cell.IndigoMolValue.class, "/../indigo.png");
 
       /** Only subclasses are allowed to instantiate this class. */
       protected IndigoMolUtilityFactory()
