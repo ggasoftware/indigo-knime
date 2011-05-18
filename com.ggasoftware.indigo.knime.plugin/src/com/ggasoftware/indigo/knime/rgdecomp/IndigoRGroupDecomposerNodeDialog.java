@@ -44,6 +44,7 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
    private final JTextField _newColPrefix = new JTextField(10);
+   private final JTextField _newScafColName = new JTextField(10);
    private final JCheckBox _aromatize = new JCheckBox("Aromatize");
    private final JSpinner _maxRGroups = new JSpinner(new SpinnerNumberModel(6, 1, 32, 1));
    
@@ -87,6 +88,12 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       
       c.gridy++;
       c.gridx = 0;
+      p.add(new JLabel("Scaffold column name"), c);
+      c.gridx = 1;
+      p.add(_newScafColName, c);
+      
+      c.gridy++;
+      c.gridx = 0;
       p.add(_aromatize, c);
       
       addTab("Standard settings", p);   }
@@ -100,6 +107,7 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       _molColumn.update(specs[0], _settings.colName);
       _molColumn2.update(specs[1], _settings.colName2);
       _newColPrefix.setText(_settings.newColPrefix);
+      _newScafColName.setText(_settings.newScafColName);
       _aromatize.setSelected(_settings.aromatize);
       _maxRGroups.setValue(_settings.numRGroups);
    }
@@ -111,6 +119,7 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       _settings.colName = _molColumn.getSelectedColumn();
       _settings.colName2 = _molColumn2.getSelectedColumn();
       _settings.newColPrefix = _newColPrefix.getText();
+      _settings.newScafColName = _newScafColName.getText();
       _settings.aromatize = _aromatize.isSelected();
       _settings.numRGroups = ((Number)_maxRGroups.getValue()).intValue();
       

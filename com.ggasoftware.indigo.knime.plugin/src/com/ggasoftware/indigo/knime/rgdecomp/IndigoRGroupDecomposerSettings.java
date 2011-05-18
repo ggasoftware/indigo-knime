@@ -23,6 +23,7 @@ public class IndigoRGroupDecomposerSettings
    public String colName;
    public String colName2 ;
    public String newColPrefix = "R-Group #";
+   public String newScafColName = "Scaffold";
    public boolean aromatize = true;
    public int numRGroups = 6;
 
@@ -32,6 +33,7 @@ public class IndigoRGroupDecomposerSettings
       colName = settings.getString("colName");
       colName2 = settings.getString("colName2");
       newColPrefix = settings.getString("newColPrefix");
+      newScafColName = settings.getString("newScafColName");
       aromatize = settings.getBoolean("aromatize");
       numRGroups = settings.getInt("numRGroups");
    }
@@ -41,6 +43,7 @@ public class IndigoRGroupDecomposerSettings
       colName = settings.getString("colName", null);
       colName2 = settings.getString("colName2", null);
       newColPrefix = settings.getString("newColPrefix", "R-Group #");
+      newScafColName = settings.getString("newScafColName", "Scaffold");
       aromatize = settings.getBoolean("aromatize", true);
       numRGroups = settings.getInt("numRGroups", 6);
    }
@@ -53,6 +56,8 @@ public class IndigoRGroupDecomposerSettings
          settings.addString("colName2", colName2);
       if (newColPrefix != null)
          settings.addString("newColPrefix", newColPrefix);
+      if (newScafColName != null)
+    	  settings.addString("newScafColName", newScafColName);
       if (numRGroups > 0)
          settings.addInt("numRGroups", numRGroups);
       settings.addBoolean("aromatize", aromatize);

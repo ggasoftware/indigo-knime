@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
-import org.knime.chem.types.*;
 import org.knime.core.data.renderer.*;
 import org.knime.core.node.NodeLogger;
 

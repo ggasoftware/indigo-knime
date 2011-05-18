@@ -22,22 +22,16 @@ import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
-import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
-import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
-import com.ggasoftware.indigo.knime.cell.IndigoQueryMolCell;
-import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.*;
+import com.ggasoftware.indigo.knime.cell.*;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
-import com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterNodeModel;
 
 public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
 {
-
    IndigoRGroupDecomposerSettings _settings = new IndigoRGroupDecomposerSettings();
    
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoSubstructureMatchCounterNodeModel.class);
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoRGroupDecomposerNodeModel.class);
    
    /**
     * Constructor for the node model.
@@ -49,16 +43,18 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
 
    protected DataTableSpec calcDataTableSpec (DataTableSpec inSpec)
    {
-      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + _settings.numRGroups];
+      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + _settings.numRGroups + 1];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
+      specs[inSpec.getNumColumns()] = new DataColumnSpecCreator(_settings.newScafColName, IndigoMolCell.TYPE).createSpec();
+      
       for (i = 1; i <= _settings.numRGroups; i++)
-         specs[inSpec.getNumColumns() + i - 1] =
-            new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoQueryMolCell.TYPE).createSpec();
+         specs[inSpec.getNumColumns() + i] =
+            new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoMolCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
    }
@@ -107,7 +103,6 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
       {
          IndigoPlugin.lock();
          Indigo indigo = IndigoPlugin.getIndigo();
-
          IndigoObject arr = indigo.createArray();
          
          CloseableRowIterator it = inData[0].iterator();
@@ -133,14 +128,16 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
       {
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + _settings.numRGroups];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + _settings.numRGroups + 1];
          int i;
 
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
 
+         cells[inputRow.getNumCells()] = DataType.getMissingCell();
+         
          for (i = 1; i <= _settings.numRGroups; i++)
-            cells[inputRow.getNumCells() + i - 1] =  DataType.getMissingCell();
+            cells[inputRow.getNumCells() + i] =  DataType.getMissingCell();
          
          try
          {
@@ -161,17 +158,20 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
                   IndigoObject frag = frag_iter.next();
                   int index = rg.index();
                   if (index >= 1 && index <= _settings.numRGroups)
-                     cells[inputRow.getNumCells() + index - 1] = new IndigoQueryMolCell(frag.molfile(), false);
+                     cells[inputRow.getNumCells() + index] = new IndigoMolCell(frag.clone());
                   else
                      LOGGER.warn("rgroup index " + index + " is out of range for the given settings");
+                  frag.remove();
                }
             }
+            
+            cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
          }
          finally
          {
             IndigoPlugin.unlock();
          }
-       
+         
          outputContainer.addRowToTable(new DefaultRow(key, cells));
       }
       
@@ -241,8 +241,10 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          throw new InvalidSettingsException("query column name must be specified");
       if (s.newColPrefix == null || s.newColPrefix.length() < 1)
          throw new InvalidSettingsException("prefix must be specified");
+      if (s.newScafColName == null || s.newScafColName.length() < 1)
+    	  throw new InvalidSettingsException("scaffold column name must be specified");
       if (s.numRGroups < 1 || s.numRGroups > 32)
-         throw new InvalidSettingsException("R-Groups number should be in range [1,32]");
+         throw new InvalidSettingsException("R-Groups number should be in range 1-32");
    }
 
    /**
