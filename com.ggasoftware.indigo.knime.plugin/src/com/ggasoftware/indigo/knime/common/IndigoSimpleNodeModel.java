@@ -216,6 +216,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    {
       IndigoSimpleSettings s = new IndigoSimpleSettings();
       s.loadSettings(settings);
+      if (s.colName == null || s.colName.length() < 1)
+         throw new InvalidSettingsException("No column name given");
       if (!s.replaceColumn && ((s.newColName == null) || (s.newColName.length() < 1)))
          throw new InvalidSettingsException("No name for new column given");
    }

@@ -470,7 +470,12 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    protected void validateSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
+      IndigoMoleculePropertiesSettings s = new IndigoMoleculePropertiesSettings();
+      s.loadSettings(settings);
+      if (s.colName == null || s.colName.length() < 1)
+         throw new InvalidSettingsException("column name must be specified");
    }
+   
 
    /**
     * {@inheritDoc}

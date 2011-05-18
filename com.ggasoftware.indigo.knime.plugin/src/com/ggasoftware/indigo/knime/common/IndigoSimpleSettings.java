@@ -18,7 +18,7 @@ import org.knime.core.node.*;
 
 public class IndigoSimpleSettings
 {
-   public String colName = "Molecule";
+   public String colName = null;
    public boolean replaceColumn = true;
    public String newColName;
 
@@ -48,7 +48,7 @@ public class IndigoSimpleSettings
    {
       colName = settings.getString("colName", null);
       replaceColumn = settings.getBoolean("replaceColumn", true);
-      newColName = settings.getString("newColName", "");
+      newColName = settings.getString("newColName", null);
    }
 
    /**
@@ -59,8 +59,10 @@ public class IndigoSimpleSettings
     */
    public void saveSettings (final NodeSettingsWO settings)
    {
-      settings.addString("colName", colName);
+      if (colName != null)
+         settings.addString("colName", colName);
       settings.addBoolean("replaceColumn", replaceColumn);
-      settings.addString("newColName", newColName);
+      if (newColName != null)
+         settings.addString("newColName", newColName);
    }
 }
