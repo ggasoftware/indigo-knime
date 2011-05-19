@@ -96,7 +96,8 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(_aromatize, c);
       
-      addTab("Standard settings", p);   }
+      addTab("Standard settings", p);
+   }
    
    @Override
    protected void loadSettingsFrom (final NodeSettingsRO settings,

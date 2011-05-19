@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="../indigo.png" type="Other">
+    <name>Component Separator</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node decomposes the input molecules into connected components and writes the components
+               into the output table columns. The biggest component goes into the first column, the
+               second biggest component goes into the second column, and so on.</intro>
+        
+        <option name="Indigo column">The column that contains Indigo molecules.</option>
+        <option name="Maximum number of components">This number of columns is added to the output table. If the number of
+         components in some molecule in the input set exceeds the limit, a warning is printed.</option>
+		<option name="New columns prefix">Each of new columns will be named with this prefix + number (1,2,3,..)</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Connected components">The same as input, plus the columns with the connected components</outPort>
+    </ports>    
+</knimeNode>

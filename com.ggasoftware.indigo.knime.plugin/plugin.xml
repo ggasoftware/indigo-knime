@@ -20,6 +20,7 @@
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.scaffold.IndigoScaffoldFinderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.rgdecomp.IndigoRGroupDecomposerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoRGroupDecomposerNodeFactory"/>
 		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory" id="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory"/>
+		<node category-path="/community/indigo" factory-class="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory" id="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory"/>
 </extension>
 	
  	<extension point="org.knime.workbench.repository.categories">

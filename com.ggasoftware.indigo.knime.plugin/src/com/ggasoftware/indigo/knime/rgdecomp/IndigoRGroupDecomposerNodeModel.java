@@ -183,7 +183,6 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
       outputContainer.close();
       outputContainer2.close();
       return new BufferedDataTable[] { outputContainer.getTable(), outputContainer2.getTable() };
-      
    }
 
    /**
