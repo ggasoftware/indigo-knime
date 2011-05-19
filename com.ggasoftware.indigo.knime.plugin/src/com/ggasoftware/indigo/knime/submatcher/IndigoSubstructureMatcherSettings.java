@@ -26,6 +26,7 @@ public class IndigoSubstructureMatcherSettings
    public String colName;
    public String colName2;
    public Mode mode = Mode.Normal;
+   public boolean exact = false;
    public boolean align = false;
    public boolean highlight = false;
    public boolean appendColumn = false;
@@ -38,6 +39,7 @@ public class IndigoSubstructureMatcherSettings
       colName2 = settings.getString("colName2");
       newColName = settings.getString("newColName", null);
       align = settings.getBoolean("align");
+      exact = settings.getBoolean("exact");
       highlight = settings.getBoolean("highlight");
       appendColumn = settings.getBoolean("appendColumn");
       mode = Mode.valueOf(settings.getString("mode"));
@@ -50,6 +52,7 @@ public class IndigoSubstructureMatcherSettings
       newColName = settings.getString("newColName", null);
       mode = Mode.valueOf(settings.getString("mode", Mode.Normal.name()));
       align = settings.getBoolean("align", false);
+      exact = settings.getBoolean("exact", false);
       highlight = settings.getBoolean("highlight", false);
       appendColumn = settings.getBoolean("appendColumn", false);
    }
@@ -65,6 +68,7 @@ public class IndigoSubstructureMatcherSettings
       if (mode != null)
          settings.addString("mode", mode.name());
       settings.addBoolean("appendColumn", appendColumn);
+      settings.addBoolean("exact", exact);
       settings.addBoolean("align", align);
       settings.addBoolean("highlight", highlight);
    }

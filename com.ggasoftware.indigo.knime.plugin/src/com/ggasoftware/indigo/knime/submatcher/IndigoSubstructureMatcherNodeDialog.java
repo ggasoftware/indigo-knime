@@ -39,6 +39,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
    private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
+   private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
    private final JCheckBox _align = new JCheckBox("Align matched structures");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -95,6 +96,10 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       
       c.gridy++;
       c.gridx = 0;
+      p.add(_exact, c);
+      
+      c.gridy++;
+      c.gridx = 0;
       p.add(_highlight, c);
 
       c.gridy++;
@@ -129,6 +134,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _molColumn2.update(specs[1], _settings.colName2);
       _newColName.setText(_settings.newColName);
       _align.setSelected(_settings.align);
+      _exact.setSelected(_settings.exact);
       _highlight.setSelected(_settings.highlight);
       _appendColumn.setSelected(_settings.appendColumn);
       _mode.setSelectedItem(_settings.mode);
@@ -143,6 +149,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _settings.appendColumn = _appendColumn.isSelected();
       _settings.highlight = _highlight.isSelected();
       _settings.align = _align.isSelected();
+      _settings.exact = _exact.isSelected();
       _settings.newColName = _newColName.getText();
       _settings.mode = (Mode)_mode.getSelectedItem();
 

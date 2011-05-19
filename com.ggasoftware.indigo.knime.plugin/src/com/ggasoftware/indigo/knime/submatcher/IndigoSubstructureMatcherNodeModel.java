@@ -128,23 +128,52 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          {
             IndigoPlugin.lock();
             target = target.clone();
-            if (_settings.mode == Mode.Resonance)
-               mode = "RES";
-            else if (_settings.mode == Mode.Tautomer)
-            {
-               mode = "TAU R* R-C";
-   
-               indigo.clearTautomerRules();
-               indigo.setTautomerRule(1, "N,O,P,S,As,Se,Sb,Te", "N,O,P,S,As,Se,Sb,Te");
-               indigo.setTautomerRule(2, "0C", "N,O,P,S");
-               indigo.setTautomerRule(3, "1C", "N,O");
-            }
             
-            match = indigo.substructureMatcher(target, mode).match(query);
+            if (!_settings.exact || target.countHeavyAtoms() <= query.countAtoms())
+            {
+               if (_settings.mode == Mode.Resonance)
+                  mode = "RES";
+               else if (_settings.mode == Mode.Tautomer)
+               {
+                  mode = "TAU R* R-C";
+      
+                  indigo.clearTautomerRules();
+                  indigo.setTautomerRule(1, "N,O,P,S,As,Se,Sb,Te", "N,O,P,S,As,Se,Sb,Te");
+                  indigo.setTautomerRule(2, "0C", "N,O,P,S");
+                  indigo.setTautomerRule(3, "1C", "N,O");
+               }
+            
+               match = indigo.substructureMatcher(target, mode).match(query);
+            }
          }
          finally
          {
             IndigoPlugin.unlock();
+         }
+         
+         if (match != null && _settings.exact)
+         {
+            // test that the target does not have unmapped heavy atoms
+            int nmapped_heavy = 0;
+            
+            try
+            {
+               IndigoPlugin.lock();
+               for (IndigoObject atom : query.iterateAtoms())
+               {
+                  IndigoObject mapped = match.mapAtom(atom);
+                  if (mapped != null)
+                     if (mapped.isRSite() || mapped.isPseudoatom() || mapped.atomicNumber() > 1)
+                        nmapped_heavy++;
+               }
+               
+               if (nmapped_heavy < target.countHeavyAtoms())
+                  match = null;
+            }
+            finally
+            {
+               IndigoPlugin.unlock();
+            }
          }
          
          if (match != null)
