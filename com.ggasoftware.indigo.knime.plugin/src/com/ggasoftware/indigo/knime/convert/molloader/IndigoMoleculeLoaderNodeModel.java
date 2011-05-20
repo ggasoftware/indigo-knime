@@ -194,7 +194,7 @@ public class IndigoMoleculeLoaderNodeModel extends NodeModel
             if (!_settings.replaceColumn)
             {
                if (_query)
-                  cells[newColIdx] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType() == SmartsCell.TYPE));
+                  cells[newColIdx] = new IndigoQueryMolCell(molcell.toString(), (molcell.getType().equals(SmartsCell.TYPE)));
                else
                   cells[newColIdx] = newcell;
             }
