@@ -10,7 +10,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.knime.workbench.repository,
  org.knime.base,
  org.knime.chem.types;bundle-version="2.3.0"
-Export-Package: com.ggasoftware.indigo.knime
+Export-Package: com.ggasoftware.indigo,
+ com.ggasoftware.indigo.knime,
+ com.ggasoftware.indigo.knime.cell,
+ com.ggasoftware.indigo.knime.common,
+ com.ggasoftware.indigo.knime.plugin,
+ com.sun.jna
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.ggasoftware.indigo.knime.plugin.IndigoPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
