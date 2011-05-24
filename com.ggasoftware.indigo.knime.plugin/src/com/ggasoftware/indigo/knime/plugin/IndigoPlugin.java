@@ -60,6 +60,7 @@ public class IndigoPlugin extends AbstractUIPlugin
    private static boolean _coloring;
    private static int _molImageWidth;
    private static int _molImageHeight;
+   private static boolean _enableRendering;
 
    @Override
    public void start (final BundleContext context) throws Exception
@@ -82,9 +83,12 @@ public class IndigoPlugin extends AbstractUIPlugin
                _molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
             else if (event.getProperty().equals(PREF_MOL_IMAGE_HEIGHT))
                _molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
+            else if (event.getProperty().equals(PREF_ENABLE_RENDERER))
+               _enableRendering = pStore.getBoolean(PREF_ENABLE_RENDERER);
          }
       });
 
+      _enableRendering = pStore.getBoolean(PREF_ENABLE_RENDERER);
       _bondLength = pStore.getInt(PREF_BOND_LENGTH);
       _showImplicitHydrogens = pStore.getBoolean(PREF_SHOW_IMPLICIT_HYDROGENS);
       _coloring = pStore.getBoolean(PREF_COLORING);
@@ -127,5 +131,10 @@ public class IndigoPlugin extends AbstractUIPlugin
    public int molImageHeight ()
    {
       return _molImageHeight;
+   }
+   
+   public boolean isRenderingEnabled ()
+   {
+      return _enableRendering;
    }
 }

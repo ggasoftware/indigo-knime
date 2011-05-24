@@ -15,7 +15,11 @@
 package com.ggasoftware.indigo.knime.plugin;
 
 import org.eclipse.jface.preference.*;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.*;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.*;
 
 public class IndigoPreferencePage extends FieldEditorPreferencePage implements
@@ -38,26 +42,49 @@ public class IndigoPreferencePage extends FieldEditorPreferencePage implements
    @Override
    protected void createFieldEditors ()
    {
-      Composite parent = getFieldEditorParent();
+      final Composite parent = getFieldEditorParent();
 
-      addField(new BooleanFieldEditor(
-            IndigoPreferenceInitializer.PREF_COLORING, "Colored rendering",
-            parent));
+      final BooleanFieldEditor enableRenderer = new BooleanFieldEditor(IndigoPreferenceInitializer.PREF_ENABLE_RENDERER, "Enable rendering", parent);
+      final BooleanFieldEditor coloredRendering = new BooleanFieldEditor(IndigoPreferenceInitializer.PREF_COLORING, "Colored rendering", parent);
+      final BooleanFieldEditor showImplH = new BooleanFieldEditor(IndigoPreferenceInitializer.PREF_SHOW_IMPLICIT_HYDROGENS, "Show implicit hydrogens", parent);
+      final IntegerFieldEditor bondLength = new IntegerFieldEditor(IndigoPreferenceInitializer.PREF_BOND_LENGTH, "Desired bond length in pixels", parent);
+      final IntegerFieldEditor imageWidth = new IntegerFieldEditor(IndigoPreferenceInitializer.PREF_MOL_IMAGE_WIDTH, "Molecule image width in pixels", parent);
+      final IntegerFieldEditor imageHeight = new IntegerFieldEditor(IndigoPreferenceInitializer.PREF_MOL_IMAGE_HEIGHT,"Molecule image height in pixels", parent);
 
-      addField(new BooleanFieldEditor(
-            IndigoPreferenceInitializer.PREF_SHOW_IMPLICIT_HYDROGENS,
-            "Show implicit hydrogens", parent));
+      ((Button)enableRenderer.getDescriptionControl(parent)).addSelectionListener(new SelectionListener()
+      {
+         @Override
+         public void widgetSelected(SelectionEvent e)
+         {
+            boolean enabled = enableRenderer.getBooleanValue();
+            
+            coloredRendering.setEnabled(enabled, parent);
+            showImplH.setEnabled(enabled, parent);
+            bondLength.setEnabled(enabled, parent);
+            imageWidth.setEnabled(enabled, parent);
+            imageHeight.setEnabled(enabled, parent);            
+         }
 
-      addField(new IntegerFieldEditor(
-            IndigoPreferenceInitializer.PREF_BOND_LENGTH,
-            "Desired bond length in pixels", parent));
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e)
+         {
+         }
+      });
+      
+      addField(enableRenderer);
+      
+      boolean enabled = IndigoPlugin.getDefault().getPreferenceStore().getBoolean(IndigoPreferenceInitializer.PREF_ENABLE_RENDERER);
+      
+      addField(coloredRendering);
+      addField(showImplH);
+      addField(bondLength);
+      addField(imageWidth);
+      addField(imageHeight);
 
-      addField(new IntegerFieldEditor(
-            IndigoPreferenceInitializer.PREF_MOL_IMAGE_WIDTH,
-            "Molecule image width in pixels", parent));
-
-      addField(new IntegerFieldEditor(
-            IndigoPreferenceInitializer.PREF_MOL_IMAGE_HEIGHT,
-            "Molecule image height in pixels", parent));
+      coloredRendering.setEnabled(enabled, parent);
+      showImplH.setEnabled(enabled, parent);
+      bondLength.setEnabled(enabled, parent);
+      imageWidth.setEnabled(enabled, parent);
+      imageHeight.setEnabled(enabled, parent);
    }
 }

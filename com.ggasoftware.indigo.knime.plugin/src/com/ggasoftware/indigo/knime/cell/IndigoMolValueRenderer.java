@@ -38,8 +38,7 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
 
    IndigoObject _object = null;
 
-   private static IndigoRenderer renderer = new IndigoRenderer(
-         IndigoPlugin.getIndigo());
+   private static IndigoRenderer renderer = null;
 
    /**
     * Instantiates new renderer.
@@ -91,14 +90,25 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
          g.drawString("?", 2, 14);
          return;
       }
+      
+      if (!IndigoPlugin.getDefault().isRenderingEnabled())
+      {
+         g.setFont(NO_2D_FONT);
+         g.drawString("rendering disabled by user preference", 2, 14);
+         return;
+      }
+      
       Dimension d = getSize();
       byte[] buf;
 
       try
       {
          IndigoPlugin.lock();
-
+         
          Indigo indigo = IndigoPlugin.getIndigo();
+
+         if (renderer == null)
+            renderer = new IndigoRenderer(indigo);
 
          indigo.setOption("render-image-size", d.width, d.height);
          indigo.setOption("render-output-format", "png");

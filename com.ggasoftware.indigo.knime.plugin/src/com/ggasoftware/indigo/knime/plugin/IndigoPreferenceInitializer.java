@@ -24,6 +24,7 @@ public class IndigoPreferenceInitializer extends AbstractPreferenceInitializer
    public static final String PREF_COLORING = "knime.indigo.coloring";
    public static final String PREF_MOL_IMAGE_WIDTH = "knime.indigo.moleculeImageWidth";
    public static final String PREF_MOL_IMAGE_HEIGHT = "knime.indigo.moleculeImageHeight";
+   public static final String PREF_ENABLE_RENDERER = "knime.indigo.enableRenderer";
 
    @Override
    public void initializeDefaultPreferences ()
@@ -35,5 +36,6 @@ public class IndigoPreferenceInitializer extends AbstractPreferenceInitializer
       store.setDefault(PREF_COLORING, true);
       store.setDefault(PREF_MOL_IMAGE_WIDTH, 250);
       store.setDefault(PREF_MOL_IMAGE_HEIGHT, 150);
+      store.setDefault(PREF_ENABLE_RENDERER, true);
    }
 }
