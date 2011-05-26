@@ -22,7 +22,7 @@ public class IndigoMoleculeSaverSettings
 {
    public enum Format
    {
-      Mol, Smiles, CanonicalSmiles, CML
+      Mol, SDF, Smiles, CanonicalSmiles, CML
    }
 
    public String colName;

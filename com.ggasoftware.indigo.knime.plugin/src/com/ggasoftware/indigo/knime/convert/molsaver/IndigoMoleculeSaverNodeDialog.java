@@ -70,10 +70,10 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
       p.add(new JLabel("Destination format   "), c);
       c.gridx = 1;
       if (query)
-         _destFormat = new JComboBox(new Object[] {Format.Mol, Format.Smiles});
+         _destFormat = new JComboBox(new Object[] {Format.Mol, Format.SDF, Format.Smiles});
       else
          _destFormat = new JComboBox(new Object[] {
-               Format.Mol, Format.Smiles, Format.CanonicalSmiles, Format.CML });
+               Format.Mol, Format.SDF, Format.Smiles, Format.CanonicalSmiles, Format.CML });
       p.add(_destFormat, c);
       
       c.gridy++;
@@ -87,7 +87,7 @@ public class IndigoMoleculeSaverNodeDialog extends NodeDialogPane
          public void itemStateChanged (ItemEvent arg0)
          {
             Format selected = (Format)_destFormat.getSelectedItem(); 
-            if (selected == Format.CML || selected == Format.Mol)
+            if (selected == Format.CML || selected == Format.Mol || selected == Format.SDF)
                _generateCoords.setEnabled(true);
             else
                _generateCoords.setEnabled(false);

@@ -83,6 +83,8 @@ public class IndigoMoleculeSaverNodeModel extends IndigoNodeModel
 
          if (_settings.destFormat == Format.Mol)
             type = MolCell.TYPE;
+         else if (_settings.destFormat == Format.SDF)
+            type = SdfCell.TYPE;
          else if (_settings.destFormat == Format.Smiles || _settings.destFormat == Format.CanonicalSmiles)
             type = SmilesCell.TYPE;
          else
@@ -121,7 +123,7 @@ public class IndigoMoleculeSaverNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                
-               if (_settings.destFormat == Format.Mol || _settings.destFormat == Format.CML)
+               if (_settings.destFormat == Format.Mol || _settings.destFormat == Format.SDF ||_settings.destFormat == Format.CML)
                   if (_settings.generateCoords && !io.hasCoord())
                   {
                      io = io.clone();
@@ -130,9 +132,11 @@ public class IndigoMoleculeSaverNodeModel extends IndigoNodeModel
                
                if (_settings.destFormat == Format.Mol)
                   return MolCellFactory.create(io.molfile());
+               if (_settings.destFormat == Format.SDF)
+                  return SdfCellFactory.create(io.molfile());
                if (_settings.destFormat == Format.Smiles)
                   return new SmilesCell(io.smiles());
-               else if (_settings.destFormat == Format.CanonicalSmiles)
+               if (_settings.destFormat == Format.CanonicalSmiles)
                {
                   IndigoObject clone = io.clone();
                   clone.aromatize();
@@ -178,6 +182,8 @@ public class IndigoMoleculeSaverNodeModel extends IndigoNodeModel
       DataType type = null;
       if (_settings.destFormat == Format.Mol)
          type = MolCell.TYPE;
+      else if (_settings.destFormat == Format.SDF)
+         type = SdfCell.TYPE;
       else if (_settings.destFormat == Format.Smiles
             || _settings.destFormat == Format.CanonicalSmiles)
          type = SmilesCell.TYPE;
