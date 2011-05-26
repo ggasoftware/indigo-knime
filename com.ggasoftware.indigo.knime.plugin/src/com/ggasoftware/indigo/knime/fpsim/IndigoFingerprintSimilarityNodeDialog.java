@@ -69,7 +69,7 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
 
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("Column with single template fingerprint"), c);
+      p.add(new JLabel("Column with reference fingerprint(s)"), c);
       c.gridx = 1;
       p.add(_fpColumn2, c);
      
