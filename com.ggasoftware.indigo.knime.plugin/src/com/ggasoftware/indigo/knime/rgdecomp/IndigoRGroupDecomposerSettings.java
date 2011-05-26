@@ -25,7 +25,6 @@ public class IndigoRGroupDecomposerSettings
    public String newColPrefix = "R-Group #";
    public String newScafColName = "Scaffold";
    public boolean aromatize = true;
-   public int numRGroups = 6;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -35,7 +34,6 @@ public class IndigoRGroupDecomposerSettings
       newColPrefix = settings.getString("newColPrefix");
       newScafColName = settings.getString("newScafColName");
       aromatize = settings.getBoolean("aromatize");
-      numRGroups = settings.getInt("numRGroups");
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -45,7 +43,6 @@ public class IndigoRGroupDecomposerSettings
       newColPrefix = settings.getString("newColPrefix", "R-Group #");
       newScafColName = settings.getString("newScafColName", "Scaffold");
       aromatize = settings.getBoolean("aromatize", true);
-      numRGroups = settings.getInt("numRGroups", 6);
    }
 
    public void saveSettings (final NodeSettingsWO settings)
@@ -58,8 +55,6 @@ public class IndigoRGroupDecomposerSettings
          settings.addString("newColPrefix", newColPrefix);
       if (newScafColName != null)
     	  settings.addString("newScafColName", newScafColName);
-      if (numRGroups > 0)
-         settings.addInt("numRGroups", numRGroups);
       settings.addBoolean("aromatize", aromatize);
    }
 }

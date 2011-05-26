@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.knime.core.data.*;
-import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
@@ -26,18 +25,17 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    }
    
    private final IndigoComponentSeparatorSettings _settings = new IndigoComponentSeparatorSettings();
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoComponentSeparatorNodeModel.class);
 
-   protected DataTableSpec calcDataTableSpec (DataTableSpec inSpec)
+   protected DataTableSpec calcDataTableSpec (DataTableSpec inSpec, int ncolumns)
    {
-      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + _settings.maxComponents ];
+      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + ncolumns];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      for (i = 1; i <= _settings.maxComponents; i++)
+      for (i = 1; i <= ncolumns; i++)
          specs[inSpec.getNumColumns() + i - 1] =
             new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoMolCell.TYPE).createSpec();
 
@@ -51,25 +49,49 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec spec = calcDataTableSpec(inData[0].getDataTableSpec());
-      BufferedDataContainer outputContainer = exec.createDataContainer(spec);
-
       int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName);
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      CloseableRowIterator it = inData[0].iterator();
-      while (it.hasNext())
+      int maxcomp = 0;
+      
+      for (DataRow inputRow : inData[0])
       {
-         DataRow inputRow = it.next();
+         DataCell cell = inputRow.getCell(colIdx);
+         
+         if (!cell.isMissing())
+         {
+            try
+            {
+               IndigoPlugin.lock();
+            
+               IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
+               int ncomp = target.countComponents();
+               
+               if (maxcomp < ncomp)
+                  maxcomp = ncomp;
+            }
+            finally
+            {
+               IndigoPlugin.unlock();
+            }
+         }
+         
+      }
+      
+      DataTableSpec spec = calcDataTableSpec(inData[0].getDataTableSpec(), maxcomp);
+      BufferedDataContainer outputContainer = exec.createDataContainer(spec);
+
+      for (DataRow inputRow : inData[0])
+      {
          RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + _settings.maxComponents];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + maxcomp];
          int i;
 
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
 
-         for (i = 0; i < _settings.maxComponents; i++)
+         for (i = 0; i < maxcomp; i++)
             cells[inputRow.getNumCells() + i] =  DataType.getMissingCell();
          
          DataCell cell = inputRow.getCell(colIdx);
@@ -96,14 +118,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
                });
                
                for (i = 0; i < collection.size(); i++)
-               {
-                  if (i >= _settings.maxComponents)
-                  {
-                     LOGGER.warn("component index " + i + " is out of range for the given settings");
-                     break;
-                  }
                   cells[inputRow.getNumCells() + i] = new IndigoMolCell(collection.get(i));
-               }
             }
             finally
             {
@@ -134,7 +149,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
-      return new DataTableSpec[] { calcDataTableSpec(inSpecs[0]) };
+      return new DataTableSpec[1];
    }
 
    /**
@@ -170,8 +185,6 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
          throw new InvalidSettingsException("column name must be specified");
       if (s.newColPrefix == null || s.newColPrefix.length() < 1)
          throw new InvalidSettingsException("prefix must be specified");
-      if (s.maxComponents < 1)
-         throw new InvalidSettingsException("R-Groups number should be greater than zero");
    }
 
    /**

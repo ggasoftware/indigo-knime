@@ -21,9 +21,7 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 
 import org.knime.core.data.DataTableSpec;
@@ -46,7 +44,6 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
    private final JTextField _newColPrefix = new JTextField(10);
    private final JTextField _newScafColName = new JTextField(10);
    private final JCheckBox _aromatize = new JCheckBox("Aromatize");
-   private final JSpinner _maxRGroups = new JSpinner(new SpinnerNumberModel(6, 1, 32, 1));
    
    /**
     * New pane for configuring the IndigoRGroupDecomposer node.
@@ -73,13 +70,6 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_molColumn2, c);
 
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Maximum R-Groups"), c);
-      c.gridx = 1;
-      ((JSpinner.DefaultEditor)_maxRGroups.getEditor()).getTextField().setColumns(2);
-      p.add(_maxRGroups, c);
-      
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("R-Group column prefix"), c);
@@ -110,7 +100,6 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       _newColPrefix.setText(_settings.newColPrefix);
       _newScafColName.setText(_settings.newScafColName);
       _aromatize.setSelected(_settings.aromatize);
-      _maxRGroups.setValue(_settings.numRGroups);
    }
 
    @Override
@@ -122,7 +111,6 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       _settings.newColPrefix = _newColPrefix.getText();
       _settings.newScafColName = _newScafColName.getText();
       _settings.aromatize = _aromatize.isSelected();
-      _settings.numRGroups = ((Number)_maxRGroups.getValue()).intValue();
       
       _settings.saveSettings(settings);
    }   
