@@ -43,40 +43,47 @@ public class IndigoFeatureRemoverNodeDialog extends NodeDialogPane
    {
       super();
 
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridy = 0;
-      c.gridx = 0;
-      p.add(new JLabel("Molecule column"), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
+      JPanel p = new JPanel();
+      p.setLayout(new BoxLayout(p, 1));
+      
+      
+      {
+         JPanel p1 = new JPanel(new GridBagLayout());
+         
+         GridBagConstraints c = new GridBagConstraints();
+   
+         c.anchor = GridBagConstraints.WEST;
+         c.insets = new Insets(2, 2, 2, 2);
+         c.gridy = 0;
+         c.gridx = 0;
+         p1.add(new JLabel("Molecule column"), c);
+         c.gridx = 1;
+         p1.add(_molColumn, c);
+   
+         c.gridy++;
+         c.gridx = 0;
+         p1.add(_appendColumn, c);
+         c.gridx = 1;
+         p1.add(_newColName, c);
+         p1.setAlignmentX(Container.LEFT_ALIGNMENT);
+         p.add(p1);
+      }
       
       _appendColumn.addChangeListener(_changeListener);
 
       _appendColumn.setEnabled(true);
       _newColName.setEnabled(false);
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Remove the following features:"), c);
+      JLabel l = new JLabel("Remove the following features:");
+      l.setAlignmentX(Container.LEFT_ALIGNMENT);
+      p.add(l);
 
-      for (String key : IndigoFeatureRemoverNodeModel.removers.keySet())
+      for (String key : IndigoFeatureRemoverNodeModel.names)
       {
-         c.gridy++;
-         c.gridx = 0;
          JCheckBox cb = new JCheckBox(key);
+         cb.setAlignmentX(Container.LEFT_ALIGNMENT);
          _features.put(key, cb);
-         p.add(cb, c);
+         p.add(cb);
       }
       
       addTab("Standard settings", p);

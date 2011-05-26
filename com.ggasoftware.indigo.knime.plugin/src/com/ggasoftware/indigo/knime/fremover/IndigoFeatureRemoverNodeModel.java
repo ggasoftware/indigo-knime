@@ -30,84 +30,118 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
 
    public static interface Remover
    {
-      public void removeFeature (IndigoObject io);
+      public IndigoObject removeFeature (IndigoObject io);
    }
    
+   public static final ArrayList<String> names = new ArrayList<String>();
    public static final Map<String, Remover> removers = new HashMap<String, Remover>();
+   
+   private static void addRemover (String name, Remover remover)
+   {
+      removers.put(name, remover);
+      names.add(name);
+   }
    
    static
    {
-      removers.put("Isotopes", new Remover ()
+      addRemover("Isotopes", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             for (IndigoObject atom : io.iterateAtoms())
                atom.resetIsotope();
+            return io;
          }
       });
-      removers.put("Chirality", new Remover ()
+      addRemover("Chirality", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             io.clearStereocenters();
             for (IndigoObject bond : io.iterateBonds())
                if (bond.bondOrder() == 1)
                   bond.resetStereo();
+            return io;
          }
       });
-      removers.put("Cis-trans", new Remover ()
+      addRemover("Cis-trans", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             io.clearCisTrans();
+            return io;
          }
       });
-      removers.put("Highlighting", new Remover ()
+      addRemover("Highlighting", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             io.unhighlight();
+            return io;
          }
       });
-      removers.put("R-sites", new Remover ()
+      addRemover("R-sites", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             for (IndigoObject atom : io.iterateAtoms())
                if (atom.isRSite())
                   atom.remove();
+            return io;
          }
       });
-      removers.put("Pseudoatoms", new Remover ()
+      addRemover("Pseudoatoms", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             for (IndigoObject atom : io.iterateAtoms())
                if (atom.isPseudoatom())
                   atom.remove();
+            return io;
          }
       });
-      removers.put("Attachment points", new Remover ()
+      addRemover("Attachment points", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             io.clearAttachmentPoints();
+            return io;
          }
       });
-      removers.put("Repeating units", new Remover ()
+      addRemover("Repeating units", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             for (IndigoObject ru : io.iterateRepeatingUnits())
                ru.remove();
+            return io;
          }
       });
-      removers.put("Data S-groups", new Remover ()
+      addRemover("Data S-groups", new Remover ()
       {
-         public void removeFeature (IndigoObject io)
+         public IndigoObject removeFeature (IndigoObject io)
          {
             for (IndigoObject sg : io.iterateDataSGroups())
                sg.remove();
+            return io;
+         }
+      });
+      addRemover("Components other that the biggest", new Remover ()
+      {
+         public IndigoObject removeFeature (IndigoObject io)
+         {
+            int max_comp = -1, max_comp_size = 0;
+            
+            for (IndigoObject comp: io.iterateComponents())
+               if (comp.countAtoms() > max_comp_size)
+               {
+                  max_comp_size = comp.countAtoms();
+                  max_comp = comp.index();
+               }
+            
+            if (max_comp == -1)
+               return io;
+            return io.component(max_comp).clone();
          }
       });
    }
@@ -172,9 +206,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
                IndigoPlugin.lock();
                target = target.clone();
                for (String s : _settings.selectedFeatures)
-               {
-                  removers.get(s).removeFeature(target);
-               }
+                  target = removers.get(s).removeFeature(target);
             }
             finally
             {
