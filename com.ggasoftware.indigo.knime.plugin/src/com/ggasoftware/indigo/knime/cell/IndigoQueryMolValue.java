@@ -56,7 +56,7 @@ public interface IndigoQueryMolValue extends DataValue
             final DataColumnSpec spec)
       {
          return new DefaultDataValueRendererFamily(
-               new IndigoMolValueRenderer(), new MultiLineStringValueRenderer("String"));
+               new IndigoMolValueRenderer(), new MultiLineStringValueRenderer("SMILES string"));
       }
    }
 }

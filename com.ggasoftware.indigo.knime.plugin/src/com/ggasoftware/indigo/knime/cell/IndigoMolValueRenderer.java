@@ -26,15 +26,13 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 import org.knime.core.data.renderer.*;
 import org.knime.core.node.NodeLogger;
 
+@SuppressWarnings("serial")
 public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
 {
-   private static final long serialVersionUID = -4924582235032651081L;
-
    private static final NodeLogger LOGGER = NodeLogger
          .getLogger(IndigoMolValueRenderer.class);
 
-   private static final Font NO_2D_FONT = new Font(Font.SANS_SERIF,
-         Font.ITALIC, 12);
+   private static final Font NO_2D_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 12);
 
    IndigoObject _object = null;
 
@@ -65,16 +63,6 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
          _object = ((IndigoMolValue) value).getIndigoObject();
       else if (value instanceof IndigoQueryMolValue)
          _object = ((IndigoQueryMolValue) value).getIndigoObject();
-      /*
-      else if (value instanceof SmilesValue)
-         _object = IndigoPlugin.getIndigo().loadMolecule(
-               ((SmilesValue) value).getSmilesValue());
-      else if (value instanceof MolValue)
-         _object = IndigoPlugin.getIndigo().loadMolecule(
-               ((MolValue) value).getMolValue());
-      else if (value instanceof SdfValue)
-         _object = IndigoPlugin.getIndigo().loadMolecule(
-               ((SdfValue) value).getSdfValue());*/
    }
 
    /**
@@ -93,8 +81,19 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
       
       if (!IndigoPlugin.getDefault().isRenderingEnabled())
       {
+         String str = "";
+         
+         try
+         {
+            str = _object.smiles();
+         }
+         catch (Exception e)
+         {
+         }
+         
          g.setFont(NO_2D_FONT);
-         g.drawString("rendering disabled by user preference", 2, 14);
+         g.drawString(str, 2, 14);
+         g.drawString("rendering disabled by user preference", 2, 34);
          return;
       }
       

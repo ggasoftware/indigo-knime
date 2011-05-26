@@ -57,7 +57,7 @@ public interface IndigoMolValue extends DataValue
       {
          return new DefaultDataValueRendererFamily(
                new IndigoMolValueRenderer(), new MultiLineStringValueRenderer(
-                     "String"));
+                     "SMILES string"));
       }
    }
 }
