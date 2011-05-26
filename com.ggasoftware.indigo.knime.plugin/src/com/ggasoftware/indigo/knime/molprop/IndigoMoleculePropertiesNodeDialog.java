@@ -19,7 +19,6 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
@@ -49,11 +48,8 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
       panel.add(_selPanel, BorderLayout.NORTH);
       panel.add(_filterPanel, BorderLayout.CENTER);
 
-      DataTableSpec dummySpec = new DataTableSpec(
-            IndigoMoleculePropertiesNodeModel.colSpecs.values().toArray(
-                  new DataColumnSpec[0]));
-      Collection<String> selProps = IndigoMoleculePropertiesNodeModel.calculators
-            .keySet();
+      DataTableSpec dummySpec = new DataTableSpec(IndigoMoleculePropertiesNodeModel.colSpecsArray);
+      Collection<String> selProps = IndigoMoleculePropertiesNodeModel.names;
       _filterPanel.update(dummySpec, false, selProps);
 
       addTab("Properties and target column", panel);
@@ -77,9 +73,7 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
    {
       _settings.loadSettingsForDialog(settings);
       
-      DataTableSpec dummySpec = new DataTableSpec(
-            IndigoMoleculePropertiesNodeModel.colSpecs.values().toArray(
-                  new DataColumnSpec[0]));
+      DataTableSpec dummySpec = new DataTableSpec(IndigoMoleculePropertiesNodeModel.colSpecsArray);
       
       _filterPanel.update(dummySpec, false, _settings.selectedProps);
       _selPanel.update(specs[0], _settings.colName);

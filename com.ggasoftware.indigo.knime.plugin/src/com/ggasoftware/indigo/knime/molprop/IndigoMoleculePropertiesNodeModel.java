@@ -69,28 +69,129 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
       }
    }
 
+   public static final ArrayList<String> names = new ArrayList<String>();
    public static final Map<String, PropertyCalculator> calculators = new HashMap<String, PropertyCalculator>();
    public static final Map<String, DataColumnSpec> colSpecs = new HashMap<String, DataColumnSpec>();
+   public static DataColumnSpec[] colSpecsArray;  
 
+   private static void putCalculator (String name, PropertyCalculator pc)
+   {
+      calculators.put(name, pc);
+      names.add(name);
+   }
+   
    static
    {
-      calculators.put("Number of visible atoms", new IntPropertyCalculator()
+      putCalculator("Molecular formula", new StringPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
-            return new IntCell(io.countAtoms());
+            return new StringCell(io.grossFormula());
+         }
+      });
+      
+      putCalculator("Molecular weight", new DoublePropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new DoubleCell(io.molecularWeight());
          }
       });
 
-      calculators.put("Total number of atoms", new IntPropertyCalculator()
+      putCalculator("Most abundant mass", new DoublePropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new DoubleCell(io.mostAbundantMass());
+         }
+      });
+
+      putCalculator("Monoisotopic mass", new DoublePropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new DoubleCell(io.monoisotopicMass());
+         }
+      });
+
+      putCalculator("Number of connected components",
+            new IntPropertyCalculator()
+            {
+               public DataCell calculate (IndigoObject io)
+               {
+                  return new IntCell(io.countComponents());
+               }
+            });
+
+      
+      putCalculator("Total number of atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
             return new IntCell(io.countHeavyAtoms() + io.countHydrogens());
          }
       });
+
+      putCalculator("Number of hydrogens", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countHydrogens());
+         }
+      });
       
-      calculators.put("Number of aromatic atoms", new IntPropertyCalculator()
+      putCalculator("Number of heavy atoms", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countHeavyAtoms());
+         }
+      });
+
+      putCalculator("Number of heteroatoms", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+            
+            for (IndigoObject atom : io.iterateAtoms())
+            {
+               if (atom.isRSite() || atom.isPseudoatom())
+                  continue;
+               
+               int number = atom.atomicNumber();
+               
+               if (number > 1 && number != 6)
+                  count++;
+            }
+               
+            return new IntCell(count);
+         }
+      });
+      
+
+      putCalculator("Number of carbons", new IntPropertyCalculator ()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+            
+            for (IndigoObject atom : io.iterateAtoms())
+            {
+               if (atom.isRSite() || atom.isPseudoatom())
+                  continue;
+               
+               int number = atom.atomicNumber();
+               
+               if (number == 6)
+                  count++;
+            }
+               
+            return new IntCell(count);
+         }
+      });      
+      
+      putCalculator("Number of aromatic atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -109,7 +210,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Number of aliphatic atoms", new IntPropertyCalculator()
+      putCalculator("Number of aliphatic atoms", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -134,7 +235,40 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
       
-      calculators.put("Number of bonds", new IntPropertyCalculator()
+      putCalculator("Number of pseudoatoms", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countPseudoatoms());
+         }
+      });
+
+      
+      putCalculator("Number of visible atoms", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countAtoms());
+         }
+      });
+
+      putCalculator("Number of chiral centers", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countStereocenters());
+         }
+      });
+      
+      putCalculator("Number of R-sites", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            return new IntCell(io.countRSites());
+         }
+      });
+      
+      putCalculator("Number of bonds", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -142,7 +276,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Number of aromatic bonds", new IntPropertyCalculator()
+      putCalculator("Number of aromatic bonds", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -157,7 +291,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
 
-      calculators.put("Number of aliphatic bonds", new IntPropertyCalculator()
+      putCalculator("Number of aliphatic bonds", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -171,8 +305,24 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
             return new IntCell(count);
          }
       });
+
+      putCalculator("Number of cis/trans bonds", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            int count = 0;
+
+            for (IndigoObject bond : io.iterateBonds())
+            {
+               int stereo = bond.bondStereo();
+               if (stereo == Indigo.CIS || stereo == Indigo.TRANS)
+                  count++;
+            }
+            return new IntCell(count);
+         }
+      });
       
-      calculators.put("Number of aromatic rings", new IntPropertyCalculator()
+      putCalculator("Number of aromatic rings", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
@@ -197,149 +347,38 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
       
-      calculators.put("Number of heavy atoms", new IntPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new IntCell(io.countHeavyAtoms());
-         }
-      });
-
-      calculators.put("Number of chiral centers", new IntPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new IntCell(io.countStereocenters());
-         }
-      });
-
-      calculators.put("Number of cis-trans bonds", new IntPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            int count = 0;
-
-            for (IndigoObject bond : io.iterateBonds())
-            {
-               int stereo = bond.bondStereo();
-               if (stereo == Indigo.CIS || stereo == Indigo.TRANS)
-                  count++;
-            }
-            return new IntCell(count);
-         }
-      });
-
-      calculators.put("Number of connected components",
-            new IntPropertyCalculator()
-            {
-               public DataCell calculate (IndigoObject io)
-               {
-                  return new IntCell(io.countComponents());
-               }
-            });
-
-      calculators.put("Number of pseudoatoms", new IntPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new IntCell(io.countPseudoatoms());
-         }
-      });
-
-      calculators.put("Number of R-sites", new IntPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new IntCell(io.countRSites());
-         }
-      });
-
-      calculators.put("Hydrogen count", new IntPropertyCalculator ()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new IntCell(io.countHydrogens());
-         }
-      });
-
-      calculators.put("Number of carbons", new IntPropertyCalculator ()
+      putCalculator("Number of aliphatic rings", new IntPropertyCalculator()
       {
          public DataCell calculate (IndigoObject io)
          {
             int count = 0;
             
-            for (IndigoObject atom : io.iterateAtoms())
-            {
-               if (atom.isRSite() || atom.isPseudoatom())
-                  continue;
-               
-               int number = atom.atomicNumber();
-               
-               if (number == 6)
-                  count++;
-            }
-               
-            return new IntCell(count);
-         }
-      });
-      
-      calculators.put("Number of heteroatoms", new IntPropertyCalculator ()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            int count = 0;
+            io = io.clone();
+            io.aromatize();
             
-            for (IndigoObject atom : io.iterateAtoms())
+            for (IndigoObject ring : io.iterateSSSR())
             {
-               if (atom.isRSite() || atom.isPseudoatom())
-                  continue;
-               
-               int number = atom.atomicNumber();
-               
-               if (number > 1 && number != 6)
-                  count++;
+               for (IndigoObject bond : ring.iterateBonds())
+                  if (bond.bondOrder() != 4)
+                  {
+                     count++;
+                     break;
+                  }
             }
-               
+            
             return new IntCell(count);
          }
       });
+    
+      colSpecsArray = new DataColumnSpec[names.size()];
       
-      calculators.put("Molecular weight", new DoublePropertyCalculator()
+      for (int i = 0; i < names.size(); i++)
       {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new DoubleCell(io.molecularWeight());
-         }
-      });
-
-      calculators.put("Monoisotopic mass", new DoublePropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new DoubleCell(io.monoisotopicMass());
-         }
-      });
-
-      calculators.put("Most abundant mass", new DoublePropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new DoubleCell(io.mostAbundantMass());
-         }
-      });
-
-      calculators.put("Molecular formula", new StringPropertyCalculator()
-      {
-         public DataCell calculate (IndigoObject io)
-         {
-            return new StringCell(io.grossFormula());
-         }
-      });
-      
-      for (String key : calculators.keySet())
-      {
+         String key = names.get(i);
          DataType type = ((PropertyCalculator) calculators.get(key)).type();
-         colSpecs.put(key, new DataColumnSpecCreator(key, type).createSpec());
+         DataColumnSpec spec = new DataColumnSpecCreator(key, type).createSpec(); 
+         colSpecs.put(key, spec);
+         colSpecsArray[i] = spec;
       }
    }
 
