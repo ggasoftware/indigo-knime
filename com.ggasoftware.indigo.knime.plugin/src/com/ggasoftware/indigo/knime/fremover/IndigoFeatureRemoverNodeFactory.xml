@@ -19,6 +19,7 @@
         <option name="Attachment points">Remove the R-group fragment's attachment points, placing implicit hydrogens instead</option>
         <option name="Repeating units">Make the polymer non-polymer by removing its brackets</option>
         <option name="Data S-groups">Remove attached and detached data sgroups</option>
+        <option name="Minor components">Remove all the minor components, leaving the largest one</option>
     </fullDescription>
     
     <ports>

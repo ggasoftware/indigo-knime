@@ -126,7 +126,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
             return io;
          }
       });
-      addRemover("Components other that the biggest", new Remover ()
+      addRemover("Minor components", new Remover ()
       {
          public IndigoObject removeFeature (IndigoObject io)
          {

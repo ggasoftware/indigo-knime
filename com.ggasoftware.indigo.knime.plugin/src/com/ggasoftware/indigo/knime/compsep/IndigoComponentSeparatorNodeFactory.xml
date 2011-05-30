@@ -12,9 +12,7 @@
                second biggest component goes into the second column, and so on.</intro>
         
         <option name="Indigo column">The column that contains Indigo molecules.</option>
-        <option name="Maximum number of components">This number of columns is added to the output table. If the number of
-         components in some molecule in the input set exceeds the limit, a warning is printed.</option>
-		<option name="New columns prefix">Each of new columns will be named with this prefix + number (1,2,3,..)</option>
+		<option name="New column prefix">Each of the new columns will be named with this prefix + number (1,2,3,..)</option>
     </fullDescription>
     
     <ports>
