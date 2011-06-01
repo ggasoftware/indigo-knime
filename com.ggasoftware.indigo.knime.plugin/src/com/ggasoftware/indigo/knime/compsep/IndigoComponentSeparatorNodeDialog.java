@@ -41,7 +41,7 @@ public class IndigoComponentSeparatorNodeDialog extends NodeDialogPane
 
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("New columns prefix"), c);
+      p.add(new JLabel("New column prefix"), c);
       c.gridx = 1;
       p.add(_newColPrefix, c);
       

@@ -138,6 +138,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _highlight.setSelected(_settings.highlight);
       _appendColumn.setSelected(_settings.appendColumn);
       _mode.setSelectedItem(_settings.mode);
+      _changeListener.stateChanged(null);
    }
 
    @Override

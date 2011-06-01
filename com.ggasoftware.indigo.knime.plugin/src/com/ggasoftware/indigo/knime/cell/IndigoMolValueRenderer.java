@@ -111,12 +111,11 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
 
          indigo.setOption("render-image-size", d.width, d.height);
          indigo.setOption("render-output-format", "png");
-         indigo.setOption("render-bond-length", IndigoPlugin.getDefault()
-               .bondLength());
-         indigo.setOption("render-implicit-hydrogens-visible", IndigoPlugin
-               .getDefault().showImplicitHydrogens());
-         indigo.setOption("render-coloring", IndigoPlugin.getDefault()
-               .coloring());
+         indigo.setOption("render-bond-length", IndigoPlugin.getDefault().bondLength());
+         indigo.setOption("render-implicit-hydrogens-visible", IndigoPlugin.getDefault().showImplicitHydrogens());
+         indigo.setOption("render-coloring", IndigoPlugin.getDefault().coloring());
+         indigo.setOption("render-highlight-thickness-enabled", true);
+         indigo.setOption("render-highlight-color", 0.7f, 0, 0);
          buf = renderer.renderToBuffer(_object);
       }
       finally

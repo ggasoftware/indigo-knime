@@ -81,26 +81,68 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       {
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-         IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
-               .getIndigoObject();
+         DataCell[] cells;
          int i;
-
+         
+         if (_settings.appendColumn)
+            cells = new DataCell[inputRow.getNumCells() + 2];
+         else
+            cells = new DataCell[inputRow.getNumCells() + 1];
+         
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
-
-         try
+         
+         if (inputRow.getCell(colIdx).isMissing())
          {
-            IndigoPlugin.lock();
-            indigo.setOption("embedding-uniqueness", _settings.uniqueness.name()
-                  .toLowerCase());
-            IndigoObject matcher = indigo.substructureMatcher(io);
-
-            cells[i++] = new IntCell(matcher.countMatches(query));
+            cells[i] = DataType.getMissingCell();
+            if (_settings.appendColumn)
+               cells[i + 1] = DataType.getMissingCell();
          }
-         finally
+         else
          {
-            IndigoPlugin.unlock();
+            IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+   
+   
+            try
+            {
+               IndigoPlugin.lock();
+               indigo.setOption("embedding-uniqueness", _settings.uniqueness.name()
+                     .toLowerCase());
+               IndigoObject matcher = indigo.substructureMatcher(io);
+   
+               cells[i++] = new IntCell(matcher.countMatches(query));
+               
+               if (_settings.highlight)
+               {
+                  IndigoObject highlighted = indigo.createMolecule();
+                  IndigoObject mapping = highlighted.merge(io);
+                  
+                  for (IndigoObject match : matcher.iterateMatches(query))
+                  {
+                     for (IndigoObject qatom : query.iterateAtoms())
+                     {
+                        IndigoObject mapped = match.mapAtom(qatom);
+                        if (mapped != null)
+                           mapping.mapAtom(mapped).highlight();
+                     }
+                     for (IndigoObject qbond : query.iterateBonds())
+                     {
+                        IndigoObject mapped = match.mapBond(qbond);
+                        if (mapped != null)
+                           mapping.mapBond(mapped).highlight();
+                     }
+                  }
+                  
+                  if (_settings.appendColumn)
+                     cells[i] = new IndigoMolCell(highlighted);
+                  else
+                     cells[colIdx] =  new IndigoMolCell(highlighted);
+               }
+            }
+            finally
+            {
+               IndigoPlugin.unlock();
+            }
          }
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
@@ -128,15 +170,22 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       if (_settings.newColName == null || _settings.newColName.length() < 1)
          throw new InvalidSettingsException("New column name must be specified");
       
-      DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
+      DataColumnSpec[] specs;
+      
+      if (_settings.appendColumn)
+         specs = new DataColumnSpec[inSpec.getNumColumns() + 2];
+      else
+         specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      specs[i] = new DataColumnSpecCreator(_settings.newColName, IntCell.TYPE)
-            .createSpec();
+      specs[i] = new DataColumnSpecCreator(_settings.newColName, IntCell.TYPE).createSpec();
+      
+      if (_settings.appendColumn)
+         specs[i + 1] = new DataColumnSpecCreator(_settings.newColName2, IndigoMolCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
    }
@@ -183,6 +232,11 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
          throw new InvalidSettingsException("column name must be specified");
       if (s.colName2 == null || s.colName2.length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
+      if (s.newColName == null || s.newColName.length() < 1)
+         throw new InvalidSettingsException("new counter column name must be specified");
+      if (s.appendColumn)
+         if (s.newColName2 == null || s.newColName2.length() < 1)
+            throw new InvalidSettingsException("new highlighted column name must be specified");
    }
 
    /**

@@ -27,6 +27,9 @@ public class IndigoSubstructureMatchCounterSettings
    public String colName2;
    public String newColName = "Number of matches";
    Uniqueness uniqueness = Uniqueness.Atoms;
+   public boolean highlight = false;
+   public boolean appendColumn = false;
+   public String newColName2;
 
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -35,6 +38,9 @@ public class IndigoSubstructureMatchCounterSettings
       colName2 = settings.getString("colName2");
       newColName = settings.getString("newColName");
       uniqueness = Uniqueness.valueOf(settings.getString("uniqueness"));
+      highlight = settings.getBoolean("highlight");
+      appendColumn = settings.getBoolean("appendColumn");
+      newColName2 = settings.getString("newColName2");
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -43,6 +49,9 @@ public class IndigoSubstructureMatchCounterSettings
       colName2 = settings.getString("colName2", null);
       newColName = settings.getString("newColName", "Number of matches");
       uniqueness = Uniqueness.valueOf(settings.getString("uniqueness", Uniqueness.Atoms.name()));
+      highlight = settings.getBoolean("highlight", false);
+      appendColumn = settings.getBoolean("appendColumn", false);
+      newColName2 = settings.getString("newColName2", null);
    }
 
    public void saveSettings (final NodeSettingsWO settings)
@@ -55,5 +64,9 @@ public class IndigoSubstructureMatchCounterSettings
          settings.addString("newColName", newColName);
       if (uniqueness != null)
          settings.addString("uniqueness", uniqueness.name());
+      settings.addBoolean("highlight", highlight);
+      settings.addBoolean("appendColumn", appendColumn);
+      if (newColName2 != null)
+         settings.addString("newColName2", newColName2);
    }
 }

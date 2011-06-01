@@ -17,6 +17,8 @@ package com.ggasoftware.indigo.knime.submatchcounter;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.knime.core.data.*;
 import org.knime.core.node.*;
@@ -39,7 +41,29 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
 
    private final JComboBox _uniqueness = new JComboBox(new Object[] {
          Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None });
-
+   
+   private final JCheckBox _highlight = new JCheckBox("Highlight matches");
+   private final JCheckBox _appendColumn = new JCheckBox("Append column");
+   private final JTextField _newColName2 = new JTextField(20);
+   
+   private final ChangeListener _changeListener = new ChangeListener() {
+      public void stateChanged (ChangeEvent e)
+      {
+         boolean enabled = _highlight.isSelected();
+         _newColName2.setEnabled(enabled);
+         _appendColumn.setEnabled(enabled);
+         
+         if (!enabled)
+            _appendColumn.setSelected(false);
+         
+         if (_appendColumn.isEnabled())
+            _newColName2.setEnabled(_appendColumn.isSelected());
+         
+         if (_newColName2.isEnabled() && _newColName2.getText().length() < 1)
+            _newColName2.setText(_molColumn.getSelectedColumn() + " (highlihghted)");
+      }
+   };
+   
    /**
     * New pane for configuring the IndigoSmartsMatcher node.
     */
@@ -77,6 +101,23 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_uniqueness, c);
 
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_highlight, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_appendColumn, c);
+      c.gridx = 1;
+      p.add(_newColName2, c);
+      
+      _highlight.addChangeListener(_changeListener);
+      _appendColumn.addChangeListener(_changeListener);
+      
+      _highlight.setSelected(false);
+      _appendColumn.setEnabled(false);
+      _newColName.setEnabled(false);
+      
       addTab("Standard settings", p);
    }
 
@@ -90,6 +131,10 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       _molColumn2.update(specs[1], _settings.colName2);
       _newColName.setText(_settings.newColName);
       _uniqueness.setSelectedItem(_settings.uniqueness);
+      _newColName2.setText(_settings.newColName2);
+      _highlight.setSelected(_settings.highlight);
+      _appendColumn.setSelected(_settings.appendColumn);
+      _changeListener.stateChanged(null);
    }
 
    @Override
@@ -100,6 +145,9 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       _settings.colName2 = _molColumn2.getSelectedColumn();
       _settings.newColName = _newColName.getText();
       _settings.uniqueness = ((Uniqueness)_uniqueness.getSelectedItem());
+      _settings.highlight = _highlight.isSelected();
+      _settings.appendColumn = _appendColumn.isSelected();
+      _settings.newColName2 = _newColName2.getText();
       _settings.saveSettings(settings);
    }
 }
