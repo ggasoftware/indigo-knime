@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="../indigo.png" type="Manipulator">
+    <name>Murcko Scaffold</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>This node calculates Murcko scaffolds of input molecules.</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+        
+        <option name="Molecule Column">The column that contains the molecules.</option>
+        <option name="Append Column">Append a new molecule column (with the name as specified in the text field) if checked, replace the original column otherwise.</option>
+        <option name="Remove terminal 3-rings">Remove 1-substituted rings of size 3</option>
+        <option name="Remove terminal 4-rings">Remove 1-substituted rings of size 4</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input data">Table containing Indigo molecules.</inPort>
+        <outPort index="0" name="Murcko scaffolds">The same as input, plus the calculated Murcko scaffolds.</outPort>
+    </ports>    
+</knimeNode>

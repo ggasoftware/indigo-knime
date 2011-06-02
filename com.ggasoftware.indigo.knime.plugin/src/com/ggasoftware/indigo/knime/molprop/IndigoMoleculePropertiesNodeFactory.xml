@@ -18,7 +18,7 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input data">Table containing molecular structure based on which the properties should be calculated. </inPort>
+        <inPort index="0" name="Input data">Table containing Indigo molecules.</inPort>
         <outPort index="0" name="Output data">As input but with additional columns (one for each calculated property). </outPort>
     </ports>    
 </knimeNode>
