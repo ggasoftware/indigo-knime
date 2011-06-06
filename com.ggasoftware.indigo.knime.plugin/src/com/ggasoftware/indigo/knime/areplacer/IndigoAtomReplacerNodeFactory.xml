@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="../indigo.png" type="Manipulator">
+    <name>Atom Replacer</name>
+    
+    <shortDescription>
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>This node discards all the labels on molecule's atoms and replaces them with the given label. It also discards all stereochemistry from molecules.</p>
+        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+        
+        <option name="Molecule Column">The column that contains the molecules.</option>
+        <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+        <option name="New atom label">The new atom label which will be put on all molecule's atoms (default is "*")</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
+        <outPort index="0" name="Molecules with replaced atom labels">The same as input, with replaced atom labels</outPort>
+    </ports>    
+</knimeNode>
