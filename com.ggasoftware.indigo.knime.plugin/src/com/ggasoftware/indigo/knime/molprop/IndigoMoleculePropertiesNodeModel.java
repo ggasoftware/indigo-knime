@@ -370,6 +370,26 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          }
       });
     
+      putCalculator("Number of heteroatoms in aromatic rings", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            IndigoObject matcher = io.getIndigo().substructureMatcher(io);
+            int count = matcher.countMatches(io.getIndigo().loadSmarts("[!#6;a;R]"));
+            return new IntCell(count);
+         }
+      });
+      
+      putCalculator("Number of heteroatoms in aliphatic rings", new IntPropertyCalculator()
+      {
+         public DataCell calculate (IndigoObject io)
+         {
+            IndigoObject matcher = io.getIndigo().substructureMatcher(io);
+            int count = matcher.countMatches(io.getIndigo().loadSmarts("[!#6;A;R]"));
+            return new IntCell(count);
+         }
+      });
+      
       colSpecsArray = new DataColumnSpec[names.size()];
       
       for (int i = 0; i < names.size(); i++)
