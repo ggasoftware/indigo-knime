@@ -160,6 +160,43 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
       return false;
    }
    
+   protected boolean removeO2Group (IndigoObject mol)
+   {
+      IndigoObject query = mol.getIndigo().loadQueryMolecule("[*D1]=[*]=[*D1]");
+      IndigoObject match = mol.getIndigo().substructureMatcher(mol).match(query);
+      
+      if (match != null && match.mapAtom(query.getAtom(1)).degree() < 4)
+      {
+         match.mapAtom(query.getAtom(0)).remove();
+         match.mapAtom(query.getAtom(2)).remove();
+         return true;
+      }
+      return false;
+   }
+   
+   protected boolean removeOfromNO (IndigoObject mol)
+   {
+      IndigoObject query = mol.getIndigo().loadQueryMolecule("[OD1]=[N+0]");
+      IndigoObject match = mol.getIndigo().substructureMatcher(mol).match(query);
+      
+      if (match != null)
+      {
+         match.mapAtom(query.getAtom(0)).remove();
+         return true;
+      }
+      
+      query = mol.getIndigo().loadQueryMolecule("[O-D1]-[N+]");
+      match = mol.getIndigo().substructureMatcher(mol).match(query);
+      
+      if (match != null)
+      {
+         match.mapAtom(query.getAtom(0)).remove();
+         match.mapAtom(query.getAtom(1)).resetCharge();
+         return true;
+      }
+      
+      return false;
+   }
    
    /**
     * Constructor for the node model.
@@ -204,10 +241,21 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                target = target.clone();
-               do
+               while (true)
                {
+                  if (removeOfromNO(target))
+                     continue;
+                  
                   calculateMurckoScaffold(target);
-               } while (removeTerminalRing(target));
+                  
+                  if (removeTerminalRing(target))
+                     continue;
+                  
+                  if (removeO2Group(target))
+                     continue;
+                  
+                  break;
+               }
             }
             finally
             {
