@@ -75,3 +75,4 @@ public class IndigoScaffoldFinderSettings
          settings.addInt("maxIterApprox", maxIterApprox);
    }
 }
+
