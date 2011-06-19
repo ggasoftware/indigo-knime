@@ -190,8 +190,10 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
       
       if (match != null)
       {
+         int h = match.mapAtom(query.getAtom(1)).countImplicitHydrogens();
          match.mapAtom(query.getAtom(0)).remove();
          match.mapAtom(query.getAtom(1)).resetCharge();
+         match.mapAtom(query.getAtom(1)).setImplicitHCount(h);
          return true;
       }
       
