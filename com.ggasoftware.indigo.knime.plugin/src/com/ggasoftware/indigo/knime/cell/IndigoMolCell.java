@@ -26,7 +26,7 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 @SuppressWarnings("serial")
-public class IndigoMolCell extends DataCell implements IndigoMolValue
+public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
 {
    private static final NodeLogger LOGGER = NodeLogger
          .getLogger(IndigoMolCell.class);
@@ -92,12 +92,11 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       return SERIALIZER;
    }
 
-   private IndigoObject _object;
    public static final DataType TYPE = DataType.getType(IndigoMolCell.class);
 
    public IndigoMolCell (IndigoObject obj)
    {
-      _object = obj;
+      super(obj);
    }
 
    @Override
@@ -160,9 +159,4 @@ public class IndigoMolCell extends DataCell implements IndigoMolValue
       return 0;
    }
 
-   @Override
-   public IndigoObject getIndigoObject ()
-   {
-      return _object;
-   }
 }

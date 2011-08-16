@@ -23,14 +23,19 @@ import javax.imageio.ImageIO;
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
+import org.knime.chem.types.MolValue;
+import org.knime.chem.types.RxnValue;
+import org.knime.chem.types.SdfValue;
+import org.knime.chem.types.SmartsValue;
+import org.knime.chem.types.SmilesValue;
 import org.knime.core.data.renderer.*;
 import org.knime.core.node.NodeLogger;
 
 @SuppressWarnings("serial")
-public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
+public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
 {
    private static final NodeLogger LOGGER = NodeLogger
-         .getLogger(IndigoMolValueRenderer.class);
+         .getLogger(IndigoDataValueRenderer.class);
 
    private static final Font NO_2D_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 12);
 
@@ -41,7 +46,7 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    /**
     * Instantiates new renderer.
     */
-   public IndigoMolValueRenderer()
+   public IndigoDataValueRenderer()
    {
    }
 
@@ -59,10 +64,22 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    {
       _object = null;
       
-      if (value instanceof IndigoMolValue)
-         _object = ((IndigoMolValue) value).getIndigoObject();
-      else if (value instanceof IndigoQueryMolValue)
-         _object = ((IndigoQueryMolValue) value).getIndigoObject();
+      if (value instanceof IndigoDataValue)
+         _object = ((IndigoDataValue) value).getIndigoObject();
+      else if (value instanceof MolValue)
+    	  _object = IndigoPlugin.getIndigo().loadQueryMolecule(((MolValue)value).getMolValue());
+      else if (value instanceof SdfValue)
+    	  _object = IndigoPlugin.getIndigo().loadQueryMolecule(((SdfValue)value).getSdfValue());
+      else if (value instanceof SmilesValue) {
+         String smiles = ((SmilesValue)value).getSmilesValue();
+         _object = !smiles.matches("^[^>]*>[^>]*>[^>]*$")
+               ? IndigoPlugin.getIndigo().loadMolecule(smiles)
+               : IndigoPlugin.getIndigo().loadReaction(smiles);
+      }
+      else if (value instanceof SmartsValue)
+         _object = IndigoPlugin.getIndigo().loadSmarts(((SmartsValue)value).getSmartsValue());
+      else if (value instanceof RxnValue)
+         _object = IndigoPlugin.getIndigo().loadQueryReaction((((RxnValue)value).getRxnValue()));
    }
 
    /**
@@ -141,7 +158,7 @@ public class IndigoMolValueRenderer extends AbstractPainterDataValueRenderer
    @Override
    public String getDescription ()
    {
-      return "Indigo Molecule";
+      return "Indigo Renderer";
    }
 
    @Override

@@ -23,14 +23,14 @@ import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 @SuppressWarnings("serial")
-public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMolValue
+public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQueryReactionValue
 {
-   private static class Serializer implements DataCellSerializer<IndigoQueryMolCell>
+   private static class Serializer implements DataCellSerializer<IndigoQueryReactionCell>
    {
       /**
        * {@inheritDoc}
        */
-      public void serialize (final IndigoQueryMolCell cell,
+      public void serialize (final IndigoQueryReactionCell cell,
             final DataCellDataOutput out) throws IOException
       {
          if (cell.isSmarts())
@@ -44,28 +44,23 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       /**
        * {@inheritDoc}
        */
-      public IndigoQueryMolCell deserialize (final DataCellDataInput input)
+      public IndigoQueryReactionCell deserialize (final DataCellDataInput input)
             throws IOException
       {
-         char c = input.readChar();
-         String query;
-         boolean smarts;
-         
-         if (c == 'S')
-            smarts = true;
-         else if (c == 'Q')
-            smarts = false;
-         else
+         switch (input.readChar()) {
+         case 'S':
+            return IndigoQueryReactionCell.fromSmarts(input.readUTF());
+         case 'Q':
+            return IndigoQueryReactionCell.fromString(input.readUTF());
+         default:
             throw new IOException("cannot deserialize: bad 1-st symbol");
-         
-         query = input.readUTF();
-         return new IndigoQueryMolCell(query, smarts);
+         }
       }
    }
 
-   private static final DataCellSerializer<IndigoQueryMolCell> SERIALIZER = new Serializer();
+   private static final DataCellSerializer<IndigoQueryReactionCell> SERIALIZER = new Serializer();
 
-   public static final DataCellSerializer<IndigoQueryMolCell> getCellSerializer ()
+   public static final DataCellSerializer<IndigoQueryReactionCell> getCellSerializer ()
    {
       return SERIALIZER;
    }
@@ -73,7 +68,7 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
    private String _query;
    private boolean _smarts;
    
-   public static final DataType TYPE = DataType.getType(IndigoQueryMolCell.class);
+   public static final DataType TYPE = DataType.getType(IndigoQueryReactionCell.class);
 
    public String getSource ()
    {
@@ -85,49 +80,17 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       return _smarts;
    }
    
-   protected IndigoQueryMolCell(IndigoObject obj) {
+   public IndigoQueryReactionCell(IndigoObject obj) {
       super(obj);
    }
    
-   /**
-    * @deprecated Please use
-    * {@link IndigoQueryMolCell#fromString(String)}
-    * or
-    * {@link IndigoQueryMolCell#fromSmarts(String)}
-    * instead
-    */
-   public IndigoQueryMolCell (String query, boolean smarts)
-   {
-      super(null);
-      
-      _query = query;
-      _smarts = smarts;
-      
-      Indigo indigo = IndigoPlugin.getIndigo();
-      try
-      {
-         IndigoPlugin.lock();
-         if (smarts)
-            _object = indigo.loadSmarts(query);
-         else
-         {
-            _object = indigo.loadQueryMolecule(query);
-            _object.aromatize();
-         }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
-      }
-   }
-   
-   public static IndigoQueryMolCell fromString(String str) {
+   public static IndigoQueryReactionCell fromString(String str) {
       Indigo indigo = IndigoPlugin.getIndigo();
       try {
          IndigoPlugin.lock();
-         IndigoObject io = indigo.loadQueryMolecule(str);
+         IndigoObject io = indigo.loadQueryReaction(str);
          io.aromatize();
-         IndigoQueryMolCell ret = new IndigoQueryMolCell(io);
+         IndigoQueryReactionCell ret = new IndigoQueryReactionCell(io);
          ret._query = str;
          ret._smarts = false;
          return ret;
@@ -137,11 +100,11 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       }
    }
    
-   public static IndigoQueryMolCell fromSmarts(String smarts) {
+   public static IndigoQueryReactionCell fromSmarts(String smarts) {
       Indigo indigo = IndigoPlugin.getIndigo();
       try {
          IndigoPlugin.lock();
-         IndigoQueryMolCell ret = new IndigoQueryMolCell(indigo.loadSmarts(smarts));
+         IndigoQueryReactionCell ret = new IndigoQueryReactionCell(indigo.loadSmarts(smarts));
          ret._query = smarts;
          ret._smarts = true;
          return ret;

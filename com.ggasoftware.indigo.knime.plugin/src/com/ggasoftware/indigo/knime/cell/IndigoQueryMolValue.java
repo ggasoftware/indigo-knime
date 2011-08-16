@@ -16,15 +16,13 @@ package com.ggasoftware.indigo.knime.cell;
 
 import javax.swing.Icon;
 
-import org.knime.core.data.*;
-import org.knime.core.data.renderer.*;
+import org.knime.core.data.DataColumnSpec;
+import org.knime.core.data.renderer.DataValueRendererFamily;
+import org.knime.core.data.renderer.DefaultDataValueRendererFamily;
+import org.knime.core.data.renderer.MultiLineStringValueRenderer;
 
-import com.ggasoftware.indigo.IndigoObject;
-
-public interface IndigoQueryMolValue extends DataValue
+public interface IndigoQueryMolValue extends IndigoDataValue
 {
-   IndigoObject getIndigoObject ();
-
    public static final UtilityFactory UTILITY = new IndigoMolUtilityFactory();
 
    /** Implementations of the meta information of this value class. */
@@ -56,7 +54,7 @@ public interface IndigoQueryMolValue extends DataValue
             final DataColumnSpec spec)
       {
          return new DefaultDataValueRendererFamily(
-               new IndigoMolValueRenderer(), new MultiLineStringValueRenderer("SMILES string"));
+               new IndigoDataValueRenderer(), new MultiLineStringValueRenderer("SMILES string"));
       }
    }
 }

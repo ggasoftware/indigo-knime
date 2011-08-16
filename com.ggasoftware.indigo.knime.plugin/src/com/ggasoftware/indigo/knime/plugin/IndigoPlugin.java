@@ -14,15 +14,28 @@
 
 package com.ggasoftware.indigo.knime.plugin;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.*;
-import org.eclipse.ui.plugin.*;
-import org.osgi.framework.BundleContext;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_BOND_LENGTH;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_COLORING;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_ENABLE_RENDERER;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_MOL_IMAGE_HEIGHT;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_MOL_IMAGE_WIDTH;
+import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.PREF_SHOW_IMPLICIT_HYDROGENS;
+
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.ggasoftware.indigo.Indigo;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.knime.chem.types.MolValue;
+import org.knime.chem.types.RxnValue;
+import org.knime.chem.types.SdfValue;
+import org.knime.chem.types.SmartsValue;
+import org.knime.chem.types.SmilesValue;
+import org.osgi.framework.BundleContext;
 
-import static com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer.*;
+import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.knime.cell.IndigoDataValueRenderer;
 
 public class IndigoPlugin extends AbstractUIPlugin
 {
@@ -94,6 +107,12 @@ public class IndigoPlugin extends AbstractUIPlugin
       _coloring = pStore.getBoolean(PREF_COLORING);
       _molImageWidth = pStore.getInt(PREF_MOL_IMAGE_WIDTH);
       _molImageHeight = pStore.getInt(PREF_MOL_IMAGE_HEIGHT);
+      
+      MolValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
+      SdfValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
+      SmilesValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
+      SmartsValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
+      RxnValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
    }
 
    @Override

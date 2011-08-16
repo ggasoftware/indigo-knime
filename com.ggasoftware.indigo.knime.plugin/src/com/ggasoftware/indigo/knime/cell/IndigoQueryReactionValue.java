@@ -21,19 +21,19 @@ import org.knime.core.data.renderer.DataValueRendererFamily;
 import org.knime.core.data.renderer.DefaultDataValueRendererFamily;
 import org.knime.core.data.renderer.MultiLineStringValueRenderer;
 
-public interface IndigoMolValue extends IndigoDataValue
+public interface IndigoQueryReactionValue extends IndigoDataValue
 {
-   public static final UtilityFactory UTILITY = new IndigoMolUtilityFactory();
+   public static final UtilityFactory UTILITY = new IndigoQueryReactionUtilityFactory();
 
    /** Implementations of the meta information of this value class. */
-   public static class IndigoMolUtilityFactory extends UtilityFactory
+   public static class IndigoQueryReactionUtilityFactory extends UtilityFactory
    {
       /** Singleton icon to be used to display this cell type. */
       private static final Icon ICON = loadIcon(
-            com.ggasoftware.indigo.knime.cell.IndigoMolValue.class, "/../indigo.png");
+            com.ggasoftware.indigo.knime.cell.IndigoMolValue.class, "../indigo.png");
 
       /** Only subclasses are allowed to instantiate this class. */
-      protected IndigoMolUtilityFactory()
+      protected IndigoQueryReactionUtilityFactory()
       {
       }
 
@@ -54,8 +54,8 @@ public interface IndigoMolValue extends IndigoDataValue
             final DataColumnSpec spec)
       {
          return new DefaultDataValueRendererFamily(
-               new IndigoDataValueRenderer(), new MultiLineStringValueRenderer(
-                     "SMILES string"));
+               new IndigoDataValueRenderer(),
+               new MultiLineStringValueRenderer("SMILES string"));
       }
    }
 }
