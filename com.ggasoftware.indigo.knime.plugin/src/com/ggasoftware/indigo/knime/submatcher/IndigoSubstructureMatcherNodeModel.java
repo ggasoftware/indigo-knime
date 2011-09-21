@@ -105,7 +105,6 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             LOGGER.warn("second data source contains more than one row; ignoring all others");
       }
       
-      CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
       Indigo indigo = IndigoPlugin.getIndigo();
@@ -115,9 +114,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       int[] atoms = null;
       float[] xyz = null;
       
-      while (it.hasNext())
-      {
-         DataRow inputRow = it.next();
+      for (DataRow inputRow : inData[0]) {
          IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
 
          String mode = "";
