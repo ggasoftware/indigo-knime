@@ -106,11 +106,7 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       {
          IndigoPlugin.lock();
          
-         // Return the name if it is present
-         if (_object.name() != null && _object.name().length() > 0)
-            return _object.name();
-         
-         // Otherwise, return a SMILES string if it can be calculated
+         // Return a SMILES string if it can be calculated
          try
          {
             return _object.smiles();
