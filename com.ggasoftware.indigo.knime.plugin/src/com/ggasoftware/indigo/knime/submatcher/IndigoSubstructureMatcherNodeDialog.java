@@ -42,6 +42,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
    private final JCheckBox _align = new JCheckBox("Align matched structures");
+   private final JCheckBox _alignByQuery = new JCheckBox("Align by query");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
 
@@ -51,6 +52,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          boolean enabled = _highlight.isSelected() || _align.isSelected();
          _newColName.setEnabled(enabled);
          _appendColumn.setEnabled(enabled);
+         
+         _alignByQuery.setEnabled(_align.isSelected());
          
          if (!enabled)
             _appendColumn.setSelected(false);
@@ -105,6 +108,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c.gridy++;
       c.gridx = 0;
       p.add(_align, c);
+      c.gridx = 1;
+      p.add(_alignByQuery, c);
       
       _align.addChangeListener(_changeListener);
       _highlight.addChangeListener(_changeListener);
@@ -134,6 +139,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _molColumn2.update(specs[1], _settings.colName2);
       _newColName.setText(_settings.newColName);
       _align.setSelected(_settings.align);
+      _alignByQuery.setSelected(_settings.alignByQuery);
       _exact.setSelected(_settings.exact);
       _highlight.setSelected(_settings.highlight);
       _appendColumn.setSelected(_settings.appendColumn);
@@ -150,6 +156,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _settings.appendColumn = _appendColumn.isSelected();
       _settings.highlight = _highlight.isSelected();
       _settings.align = _align.isSelected();
+      _settings.alignByQuery = _alignByQuery.isSelected();
       _settings.exact = _exact.isSelected();
       _settings.newColName = _newColName.getText();
       _settings.mode = (Mode)_mode.getSelectedItem();

@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
+import org.knime.chem.types.CMLValue;
 import org.knime.chem.types.MolValue;
 import org.knime.chem.types.RxnValue;
 import org.knime.chem.types.SdfValue;
@@ -80,6 +81,8 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
          _object = IndigoPlugin.getIndigo().loadSmarts(((SmartsValue)value).getSmartsValue());
       else if (value instanceof RxnValue)
          _object = IndigoPlugin.getIndigo().loadQueryReaction((((RxnValue)value).getRxnValue()));
+      else if (value instanceof CMLValue)
+          _object = IndigoPlugin.getIndigo().loadMolecule((((CMLValue)value).getCMLValue()));
    }
 
    /**

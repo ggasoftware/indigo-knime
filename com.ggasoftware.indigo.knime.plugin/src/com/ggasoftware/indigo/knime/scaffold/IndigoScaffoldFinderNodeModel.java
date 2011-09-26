@@ -106,7 +106,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          {
             DataCell[] cells = new DataCell[1];
             String molfile = scaf.molfile();
-            cells[0] = new IndigoQueryMolCell(molfile, false);
+            cells[0] = IndigoQueryMolCell.fromString(molfile);
             outputContainer.addRowToTable(new DefaultRow("Row" + i++, cells));
          }
       }

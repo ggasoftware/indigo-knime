@@ -176,7 +176,7 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
       
       DataCell[] cells = new DataCell[1];
       String molfile = deco.decomposedMoleculeScaffold().molfile();
-      cells[0] = new IndigoQueryMolCell(molfile, false);
+      cells[0] = IndigoQueryMolCell.fromString(molfile);
       outputContainer2.addRowToTable(new DefaultRow("Row1", cells));      
       
       outputContainer.close();

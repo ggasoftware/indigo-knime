@@ -217,9 +217,21 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                         for (IndigoObject atom : query.iterateAtoms())
                         {
                            IndigoObject mapped = match.mapAtom(atom);
+                           
+                           IndigoObject atomForAlign;
+                        	if (_settings.alignByQuery)
+                        		atomForAlign = atom;
+                        	else 
+                        		atomForAlign = mapped;
+                        		
                            if (mapped != null && (mapped.isPseudoatom() || mapped.atomicNumber() != 1))
-                              System.arraycopy(mapped.xyz(), 0, xyz, i++ * 3, 3);
+                           {
+                              atoms[i] = mapped.index();
+                              System.arraycopy(atomForAlign.xyz(), 0, xyz, i++ * 3, 3);
+                           }
                         }
+                     	if (_settings.alignByQuery)
+                     		target.alignAtoms(atoms, xyz);
                      }
                      first = false;
                   }

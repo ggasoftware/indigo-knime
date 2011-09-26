@@ -54,7 +54,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
    static final String DEFAULT_COLUMN = null;
    static final boolean DEFAULT_REPLACE = true;
    static final String DEFAULT_NEWCOLUMN = null;
-   static final int DEFAULT_MODE = AAMode.Clear.ordinal();
+   static final int DEFAULT_MODE = AAMode.Discard.ordinal();
 
    private final SettingsModelColumnName m_column = new SettingsModelColumnName(
          IndigoReactionAutomapperNodeModel.CFGKEY_COLUMN,

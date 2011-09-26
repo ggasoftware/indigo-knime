@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.knime.chem.types.CMLValue;
 import org.knime.chem.types.MolValue;
 import org.knime.chem.types.RxnValue;
 import org.knime.chem.types.SdfValue;
@@ -113,6 +114,7 @@ public class IndigoPlugin extends AbstractUIPlugin
       SmilesValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
       SmartsValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
       RxnValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
+      CMLValue.UTILITY.addRenderer(new IndigoDataValueRenderer(), false);
    }
 
    @Override

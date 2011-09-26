@@ -10,6 +10,9 @@ public class IndigoAtomReplacerSettings
    public boolean replaceColumn = true;
    public String newColName;
    public String newAtomLabel = "*";
+   public boolean replaceHighlighted = false;
+   public boolean replaceSpecificAtom = true;
+   public String specificAtom;
 
    public void loadSettings(final NodeSettingsRO settings)
          throws InvalidSettingsException
@@ -18,6 +21,10 @@ public class IndigoAtomReplacerSettings
       replaceColumn = settings.getBoolean("replaceColumn");
       newColName = settings.getString("newColName");
       newAtomLabel = settings.getString("newAtomLabel");
+      
+      replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
+      replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
+      specificAtom = settings.getString("specificAtom", null);
    }
 
    public void loadSettingsForDialog(final NodeSettingsRO settings)
@@ -26,6 +33,9 @@ public class IndigoAtomReplacerSettings
       replaceColumn = settings.getBoolean("replaceColumn", true);
       newColName = settings.getString("newColName", null);
       newAtomLabel = settings.getString("newAtomLabel", "*");
+      replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
+      replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
+      specificAtom = settings.getString("specificAtom", null);
    }
 
    public void saveSettings(final NodeSettingsWO settings)
@@ -37,5 +47,9 @@ public class IndigoAtomReplacerSettings
          settings.addString("newColName", newColName);
       if (newAtomLabel != null)
          settings.addString("newAtomLabel", newAtomLabel);
+      settings.addBoolean("replaceHighlighted", replaceHighlighted);
+      settings.addBoolean("replaceSpecificAtom", replaceSpecificAtom);
+      if (specificAtom != null)
+      	settings.addString("specificAtom", specificAtom);
    }
 }

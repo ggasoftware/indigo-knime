@@ -70,24 +70,22 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                IndigoPlugin.lock();
                IndigoObject mol = io.clone();
    
-               mol.clearStereocenters();
-               mol.clearCisTrans();
-               
                int[] atoms = new int[mol.countAtoms()];
                int j = 0;
                
                for (IndigoObject atom : mol.iterateAtoms())
+               {
+                  if (_settings.replaceHighlighted && !atom.isHighlighted())
+                  	continue;
+                  if (_settings.replaceSpecificAtom && !atom.symbol().equals(_settings.specificAtom))
+                  	continue;
                   atoms[j++] = atom.index();
+               }
                
                for (int idx : atoms)
                {
                   IndigoObject atom = mol.getAtom(idx);
-                  IndigoObject new_atom = mol.addAtom(_settings.newAtomLabel);
-                  
-                  for (IndigoObject nei : atom.iterateNeighbors())
-                     new_atom.addBond(nei, nei.bond().bondOrder());
-                  
-                  atom.remove();
+                  atom.resetAtom(_settings.newAtomLabel);
                }
                
                if (_settings.replaceColumn)

@@ -1,4 +1,18 @@
-package com.ggasoftware.indigo.knime.areplacer;
+/****************************************************************************
+ * Copyright (C) 2011 GGA Software Services LLC
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 3 as published by the Free Software
+ * Foundation.
+ *
+ * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses>.
+ ***************************************************************************/
+
+package com.ggasoftware.indigo.knime.convert.base;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,6 +27,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeSettingsRO;
@@ -20,42 +35,39 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
-import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
-
-public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
+public class IndigoLoaderNodeDialog extends NodeDialogPane
 {
-   @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
-
+   private ColumnSelectionComboxBox _colName;
+   private final JCheckBox _treatXAsPseudoatom = new JCheckBox();
+   private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox();
    private final JCheckBox _appendColumn = new JCheckBox("Append Column");
    private final JTextField _newColName = new JTextField(20);
-   private final IndigoAtomReplacerSettings _settings = new IndigoAtomReplacerSettings();
-   private final JTextField _newAtomLabel = new JTextField(4);
-   private final JCheckBox _replaceHighlighted = new JCheckBox("Replace only highlighted atoms");
-   private final JCheckBox _replaceSpecificAtom = new JCheckBox("Replace specific atom label");
-   private final JTextField _specificAtom = new JTextField(20);
+   IndigoLoaderSettings _settings = new IndigoLoaderSettings();
 
    /**
-    * New pane for configuring the IndigoAtomReplacer node.
+    * New pane for configuring IndigoMoleculeLoader node dialog. This is just a
+    * suggestion to demonstrate possible default dialog components.
     */
-   protected IndigoAtomReplacerNodeDialog()
+   protected IndigoLoaderNodeDialog(String columnLabel, Class<? extends DataValue>[] filterValueClasses)
    {
       super();
 
       JPanel p = new JPanel(new GridBagLayout());
-
       GridBagConstraints c = new GridBagConstraints();
 
       c.anchor = GridBagConstraints.WEST;
       c.insets = new Insets(2, 2, 2, 2);
       c.gridx = 0;
       c.gridy = 0;
-      p.add(new JLabel("Indigo column   "), c);
+
+      p.add(new JLabel(columnLabel + " column"), c);
+      _colName = new ColumnSelectionComboxBox((Border) null, filterValueClasses);
+
       c.gridx = 1;
-      p.add(_molColumn, c);
+      p.add(_colName, c);
 
       c.gridy++;
+
       c.gridx = 0;
       p.add(_appendColumn, c);
       c.gridx = 1;
@@ -63,20 +75,16 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
 
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("New atom label:"), c);
+      p.add(new JLabel("Treat X as pseudoatom"), c);
       c.gridx = 1;
-      p.add(_newAtomLabel, c);
-      
+      p.add(_treatXAsPseudoatom, c);
+
       c.gridy++;
       c.gridx = 0;
-      p.add(_replaceHighlighted, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_replaceSpecificAtom, c);
+      p.add(new JLabel("Ignore stereochemistry errors"), c);
       c.gridx = 1;
-      p.add(_specificAtom, c);
-      
+      p.add(_ignoreStereochemistryErrors, c);
+
       _appendColumn.addChangeListener(new ChangeListener()
       {
          public void stateChanged (final ChangeEvent e)
@@ -86,34 +94,19 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
                _newColName.setEnabled(true);
                if ("".equals(_newColName.getText()))
                {
-                  _newColName.setText(_molColumn.getSelectedColumn() + " (replaced atoms)");
+                  _newColName.setText(_colName.getSelectedColumn()
+                        + " (Indigo)");
                }
             }
             else
-            {
                _newColName.setEnabled(false);
-            }
-            _specificAtom.setEnabled(_replaceSpecificAtom.isSelected());
          }
       });
-
-      _replaceSpecificAtom.addChangeListener(new ChangeListener()
-      {
-         public void stateChanged (final ChangeEvent e)
-         {
-            _specificAtom.setEnabled(_replaceSpecificAtom.isSelected());
-            if (_replaceSpecificAtom.isSelected())
-	            if ("".equals(_specificAtom.getText()))
-	            	_specificAtom.setText("Cl");
-         }
-      });
-      
       _newColName.setEnabled(_appendColumn.isSelected());
-      _specificAtom.setEnabled(_replaceSpecificAtom.isSelected());
 
       addTab("Standard settings", p);
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -123,15 +116,14 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    {
       _settings.loadSettingsForDialog(settings);
 
-      _molColumn.update(specs[0], _settings.colName);
+      _colName.update(specs[0], _settings.colName);
       _appendColumn.setSelected(!_settings.replaceColumn);
       _newColName.setEnabled(!_settings.replaceColumn);
-      _newColName.setText(_settings.newColName);
-      _newAtomLabel.setText(_settings.newAtomLabel);
-
-      _replaceHighlighted.setSelected(_settings.replaceHighlighted);
-      _replaceSpecificAtom.setSelected(_settings.replaceSpecificAtom);
-      _specificAtom.setText(_settings.specificAtom);
+      _newColName
+            .setText(_settings.newColName != null ? _settings.newColName : "");
+      _treatXAsPseudoatom.setSelected(_settings.treatXAsPseudoatom);
+      _ignoreStereochemistryErrors
+            .setSelected(_settings.ignoreStereochemistryErrors);
    }
 
    /**
@@ -141,15 +133,12 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
+      _settings.colName = _colName.getSelectedColumn();
       _settings.replaceColumn = !_appendColumn.isSelected();
       _settings.newColName = _newColName.getText();
-      _settings.newAtomLabel = _newAtomLabel.getText();
-      
-      _settings.replaceHighlighted = _replaceHighlighted.isSelected();
-      _settings.replaceSpecificAtom = _replaceSpecificAtom.isSelected();
-      _settings.specificAtom = _specificAtom.getText();
-
+      _settings.treatXAsPseudoatom = _treatXAsPseudoatom.isSelected();
+      _settings.ignoreStereochemistryErrors = _ignoreStereochemistryErrors
+            .isSelected();
       _settings.saveSettings(settings);
    }
 }

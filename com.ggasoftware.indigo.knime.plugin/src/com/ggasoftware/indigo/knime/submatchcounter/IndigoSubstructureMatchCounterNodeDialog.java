@@ -50,7 +50,6 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       public void stateChanged (ChangeEvent e)
       {
          boolean enabled = _highlight.isSelected();
-         _newColName2.setEnabled(enabled);
          _appendColumn.setEnabled(enabled);
          
          if (!enabled)
@@ -116,7 +115,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       
       _highlight.setSelected(false);
       _appendColumn.setEnabled(false);
-      _newColName.setEnabled(false);
+      _newColName2.setEnabled(false);
       
       addTab("Standard settings", p);
    }

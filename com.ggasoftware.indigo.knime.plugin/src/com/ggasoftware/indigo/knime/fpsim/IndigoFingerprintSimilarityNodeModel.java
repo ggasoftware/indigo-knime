@@ -116,6 +116,8 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
 
       ArrayList<BitVectorValue> templates = new ArrayList<BitVectorValue>(); 
       
+      boolean missingPrinted = false; 
+      
       {
          CloseableRowIterator it = inData[1].iterator();
          
@@ -125,7 +127,15 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          while (it.hasNext())
          {
             DataRow row = it.next();
-            templates.add((BitVectorValue)row.getCell(colIdx2));
+            DataCell cell = row.getCell(colIdx2);
+            if (cell.isMissing())
+            {
+	            if (!missingPrinted)
+		            setWarningMessage("Missing values were skipped");
+	            missingPrinted = true;
+	            continue;
+            }
+         	templates.add((BitVectorValue)cell);
          }
       }
       
@@ -137,7 +147,16 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-         BitVectorValue bitvector = (BitVectorValue)inputRow.getCell(colIdx);
+         DataCell cell = inputRow.getCell(colIdx);
+         if (cell.isMissing())
+         {
+            if (!missingPrinted)
+	            setWarningMessage("Missing values were skipped");
+            missingPrinted = true;
+            continue;
+         }
+         
+         BitVectorValue bitvector = (BitVectorValue)cell;
 
          float result = 0;
          int count = 0;
