@@ -130,12 +130,12 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
             DataCell cell = row.getCell(colIdx2);
             if (cell.isMissing())
             {
-	            if (!missingPrinted)
-		            setWarningMessage("Missing values were skipped");
-	            missingPrinted = true;
-	            continue;
+               if (!missingPrinted)
+                  setWarningMessage("Missing values were skipped");
+               missingPrinted = true;
+               continue;
             }
-         	templates.add((BitVectorValue)cell);
+            templates.add((BitVectorValue)cell);
          }
       }
       
@@ -151,7 +151,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          if (cell.isMissing())
          {
             if (!missingPrinted)
-	            setWarningMessage("Missing values were skipped");
+               setWarningMessage("Missing values were skipped");
             missingPrinted = true;
             continue;
          }
