@@ -41,7 +41,7 @@ public class IndigoMoleculeLoaderNodeFactory extends
 	@Override
 	protected Class<? extends DataValue>[] getFilterValueClasses() {
 		return new Class[] { SdfValue.class, MolValue.class,
-				SmilesValue.class, CMLValue.class, CMLValue.class, StringValue.class };
+				SmilesValue.class, CMLValue.class, StringValue.class };
 	}
 	
 }

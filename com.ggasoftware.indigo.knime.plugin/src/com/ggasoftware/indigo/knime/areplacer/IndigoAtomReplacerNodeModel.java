@@ -2,6 +2,8 @@ package com.ggasoftware.indigo.knime.areplacer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.knime.core.data.*;
 import org.knime.core.data.container.CloseableRowIterator;
@@ -70,8 +72,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                IndigoPlugin.lock();
                IndigoObject mol = io.clone();
    
-               int[] atoms = new int[mol.countAtoms()];
-               int j = 0;
+               List<Integer> atoms = new ArrayList<Integer>(); 
                
                for (IndigoObject atom : mol.iterateAtoms())
                {
@@ -79,7 +80,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                   	continue;
                   if (_settings.replaceSpecificAtom && !atom.symbol().equals(_settings.specificAtom))
                   	continue;
-                  atoms[j++] = atom.index();
+                  atoms.add(atom.index());
                }
                
                for (int idx : atoms)

@@ -33,8 +33,8 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    private final IndigoAtomReplacerSettings _settings = new IndigoAtomReplacerSettings();
    private final JTextField _newAtomLabel = new JTextField(4);
    private final JCheckBox _replaceHighlighted = new JCheckBox("Replace only highlighted atoms");
-   private final JCheckBox _replaceSpecificAtom = new JCheckBox("Replace specific atom label");
-   private final JTextField _specificAtom = new JTextField(20);
+   private final JCheckBox _replaceSpecificAtom = new JCheckBox("Replace specific atom type");
+   private final JTextField _specificAtom = new JTextField(4);
 
    /**
     * New pane for configuring the IndigoAtomReplacer node.
@@ -102,12 +102,10 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
          public void stateChanged (final ChangeEvent e)
          {
             _specificAtom.setEnabled(_replaceSpecificAtom.isSelected());
-            if (_replaceSpecificAtom.isSelected())
-	            if ("".equals(_specificAtom.getText()))
-	            	_specificAtom.setText("Cl");
          }
       });
       
+      _replaceSpecificAtom.setSelected(false);
       _newColName.setEnabled(_appendColumn.isSelected());
       _specificAtom.setEnabled(_replaceSpecificAtom.isSelected());
 

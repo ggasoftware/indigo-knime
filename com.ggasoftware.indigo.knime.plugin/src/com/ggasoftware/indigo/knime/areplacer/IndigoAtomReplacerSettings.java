@@ -11,7 +11,7 @@ public class IndigoAtomReplacerSettings
    public String newColName;
    public String newAtomLabel = "*";
    public boolean replaceHighlighted = false;
-   public boolean replaceSpecificAtom = true;
+   public boolean replaceSpecificAtom = false;
    public String specificAtom;
 
    public void loadSettings(final NodeSettingsRO settings)
