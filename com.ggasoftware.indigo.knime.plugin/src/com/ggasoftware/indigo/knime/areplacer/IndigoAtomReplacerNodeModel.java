@@ -3,6 +3,8 @@ package com.ggasoftware.indigo.knime.areplacer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.knime.core.data.*;
@@ -43,6 +45,14 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
       CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
+      // Split atoms to replace into a set
+      HashSet<String> atomToReplace = new HashSet<String>();
+      if (_settings.replaceSpecificAtom)
+      {
+         String[] atoms = _settings.specificAtom.split("\\s*,\\s*");
+         atomToReplace.addAll(Arrays.asList(atoms));
+      }
+     
       while (it.hasNext())
       {
          DataRow inputRow = it.next();
@@ -77,9 +87,9 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                for (IndigoObject atom : mol.iterateAtoms())
                {
                   if (_settings.replaceHighlighted && !atom.isHighlighted())
-                  	continue;
-                  if (_settings.replaceSpecificAtom && !atom.symbol().equals(_settings.specificAtom))
-                  	continue;
+                     continue;
+                  if (_settings.replaceSpecificAtom && !atomToReplace.contains(atom.symbol()))
+                     continue;
                   atoms.add(atom.index());
                }
                
