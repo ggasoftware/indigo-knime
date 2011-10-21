@@ -13,12 +13,12 @@
         
         <option name="Molecules column">The column that contains Indigo molecules.</option>
         <option name="Query molecule column">The column that contains the query molecule.</option>
-        <option name="New column">Name of the new column to append.</option>
+        <option name="New column name">Name of the new column with the counter(s) to append.</option>
         <option name="Uniqueness"><ul><li>By atoms: "CCC" matches "C1CC1" once</li>
     								  <li>By bonds: "CCC" matches "C1CC1" three times</li>
     							      <li>None: "CCC" matches "C1CC1" six times</li></ul>
     							      </option>
-    	<option name="Highlight matches">Highlight matches in the input structure (available only in "uniqueness by atoms" mode)</option>						      
+    	<option name="Highlight all matches">Highlight matches in the input structure (available only in "uniqueness by atoms" mode)</option>						      
     	<option name="Append column">Append a new column with highlighted structures (of not set, the original column is modified)</option>
     </fullDescription>
     
