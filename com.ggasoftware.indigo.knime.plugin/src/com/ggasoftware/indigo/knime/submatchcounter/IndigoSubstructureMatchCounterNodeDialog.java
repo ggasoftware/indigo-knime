@@ -42,7 +42,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
    private final JComboBox _uniqueness = new JComboBox(new Object[] {
          Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None });
    
-   private final JCheckBox _highlight = new JCheckBox("Highlight matches");
+   private final JCheckBox _highlight = new JCheckBox("Highlight all matches");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName2 = new JTextField(20);
    
@@ -90,7 +90,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       
       c.gridy++;
       c.gridx = 0;
-      p.add(new JLabel("New column"), c);
+      p.add(new JLabel("New column name"), c);
       c.gridx = 1;
       p.add(_newColName, c);
 

@@ -45,34 +45,23 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
-      DataTableSpec spec2 = getDataTableSpec(inData[1].getDataTableSpec());
-
-      BufferedDataContainer outputContainer = exec.createDataContainer(spec);
-
-      int colIdx = spec.findColumnIndex(_settings.colName);
-
-      if (colIdx == -1)
-         throw new Exception("column not found");
-
-      int colIdx2 = spec2.findColumnIndex(_settings.colName2);
-
-      if (colIdx2 == -1)
-         throw new Exception("query column not found");
+      final BufferedDataTable targetsTable = inData[0];
+      final BufferedDataTable queriesTable = inData[1];
       
-      IndigoObject query;
+      final DataTableSpec targetItemsSpec = targetsTable.getDataTableSpec();
+      final DataTableSpec outSpec = 
+         getOutDataTableSpec(targetsTable.getDataTableSpec(), 
+               queriesTable.getRowCount());
+
+      BufferedDataContainer outputContainer = exec.createDataContainer(outSpec);
+
+      int targetColIdx = targetItemsSpec.findColumnIndex(_settings.colName);
+      if (targetColIdx == -1)
+         throw new InvalidSettingsException("column '" + _settings.colName + "' is not found in the first port");
+
+      IndigoObject[] queries = loadQueries(queriesTable);
       
-      {
-         CloseableRowIterator it = inData[1].iterator();
-         if (!it.hasNext())
-            throw new Exception("no query molecule found in the data source");
-         DataRow row = it.next();
-         query = ((IndigoQueryMolValue)row.getCell(colIdx2)).getIndigoObject();
-         if (it.hasNext())
-            LOGGER.warn("second data source contains more than one row; ignoring all others");
-      }
-      
-      CloseableRowIterator it = inData[0].iterator();
+      CloseableRowIterator it = targetsTable.iterator();
       int rowNumber = 1;
 
       Indigo indigo = IndigoPlugin.getIndigo();
@@ -81,73 +70,13 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       {
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
-         DataCell[] cells;
-         int i;
-         
-         if (_settings.appendColumn)
-            cells = new DataCell[inputRow.getNumCells() + 2];
-         else
-            cells = new DataCell[inputRow.getNumCells() + 1];
-         
-         for (i = 0; i < inputRow.getNumCells(); i++)
-            cells[i] = inputRow.getCell(i);
-         
-         if (inputRow.getCell(colIdx).isMissing())
-         {
-            cells[i] = DataType.getMissingCell();
-            if (_settings.appendColumn)
-               cells[i + 1] = DataType.getMissingCell();
-         }
-         else
-         {
-            IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
-   
-   
-            try
-            {
-               IndigoPlugin.lock();
-               indigo.setOption("embedding-uniqueness", _settings.uniqueness.name()
-                     .toLowerCase());
-               IndigoObject matcher = indigo.substructureMatcher(io);
-   
-               cells[i++] = new IntCell(matcher.countMatches(query));
-               
-               if (_settings.highlight)
-               {
-                  IndigoObject highlighted = indigo.createMolecule();
-                  IndigoObject mapping = highlighted.merge(io);
-                  
-                  for (IndigoObject match : matcher.iterateMatches(query))
-                  {
-                     for (IndigoObject qatom : query.iterateAtoms())
-                     {
-                        IndigoObject mapped = match.mapAtom(qatom);
-                        if (mapped != null)
-                           mapping.mapAtom(mapped).highlight();
-                     }
-                     for (IndigoObject qbond : query.iterateBonds())
-                     {
-                        IndigoObject mapped = match.mapBond(qbond);
-                        if (mapped != null)
-                           mapping.mapBond(mapped).highlight();
-                     }
-                  }
-                  
-                  if (_settings.appendColumn)
-                     cells[i] = new IndigoMolCell(highlighted);
-                  else
-                     cells[colIdx] =  new IndigoMolCell(highlighted);
-               }
-            }
-            finally
-            {
-               IndigoPlugin.unlock();
-            }
-         }
+
+         DataCell[] cells = 
+            getResultRow(outSpec, targetColIdx, queries, indigo, inputRow);
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) targetsTable.getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
@@ -155,6 +84,117 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
+   }
+
+   private IndigoObject[] loadQueries(BufferedDataTable queriesTableData)
+         throws InvalidSettingsException {
+      DataTableSpec queryItemsSpec = queriesTableData.getDataTableSpec();
+      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.colName2);
+      if (queryColIdx == -1)
+         throw new InvalidSettingsException("query column '" + _settings.colName2 + "' not found");
+      
+      IndigoObject[] queries = new IndigoObject[queriesTableData.getRowCount()];
+      if (queries.length == 0)
+         LOGGER.warn("There are no query molecules in the table");
+
+      int index = 0;
+      boolean warningPrinted = false;
+      RowIterator it = queriesTableData.iterator();
+      while (it.hasNext())
+      {
+         DataRow row = it.next();
+         queries[index] = getIndigoQueryMoleculeOrNull(row.getCell(queryColIdx));
+         if (queries[index] == null && !warningPrinted) {
+            LOGGER.warn("query table contains missing cells");
+            warningPrinted = true;
+         }
+         index++;
+      }
+      return queries;
+   }
+
+   
+   private IndigoObject getIndigoQueryMoleculeOrNull(DataCell cell)
+   {
+      if (cell.isMissing())
+         return null;
+      return ((IndigoQueryMolValue)cell).getIndigoObject();
+   }
+   
+   private DataCell[] getResultRow(DataTableSpec outSpec, int colIdx,
+      IndigoObject[] queries, Indigo indigo, DataRow inputRow)
+   {
+      DataCell[] cells;
+      int i;
+      
+      cells = new DataCell[outSpec.getNumColumns()];
+      
+      for (i = 0; i < inputRow.getNumCells(); i++)
+         cells[i] = inputRow.getCell(i);
+      
+      DataCell targetCell = inputRow.getCell(colIdx);
+      if (targetCell.isMissing()) {
+         // Mark all columns as missing
+         if (_settings.appendColumn) {
+            cells[i] = DataType.getMissingCell();
+            i++;
+         }
+         
+         for (int j = 0; j < queries.length; j++) {
+            cells[i] = DataType.getMissingCell();
+            i++;
+         }
+         return cells;
+      }
+      
+      try {
+         IndigoPlugin.lock();
+         
+         IndigoObject target = ((IndigoMolCell)targetCell).getIndigoObject();
+         
+         IndigoObject highlighted = null, mapping = null;
+         if (_settings.highlight) {
+            highlighted = indigo.createMolecule();
+            mapping = highlighted.merge(target);
+         }
+         
+         indigo.setOption("embedding-uniqueness", _settings.uniqueness
+               .name().toLowerCase());
+         IndigoObject matcher = indigo.substructureMatcher(target);
+         
+         for (IndigoObject q : queries) {
+            if (q == null) {
+               cells[i++] = DataType.getMissingCell();
+               continue;
+            }
+            cells[i++] = new IntCell(matcher.countMatches(q));
+
+            if (_settings.highlight) {
+               for (IndigoObject match : matcher.iterateMatches(q)) {
+                  for (IndigoObject qatom : q.iterateAtoms()) {
+                     IndigoObject mapped = match.mapAtom(qatom);
+                     if (mapped != null)
+                        mapping.mapAtom(mapped).highlight();
+                  }
+                  for (IndigoObject qbond : q.iterateBonds()) {
+                     IndigoObject mapped = match.mapBond(qbond);
+                     if (mapped != null)
+                        mapping.mapBond(mapped).highlight();
+                  }
+               }
+            }
+         }
+
+         if (_settings.highlight) {
+            if (_settings.appendColumn)
+               cells[i] = new IndigoMolCell(highlighted);
+            else
+               cells[colIdx] = new IndigoMolCell(highlighted);
+         }
+      } finally {
+         IndigoPlugin.unlock();
+      }
+      return cells;
    }
 
    /**
@@ -165,28 +205,39 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    {
    }
 
-   protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
+   protected DataTableSpec getOutDataTableSpec (DataTableSpec inSpec, int queryRowsCount) throws InvalidSettingsException
    {
       if (_settings.newColName == null || _settings.newColName.length() < 1)
          throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
-      
+
+      int additionalRows = queryRowsCount;
       if (_settings.appendColumn)
-         specs = new DataColumnSpec[inSpec.getNumColumns() + 2];
-      else
-         specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
+         additionalRows += 1;
+      
+      specs = new DataColumnSpec[inSpec.getNumColumns() + additionalRows];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      specs[i] = new DataColumnSpecCreator(_settings.newColName, IntCell.TYPE).createSpec();
-      
-      if (_settings.appendColumn)
-         specs[i + 1] = new DataColumnSpecCreator(_settings.newColName2, IndigoMolCell.TYPE).createSpec();
+      for (int j = 0; j < queryRowsCount; j++)
+      {
+         String suffix = "";
+         if (queryRowsCount > 1)
+            suffix = String.format(" %d", j + 1);
+         specs[i] = new DataColumnSpecCreator(_settings.newColName + suffix, IntCell.TYPE).createSpec();
+         i++;
+      }
 
+      // Add molecule column that highlighted by each query   
+      if (_settings.appendColumn) {
+         specs[i] = new DataColumnSpecCreator(_settings.newColName2, IndigoMolCell.TYPE).createSpec();
+         i++;
+      }
+      
       return new DataTableSpec(specs);
    }
 
@@ -197,7 +248,9 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
+      // Return null table because table specification depends on the 
+      // number of the rows in the query table
+      return new DataTableSpec[1];
    }
 
    /**
