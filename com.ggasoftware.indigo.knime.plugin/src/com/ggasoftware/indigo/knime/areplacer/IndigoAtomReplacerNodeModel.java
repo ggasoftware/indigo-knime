@@ -96,7 +96,10 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                for (int idx : atoms)
                {
                   IndigoObject atom = mol.getAtom(idx);
-                  atom.resetAtom(_settings.newAtomLabel);
+                  if (_settings.newAtomLabel.matches("R\\d*"))
+                     atom.setRSite(_settings.newAtomLabel);
+                  else
+                     atom.resetAtom(_settings.newAtomLabel);
                }
                
                if (_settings.replaceColumn)
