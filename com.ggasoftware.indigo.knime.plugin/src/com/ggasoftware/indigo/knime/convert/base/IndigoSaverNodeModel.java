@@ -194,6 +194,7 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
       public void setProgress (int curRowNr, int rowCount, RowKey lastKey,
             ExecutionMonitor exec)
       {
+         exec.setProgress((double)curRowNr / rowCount);
       }
    }
 

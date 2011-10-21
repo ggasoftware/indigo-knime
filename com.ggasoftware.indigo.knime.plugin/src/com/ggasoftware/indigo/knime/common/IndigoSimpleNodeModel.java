@@ -114,8 +114,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               logger.error("Could not " + _message + ": " + ex.getMessage(),
-                     ex);
+               logger.error("Could not " + _message + " for " + row.getKey() + 
+                     ": " + ex.getMessage(), ex);
                return DataType.getMissingCell();
             }
             finally
@@ -141,6 +141,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       public void setProgress (int curRowNr, int rowCount, RowKey lastKey,
             ExecutionMonitor exec)
       {
+         exec.setProgress((double)curRowNr / rowCount);
       }
    }
 
