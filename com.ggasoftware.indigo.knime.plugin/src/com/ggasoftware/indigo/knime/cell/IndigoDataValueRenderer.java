@@ -29,6 +29,7 @@ import org.knime.chem.types.RxnValue;
 import org.knime.chem.types.SdfValue;
 import org.knime.chem.types.SmartsValue;
 import org.knime.chem.types.SmilesValue;
+import org.knime.core.data.DataType;
 import org.knime.core.data.renderer.*;
 import org.knime.core.node.NodeLogger;
 
@@ -41,6 +42,7 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
    private static final Font NO_2D_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 12);
 
    IndigoObject _object = null;
+   String _errorMessage = null;
 
    private static IndigoRenderer renderer = null;
 
@@ -63,26 +65,49 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
    @Override
    protected void setValue (final Object value)
    {
-      _object = null;
-      
       if (value instanceof IndigoDataValue)
          _object = ((IndigoDataValue) value).getIndigoObject();
-      else if (value instanceof MolValue)
-    	  _object = IndigoPlugin.getIndigo().loadQueryMolecule(((MolValue)value).getMolValue());
-      else if (value instanceof SdfValue)
-    	  _object = IndigoPlugin.getIndigo().loadQueryMolecule(((SdfValue)value).getSdfValue());
-      else if (value instanceof SmilesValue) {
-         String smiles = ((SmilesValue)value).getSmilesValue();
-         _object = !smiles.matches("^[^>]*>[^>]*>[^>]*$")
-               ? IndigoPlugin.getIndigo().loadMolecule(smiles)
-               : IndigoPlugin.getIndigo().loadReaction(smiles);
+      else if (value == DataType.getMissingCell())
+      {
+         _object = null;
+         _errorMessage = "Missing cell";
       }
-      else if (value instanceof SmartsValue)
-         _object = IndigoPlugin.getIndigo().loadSmarts(((SmartsValue)value).getSmartsValue());
-      else if (value instanceof RxnValue)
-         _object = IndigoPlugin.getIndigo().loadQueryReaction((((RxnValue)value).getRxnValue()));
-      else if (value instanceof CMLValue)
-          _object = IndigoPlugin.getIndigo().loadMolecule((((CMLValue)value).getCMLValue()));
+      else
+      {
+         try
+         {
+            IndigoPlugin.lock();
+            if (value instanceof MolValue)
+               _object = IndigoPlugin.getIndigo().loadQueryMolecule(
+                     ((MolValue) value).getMolValue());
+            else if (value instanceof SdfValue)
+               _object = IndigoPlugin.getIndigo().loadQueryMolecule(
+                     ((SdfValue) value).getSdfValue());
+            else if (value instanceof SmilesValue) {
+               String smiles = ((SmilesValue) value).getSmilesValue();
+               _object = !smiles.matches("^[^>]*>[^>]*>[^>]*$") ?
+                     IndigoPlugin.getIndigo().loadMolecule(smiles) : 
+                     IndigoPlugin.getIndigo().loadReaction(smiles);
+            } else if (value instanceof SmartsValue)
+               _object = IndigoPlugin.getIndigo().loadSmarts(
+                     ((SmartsValue) value).getSmartsValue());
+            else if (value instanceof RxnValue)
+               _object = IndigoPlugin.getIndigo().loadQueryReaction(
+                     (((RxnValue) value).getRxnValue()));
+            else if (value instanceof CMLValue)
+               _object = IndigoPlugin.getIndigo().loadMolecule(
+                     (((CMLValue) value).getCMLValue()));
+         }
+         catch (IndigoException e)
+         {
+            _object = null;
+            _errorMessage = e.getMessage();
+         }
+         finally
+         {
+            IndigoPlugin.unlock();
+         }
+      }
    }
 
    /**
@@ -95,7 +120,7 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
       if (_object == null)
       {
          g.setFont(NO_2D_FONT);
-         g.drawString("?", 2, 14);
+         g.drawString(_errorMessage == null ? "empty" : _errorMessage, 2, 14);
          return;
       }
       
@@ -137,6 +162,12 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
          indigo.setOption("render-highlight-thickness-enabled", true);
          indigo.setOption("render-highlight-color", 0.7f, 0, 0);
          buf = renderer.renderToBuffer(_object);
+      }
+      catch (IndigoException e)
+      {
+         g.setFont(NO_2D_FONT);
+         g.drawString(e.getMessage(), 2, 14);
+         return;
       }
       finally
       {
