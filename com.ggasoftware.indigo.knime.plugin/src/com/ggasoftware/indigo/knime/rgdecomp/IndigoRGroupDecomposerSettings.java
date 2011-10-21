@@ -31,8 +31,8 @@ public class IndigoRGroupDecomposerSettings
    {
       colName = settings.getString("colName");
       colName2 = settings.getString("colName2");
-      newColPrefix = settings.getString("newColPrefix");
-      newScafColName = settings.getString("newScafColName");
+      newColPrefix = settings.getString("newColPrefix", "R-Group #");
+      newScafColName = settings.getString("newScafColName", "Scaffold");
       aromatize = settings.getBoolean("aromatize");
    }
 

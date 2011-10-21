@@ -41,9 +41,9 @@ public class IndigoSubstructureMatcherSettings
       newColName = settings.getString("newColName", null);
       align = settings.getBoolean("align");
       alignByQuery = settings.getBoolean("alignByQuery", false);
-      exact = settings.getBoolean("exact");
-      highlight = settings.getBoolean("highlight");
-      appendColumn = settings.getBoolean("appendColumn");
+      exact = settings.getBoolean("exact", false);
+      highlight = settings.getBoolean("highlight", false);
+      appendColumn = settings.getBoolean("appendColumn", false);
       mode = Mode.valueOf(settings.getString("mode"));
    }
 

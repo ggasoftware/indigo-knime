@@ -38,9 +38,9 @@ public class IndigoSubstructureMatchCounterSettings
       colName2 = settings.getString("colName2");
       newColName = settings.getString("newColName");
       uniqueness = Uniqueness.valueOf(settings.getString("uniqueness"));
-      highlight = settings.getBoolean("highlight");
-      appendColumn = settings.getBoolean("appendColumn");
-      newColName2 = settings.getString("newColName2");
+      highlight = settings.getBoolean("highlight", false);
+      appendColumn = settings.getBoolean("appendColumn", false);
+      newColName2 = settings.getString("newColName2", null);
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
