@@ -32,19 +32,21 @@ public class IndigoSubstructureMatcherSettings
    public boolean highlight = false;
    public boolean appendColumn = false;
    public String newColName;
+   
+   public boolean appendQueryKeyColumn = false;
+   public String queryKeyColumn;
 
+   public boolean appendQueryMatchCountKeyColumn = false;
+   public String queryMatchCountKeyColumn;
+   
+   public boolean matchAllSelected;
+   public boolean matchAnyAtLeastSelected;
+   public int matchAnyAtLeast;
+   
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      colName = settings.getString("colName");
-      colName2 = settings.getString("colName2");
-      newColName = settings.getString("newColName", null);
-      align = settings.getBoolean("align");
-      alignByQuery = settings.getBoolean("alignByQuery", false);
-      exact = settings.getBoolean("exact", false);
-      highlight = settings.getBoolean("highlight", false);
-      appendColumn = settings.getBoolean("appendColumn", false);
-      mode = Mode.valueOf(settings.getString("mode"));
+      loadSettingsForDialog(settings);
    }
 
    public void loadSettingsForDialog (final NodeSettingsRO settings)
@@ -58,6 +60,17 @@ public class IndigoSubstructureMatcherSettings
       exact = settings.getBoolean("exact", false);
       highlight = settings.getBoolean("highlight", false);
       appendColumn = settings.getBoolean("appendColumn", false);
+
+      appendQueryKeyColumn = settings.getBoolean("appendQueryKeyColumn", false);
+      queryKeyColumn = settings.getString("queryKeyColumn", null);
+
+      appendQueryMatchCountKeyColumn = settings.getBoolean("appendQueryMatchCountKeyColumn", false);
+      queryMatchCountKeyColumn = settings.getString("queryMatchCountKeyColumn", null);
+      
+      matchAllSelected = settings.getBoolean("matchAllExceptSelected", false);
+      
+      matchAnyAtLeastSelected = settings.getBoolean("matchAnyAtLeastSelected", true);
+      matchAnyAtLeast = settings.getInt("matchAnyAtLeast", 1);
    }
 
    public void saveSettings (final NodeSettingsWO settings)
@@ -75,5 +88,18 @@ public class IndigoSubstructureMatcherSettings
       settings.addBoolean("align", align);
       settings.addBoolean("alignByQuery", alignByQuery);
       settings.addBoolean("highlight", highlight);
+      
+      settings.addBoolean("appendQueryKeyColumn", appendQueryKeyColumn);
+      if (queryKeyColumn != null)
+         settings.addString("queryKeyColumn", queryKeyColumn);
+
+      settings.addBoolean("appendQueryMatchCountKeyColumn", appendQueryMatchCountKeyColumn);
+      if (queryMatchCountKeyColumn != null)
+         settings.addString("queryMatchCountKeyColumn", queryMatchCountKeyColumn);
+      
+      settings.addBoolean("matchAllExceptSelected", matchAllSelected);
+      
+      settings.addBoolean("matchAnyAtLeastSelected", matchAnyAtLeastSelected);
+      settings.addInt("matchAnyAtLeast", matchAnyAtLeast);
    }
 }

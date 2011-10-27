@@ -55,9 +55,10 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    private final JCheckBox _replaceHighlighted = new JCheckBox("Replace only highlighted atoms");
    private final JCheckBox _replaceSpecificAtoms = new JCheckBox("Replace specific atoms");
    private final JComboBox _specificAtomGroup = new JComboBox();
-   private final JTextField _specificAtoms = new JTextField(20);
+   private final JTextField _specificAtoms = new JTextField(30);
    private final Map<String, String> _specificAtomGroupsMap = new HashMap<String, String>();
    private final String _customTitle = "Custom ...";
+   private final JCheckBox _replaceAttachmentPoints = new JCheckBox("Replace attachment points");
 
    private final ChangeListener _changeListener = new ChangeListener() {
       public void stateChanged (ChangeEvent e)
@@ -171,6 +172,10 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       c.gridy++;
       p.add(_specificAtoms, c);
       
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_replaceAttachmentPoints, c);
+      
       loadAtomGroups();
       
       _appendColumn.addChangeListener(_changeListener);
@@ -247,6 +252,8 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       _replaceSpecificAtoms.setSelected(_settings.replaceSpecificAtom);
       _specificAtoms.setText(_settings.specificAtom);
       
+      _replaceAttachmentPoints.setSelected(_settings.replaceAttachmentPoints);
+      
       _changeListener.stateChanged(null);
       updateAtomsListByEvent(_specificAtoms);
    }
@@ -267,6 +274,8 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       _settings.replaceSpecificAtom = _replaceSpecificAtoms.isSelected();
       _settings.specificAtom = _specificAtoms.getText();
 
+      _settings.replaceAttachmentPoints = _replaceAttachmentPoints.isSelected();
+      
       _settings.saveSettings(settings);
    }
 }

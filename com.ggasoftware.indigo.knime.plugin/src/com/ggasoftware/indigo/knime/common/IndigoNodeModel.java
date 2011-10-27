@@ -23,7 +23,10 @@ public abstract class IndigoNodeModel extends NodeModel
             if (cs.getType().isCompatible(cls))
             {
                if (colName != null)
-                  setWarningMessage("Selected column '" + colName + "' as " + cls.getName());
+               {
+                  setWarningMessage("Selected default column '" + colName + "' as " + cls.getName());
+                  break;
+               }
                else
                   colName = cs.getName();
             }

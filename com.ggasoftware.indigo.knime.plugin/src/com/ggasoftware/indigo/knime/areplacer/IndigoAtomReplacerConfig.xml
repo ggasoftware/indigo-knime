@@ -46,4 +46,7 @@
     <Include>Halogens</Include>
     <Include>Noble gases</Include>
   </Group>
+  <Group name="R-groups">
+    <Elements>R, R1, R2, R3, R4, R5, R6, R7, R8, R9</Elements>
+  </Group>
 </Groups>

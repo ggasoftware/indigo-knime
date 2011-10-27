@@ -45,24 +45,47 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final JCheckBox _alignByQuery = new JCheckBox("Align by query");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
+   private final JCheckBox _appendQueryKeyColumn = new JCheckBox("Append queries key column");
+   private final JTextField _queryKeyColumnName = new JTextField(20);
+   
+   private final JCheckBox _appendQueryMatchCountKeyColumn = new JCheckBox("Append match count column");
+   private final JTextField _queryMatchCountKeyColumn = new JTextField(20);
+   
+   private final JRadioButton _matchAllExceptSelected = new JRadioButton("All queries");
+   private final JRadioButton _matchAnyAtLeastSelected = new JRadioButton("At least ");
+   private final JSpinner _matchAnyAtLeast = new JSpinner(new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1));
 
+   private static void updateNullableEdit (JTextField field, String defValue)
+   {
+      if (field.isEnabled() && field.getText().length() < 1)
+         field.setText(defValue);
+      if (!field.isEnabled() && field.getText().length() > 0 && field.getText().equals(defValue))
+         field.setText("");
+   }
+   
    private final ChangeListener _changeListener = new ChangeListener() {
       public void stateChanged (ChangeEvent e)
       {
          boolean enabled = _highlight.isSelected() || _align.isSelected();
          _newColName.setEnabled(enabled);
          _appendColumn.setEnabled(enabled);
-         
+        
          _alignByQuery.setEnabled(_align.isSelected());
          
          if (!enabled)
             _appendColumn.setSelected(false);
          
+         _queryKeyColumnName.setEnabled(_appendQueryKeyColumn.isSelected());
+         _queryMatchCountKeyColumn.setEnabled(_appendQueryMatchCountKeyColumn.isSelected());
+         
+         _matchAnyAtLeast.setEnabled(_matchAnyAtLeastSelected.isSelected());
+         
          if (_appendColumn.isEnabled())
             _newColName.setEnabled(_appendColumn.isSelected());
-         
-         if (_newColName.isEnabled() && _newColName.getText().length() < 1)
-            _newColName.setText(_molColumn.getSelectedColumn() + " (matched)");
+
+         updateNullableEdit(_queryKeyColumnName, _molColumn.getSelectedColumn() + " (query keys)");
+         updateNullableEdit(_queryMatchCountKeyColumn, _molColumn.getSelectedColumn() + " (queries matched)");
+         updateNullableEdit(_newColName, _molColumn.getSelectedColumn() + " (matched)");
       }
    };
    
@@ -72,6 +95,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    protected IndigoSubstructureMatcherNodeDialog()
    {
       super();
+      
+      //addDialogComponent()
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -111,9 +136,6 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_alignByQuery, c);
       
-      _align.addChangeListener(_changeListener);
-      _highlight.addChangeListener(_changeListener);
-      
       c.gridy++;
       c.gridx = 0;
       p.add(_appendColumn, c);
@@ -121,6 +143,59 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       p.add(_newColName, c);
       
       _appendColumn.addChangeListener(_changeListener);
+      _align.addChangeListener(_changeListener);
+      _highlight.addChangeListener(_changeListener);
+      
+      ((JSpinner.DefaultEditor)_matchAnyAtLeast.getEditor()).getTextField().setColumns(4);
+
+      JPanel p2 = new JPanel(new GridBagLayout());
+      GridBagConstraints c2 = new GridBagConstraints();
+      c2.anchor = GridBagConstraints.WEST;
+      c2.insets = new Insets(2, 2, 2, 2);
+      c2.gridy = 0;
+      c2.gridx = 0;
+      
+      p2.add(new JLabel("Match"), c2);
+      c2.gridx++;
+      p2.add(_matchAnyAtLeastSelected, c2);
+      c2.gridx++;
+      p2.add(_matchAnyAtLeast, c2);
+      c2.gridx++;
+      p2.add(new JLabel(" queries"), c2);
+     
+      c2.gridy++;
+      c2.gridx = 1;
+      c2.gridwidth = 3;
+      p2.add(_matchAllExceptSelected, c2);
+      
+      ButtonGroup bg = new ButtonGroup();
+      bg.add(_matchAllExceptSelected);
+      bg.add(_matchAnyAtLeastSelected);
+      _matchAllExceptSelected.addChangeListener(_changeListener);
+      _matchAnyAtLeastSelected.addChangeListener(_changeListener);
+      
+      c.gridy++;
+      c.gridx = 0;
+      c.gridwidth = 2;
+      p.add(p2, c);
+      c.gridwidth = 1;
+
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_appendQueryKeyColumn, c);
+      c.gridx = 1;
+      p.add(_queryKeyColumnName, c);
+      
+      _appendQueryKeyColumn.addChangeListener(_changeListener);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_appendQueryMatchCountKeyColumn, c);
+      c.gridx = 1;
+      p.add(_queryMatchCountKeyColumn, c);
+      
+      _appendQueryMatchCountKeyColumn.addChangeListener(_changeListener);
+      
       _align.setSelected(false);
       _highlight.setSelected(false);
       _appendColumn.setEnabled(false);
@@ -144,6 +219,18 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _highlight.setSelected(_settings.highlight);
       _appendColumn.setSelected(_settings.appendColumn);
       _mode.setSelectedItem(_settings.mode);
+      _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn);
+      
+      _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn);
+      _queryKeyColumnName.setText(_settings.queryKeyColumn);
+
+      _appendQueryMatchCountKeyColumn.setSelected(_settings.appendQueryMatchCountKeyColumn);
+      _queryMatchCountKeyColumn.setText(_settings.queryMatchCountKeyColumn);
+      
+      _matchAllExceptSelected.setSelected(_settings.matchAllSelected);
+      _matchAnyAtLeastSelected.setSelected(_settings.matchAnyAtLeastSelected);
+      _matchAnyAtLeast.setValue(_settings.matchAnyAtLeast);
+      
       _changeListener.stateChanged(null);
    }
 
@@ -160,6 +247,16 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _settings.exact = _exact.isSelected();
       _settings.newColName = _newColName.getText();
       _settings.mode = (Mode)_mode.getSelectedItem();
+
+      _settings.appendQueryKeyColumn = _appendQueryKeyColumn.isSelected();
+      _settings.queryKeyColumn = _queryKeyColumnName.getText();
+
+      _settings.appendQueryMatchCountKeyColumn = _appendQueryMatchCountKeyColumn.isSelected();
+      _settings.queryMatchCountKeyColumn = _queryMatchCountKeyColumn.getText();
+      
+      _settings.matchAllSelected = _matchAllExceptSelected.isSelected();
+      _settings.matchAnyAtLeastSelected = _matchAnyAtLeastSelected.isSelected();
+      _settings.matchAnyAtLeast = (Integer)_matchAnyAtLeast.getValue();
 
       _settings.saveSettings(settings);
    }

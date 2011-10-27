@@ -112,7 +112,6 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       }
       return queries;
    }
-
    
    private IndigoObject getIndigoQueryMoleculeOrNull(DataCell cell)
    {

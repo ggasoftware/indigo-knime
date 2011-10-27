@@ -12,6 +12,7 @@ public class IndigoAtomReplacerSettings
    public String newAtomLabel = "*";
    public boolean replaceHighlighted = false;
    public boolean replaceSpecificAtom = false;
+   public boolean replaceAttachmentPoints = false;
    public String specificAtom;
 
    public void loadSettings(final NodeSettingsRO settings)
@@ -25,6 +26,7 @@ public class IndigoAtomReplacerSettings
       replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
       replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
       specificAtom = settings.getString("specificAtom", null);
+      replaceAttachmentPoints = settings.getBoolean("replaceAttachmentPoints", false);
    }
 
    public void loadSettingsForDialog(final NodeSettingsRO settings)
@@ -36,6 +38,7 @@ public class IndigoAtomReplacerSettings
       replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
       replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
       specificAtom = settings.getString("specificAtom", null);
+      replaceAttachmentPoints = settings.getBoolean("replaceAttachmentPoints", false);
    }
 
    public void saveSettings(final NodeSettingsWO settings)
@@ -49,6 +52,7 @@ public class IndigoAtomReplacerSettings
          settings.addString("newAtomLabel", newAtomLabel);
       settings.addBoolean("replaceHighlighted", replaceHighlighted);
       settings.addBoolean("replaceSpecificAtom", replaceSpecificAtom);
+      settings.addBoolean("replaceAttachmentPoints", replaceAttachmentPoints);
       if (specificAtom != null)
       	settings.addString("specificAtom", specificAtom);
    }

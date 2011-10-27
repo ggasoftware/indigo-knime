@@ -12,6 +12,7 @@ import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
@@ -84,22 +85,61 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    
                List<Integer> atoms = new ArrayList<Integer>(); 
                
-               for (IndigoObject atom : mol.iterateAtoms())
+               boolean replaceAllAtoms = !_settings.replaceHighlighted && !_settings.replaceSpecificAtom;
+
+               if (!_settings.replaceAttachmentPoints || !replaceAllAtoms)
                {
-                  if (_settings.replaceHighlighted && !atom.isHighlighted())
-                     continue;
-                  if (_settings.replaceSpecificAtom && !atomToReplace.contains(atom.symbol()))
-                     continue;
-                  atoms.add(atom.index());
+                  for (IndigoObject atom : mol.iterateAtoms())
+                  {
+                     if (_settings.replaceHighlighted && !atom.isHighlighted())
+                        continue;
+                     if (_settings.replaceSpecificAtom && !atomToReplace.contains(atom.symbol()))
+                        continue;
+                     atoms.add(atom.index());
+                  }
+                  
+                  for (int idx : atoms)
+                  {
+                     IndigoObject atom = mol.getAtom(idx);
+                     if (_settings.newAtomLabel.matches("R\\d*"))
+                        atom.setRSite(_settings.newAtomLabel);
+                     else
+                        atom.resetAtom(_settings.newAtomLabel);
+                  }
                }
                
-               for (int idx : atoms)
+               if (_settings.replaceAttachmentPoints)
                {
-                  IndigoObject atom = mol.getAtom(idx);
-                  if (_settings.newAtomLabel.matches("R\\d*"))
-                     atom.setRSite(_settings.newAtomLabel);
-                  else
-                     atom.resetAtom(_settings.newAtomLabel);
+                  List<Integer> atomsWithAttach = new ArrayList<Integer>();
+                  int maxOrder = mol.countAttachmentPoints();
+                  
+                  for (int order = 1; order <= maxOrder; order++)
+                     for (IndigoObject atomWithAttachment: mol.iterateAttachmentPoints(order))
+                        atomsWithAttach.add(atomWithAttachment.index());
+                  mol.clearAttachmentPoints();
+                  List<Integer> newAtoms = new ArrayList<Integer>();
+                  for (int idx : atomsWithAttach)
+                  {
+                     IndigoObject atom = mol.getAtom(idx);
+                     IndigoObject newAtom;
+                     if (_settings.newAtomLabel.matches("R\\d*"))
+                        newAtom = mol.addRSite(_settings.newAtomLabel);
+                     else
+                        newAtom = mol.addAtom(_settings.newAtomLabel);
+                     atom.addBond(newAtom, 1);
+                     newAtoms.add(newAtom.index());
+                  }
+                  
+                  // Layout added atoms if coordinates are present
+                  try
+                  {
+                     if (mol.hasCoord())
+                        mol.getSubmolecule(newAtoms).layout();
+                  }
+                  catch (IndigoException ex)
+                  {
+                     LOGGER.warn("Layout exception: " + ex.getMessage());
+                  }
                }
                
                if (_settings.replaceColumn)
@@ -222,4 +262,6 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          CanceledExecutionException
    {
    }
+
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoAtomReplacerNodeModel.class);
 }
