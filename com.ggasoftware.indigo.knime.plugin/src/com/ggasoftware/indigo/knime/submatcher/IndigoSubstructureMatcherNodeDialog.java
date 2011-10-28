@@ -45,7 +45,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final JCheckBox _alignByQuery = new JCheckBox("Align by query");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
-   private final JCheckBox _appendQueryKeyColumn = new JCheckBox("Append queries key column");
+   private final JCheckBox _appendQueryKeyColumn = new JCheckBox("Append queries row ID column");
    private final JTextField _queryKeyColumnName = new JTextField(20);
    
    private final JCheckBox _appendQueryMatchCountKeyColumn = new JCheckBox("Append match count column");
@@ -83,7 +83,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          if (_appendColumn.isEnabled())
             _newColName.setEnabled(_appendColumn.isSelected());
 
-         updateNullableEdit(_queryKeyColumnName, _molColumn.getSelectedColumn() + " (query keys)");
+         updateNullableEdit(_queryKeyColumnName, _molColumn.getSelectedColumn() + " (query row ID)");
          updateNullableEdit(_queryMatchCountKeyColumn, _molColumn.getSelectedColumn() + " (queries matched)");
          updateNullableEdit(_newColName, _molColumn.getSelectedColumn() + " (matched)");
       }

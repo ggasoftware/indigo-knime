@@ -39,9 +39,9 @@ public class IndigoSubstructureMatcherSettings
    public boolean appendQueryMatchCountKeyColumn = false;
    public String queryMatchCountKeyColumn;
    
-   public boolean matchAllSelected;
-   public boolean matchAnyAtLeastSelected;
-   public int matchAnyAtLeast;
+   public boolean matchAllSelected = false;
+   public boolean matchAnyAtLeastSelected = true;
+   public int matchAnyAtLeast = 1;
    
    public void loadSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
