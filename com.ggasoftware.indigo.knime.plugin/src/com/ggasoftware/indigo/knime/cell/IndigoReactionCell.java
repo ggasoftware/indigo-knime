@@ -85,8 +85,11 @@ public class IndigoReactionCell extends IndigoDataCell implements IndigoReaction
 
 	public static final DataType TYPE = DataType.getType(IndigoReactionCell.class);
 
-	public IndigoReactionCell(IndigoObject obj) {
+	public IndigoReactionCell(IndigoObject obj)
+	{
 		super(obj);
+      // Try to serialize to check unexpected configurations: extraordinary charge or etc.
+      obj.serialize();
 	}
 
 	@Override

@@ -97,6 +97,9 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
    public IndigoMolCell (IndigoObject obj)
    {
       super(obj);
+
+      // Try to serialize to check unexpected configurations: extraordinary charge or etc.
+      obj.serialize();
    }
 
    @Override
