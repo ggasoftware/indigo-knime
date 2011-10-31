@@ -75,7 +75,7 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
          }
          catch (IndigoException ex)
          {
-            LOGGER.error("Error while unserializing Indigo object", ex);
+            LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
             throw new IOException(ex.getMessage());
          }
          finally
@@ -99,7 +99,15 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       super(obj);
 
       // Try to serialize to check unexpected configurations: extraordinary charge or etc.
-      obj.serialize();
+      try
+      {
+         IndigoPlugin.lock();
+         obj.serialize();
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
    }
 
    @Override

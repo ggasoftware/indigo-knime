@@ -88,8 +88,17 @@ public class IndigoReactionCell extends IndigoDataCell implements IndigoReaction
 	public IndigoReactionCell(IndigoObject obj)
 	{
 		super(obj);
-      // Try to serialize to check unexpected configurations: extraordinary charge or etc.
-      obj.serialize();
+
+		// Try to serialize to check unexpected configurations: extraordinary charge or etc.
+      try
+      {
+         IndigoPlugin.lock();
+         obj.serialize();
+      }
+      finally
+      {
+         IndigoPlugin.unlock();
+      }
 	}
 
 	@Override
