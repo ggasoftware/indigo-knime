@@ -9,6 +9,7 @@ import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
@@ -18,6 +19,8 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
 {
    private IndigoMurckoScaffoldSettings _settings = new IndigoMurckoScaffoldSettings();
+
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMurckoScaffoldNodeModel.class);
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
@@ -258,6 +261,14 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
                   
                   break;
                }
+            }
+            catch (IndigoException ex)
+            {
+               LOGGER.error("Exception during processing row " + 
+                     inputRow.getKey() + ": " + ex.getMessage() + 
+                     ". Replaced with missing cell.", ex);
+               cell = DataType.getMissingCell();
+               target = null;
             }
             finally
             {
