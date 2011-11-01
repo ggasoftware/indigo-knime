@@ -32,7 +32,6 @@ import java.util.*;
 
 public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 {
-
    private final IndigoMoleculePropertiesSettings _settings = new IndigoMoleculePropertiesSettings();
 
    public static interface PropertyCalculator
@@ -465,7 +464,20 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             IndigoPlugin.lock();
             for (String prop : _settings.selectedProps)
-               cells[i++] = calculators.get(prop).calculate(io);
+            {
+               DataCell cell = null;
+               try 
+               {
+                  cell = calculators.get(prop).calculate(io);
+               }
+               catch (IndigoException ex)
+               {
+                  cell = DataType.getMissingCell();
+                  LOGGER.warn("Cannot calculate " + prop + " for row " + 
+                        inputRow.getKey() + ": " + ex.getMessage(), ex);
+               }
+               cells[i++] = cell;
+            }
          }
          finally
          {
@@ -556,4 +568,5 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    {
    }
 
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMoleculePropertiesNodeModel.class);
 }
