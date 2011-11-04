@@ -209,15 +209,14 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       int rowNumber = 1;
 
-      try {
-         IndigoPlugin.lock();
-         for (DataRow inputRow : inData[0]) {
-            IndigoObject target = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+      for (DataRow inputRow : inData[0]) {
+         IndigoObject target = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
 
+         int matchCount = 0;
+         StringBuilder queriesRowKey = new StringBuilder();
+         try {
+            IndigoPlugin.lock();
             target = target.clone();
-
-            int matchCount = 0;
-            StringBuilder queriesRowKey = new StringBuilder();
             
             int totalQueries = queries.length;
             for (QueryWithData query : queries) {
@@ -232,50 +231,50 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                   queriesRowKey.append(query.rowKey);
                }
             }
-
-            boolean hasMatch = true;
-            // Check matchCount
-            if (_settings.matchAnyAtLeastSelected)
-               hasMatch = (matchCount >= _settings.matchAnyAtLeast);
-            if (_settings.matchAllSelected)
-               hasMatch = (matchCount == queries.length);
-            
-            if (hasMatch) {
-               int columnsCount = inputRow.getNumCells();
-               if (_settings.appendColumn)
-                  columnsCount++;
-               if (_settings.appendQueryKeyColumn)
-                  columnsCount++;
-               if (_settings.appendQueryMatchCountKeyColumn)
-                  columnsCount++;
-               
-               DataCell[] cells = new DataCell[columnsCount];
-               int i;
-
-               for (i = 0; i < inputRow.getNumCells(); i++) {
-                  if (!_settings.appendColumn && i == colIdx)
-                     cells[i] = new IndigoMolCell(target);
-                  else
-                     cells[i] = inputRow.getCell(i);
-               }
-               if (_settings.appendColumn)
-                  cells[i++] = new IndigoMolCell(target);
-               if (_settings.appendQueryKeyColumn)
-                  cells[i++] = new StringCell(queriesRowKey.toString());
-               if (_settings.appendQueryMatchCountKeyColumn)
-                  cells[i++] = new IntCell(matchCount);
-               
-               validOutputContainer.addRowToTable(new DefaultRow(inputRow
-                     .getKey(), cells));
-            } else
-               invalidOutputContainer.addRowToTable(inputRow);
-            exec.checkCanceled();
-            exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
-                  "Processing row " + rowNumber);
-            rowNumber++;
+         } finally {
+            IndigoPlugin.unlock();
          }
-      } finally {
-         IndigoPlugin.unlock();
+
+         boolean hasMatch = true;
+         // Check matchCount
+         if (_settings.matchAnyAtLeastSelected)
+            hasMatch = (matchCount >= _settings.matchAnyAtLeast);
+         if (_settings.matchAllSelected)
+            hasMatch = (matchCount == queries.length);
+         
+         if (hasMatch) {
+            int columnsCount = inputRow.getNumCells();
+            if (_settings.appendColumn)
+               columnsCount++;
+            if (_settings.appendQueryKeyColumn)
+               columnsCount++;
+            if (_settings.appendQueryMatchCountKeyColumn)
+               columnsCount++;
+            
+            DataCell[] cells = new DataCell[columnsCount];
+            int i;
+
+            for (i = 0; i < inputRow.getNumCells(); i++) {
+               if (!_settings.appendColumn && i == colIdx)
+                  cells[i] = new IndigoMolCell(target);
+               else
+                  cells[i] = inputRow.getCell(i);
+            }
+            if (_settings.appendColumn)
+               cells[i++] = new IndigoMolCell(target);
+            if (_settings.appendQueryKeyColumn)
+               cells[i++] = new StringCell(queriesRowKey.toString());
+            if (_settings.appendQueryMatchCountKeyColumn)
+               cells[i++] = new IntCell(matchCount);
+            
+            validOutputContainer.addRowToTable(new DefaultRow(inputRow
+                  .getKey(), cells));
+         } else
+            invalidOutputContainer.addRowToTable(inputRow);
+         exec.checkCanceled();
+         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+               "Processing row " + rowNumber);
+         rowNumber++;
       }
 
       validOutputContainer.close();
