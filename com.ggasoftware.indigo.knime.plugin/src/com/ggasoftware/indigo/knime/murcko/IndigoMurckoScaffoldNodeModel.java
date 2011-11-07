@@ -285,7 +285,8 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
                cells[i] = inputRow.getCell(i);
             if (target == null)
                cells[i] = cell;
-            cells[i] = new IndigoMolCell(target);
+            else
+               cells[i] = new IndigoMolCell(target);
             outputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
          }
          else
