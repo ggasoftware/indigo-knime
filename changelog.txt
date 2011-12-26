@@ -1,0 +1,35 @@
+1. Bug with QueryReactionCell was fixed. Thanks to Simon http://tech.knime.org/forum/indigo/reaction-automapper-errors
+
+
+
+>****************************************************************************************************************8
+Changes in the version 1.0.0.0001075 from the nightly build:
+
+1. New translators nodes for converting RxnCell into Indigo cell and vice versa (query reactions are also supported).
+
+2. New Reaction Automapper node for automatic atom-to-atom mapping for reaction.
+
+3. There are additional options for Atom Replacer node: replace only highlighted atoms, replace only specific atom type. Thanks to Simon (richards99) for the suggestion: http://tech.knime.org/forum/indigo/atom-replacer-feature-request
+There are small bug currently in this node, but it will be fixed in the next nightly build.
+
+4. There is an additions option for Substructure Matcher: Align by query. Thanks to James (James Davidson) for the suggestion: http://tech.knime.org/forum/indigo/substructure-matcher-align-matched-structures
+
+5. Indigo Renderer is now set as non-default renderer for MolCell, SDFCell, CMLCell, SmilesCell, SmartsCell. Renderer can be selected by clicking right button on the column header in a table with molecules.
+
+6. Translator nodes now automatically find column to translate. It is not necessary to configure them unless there are some ambiguity. Also translator nodes now accept string values for input.
+
+7. Indigo Renderer now can render query molecules better. But currently produced image appears to be wider then is can be. Thanks Steve (s.roughley) for mentioning this: http://tech.knime.org/forum/indigo/substructure-match-counter-and-query-molecule-to-indigo-nodes-suggested-imporvements
+
+Fixed bug:
+
+1. "red-black tree: at(): key not found" exception when a lot of Indigo objects are used. Thanks to Simon (richards99) for providing this bug report: http://tech.knime.org/forum/indigo/atom-replacer-node-bug
+
+2. Minor bug was fixed in the dialog for Molecule Substructure Matcher.
+
+Plans for the nearest future:
+
+1. Add more nodes for reactions: reaction substructure search, combinatorial chemistry, reaction-based transformation of molecules.
+
+2. Add file readers and savers for reactions. There is a lack of reaction readers in the Knime core.
+
+3. Implement suggestions that wre gived here.
