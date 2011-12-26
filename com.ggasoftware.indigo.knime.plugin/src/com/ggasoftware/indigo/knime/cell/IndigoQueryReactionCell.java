@@ -79,9 +79,21 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
    {
       return _smarts;
    }
-   
+   /**
+    * @deprecated Please use
+    * {@link IndigoQueryReactionCell#fromString(String)}
+    * or
+    * {@link IndigoQueryReactionCell#fromSmarts(String)}
+    * instead
+    */
    public IndigoQueryReactionCell(IndigoObject obj) {
       super(obj);
+   }
+   
+   private IndigoQueryReactionCell(IndigoObject obj, String query, boolean smarts) {
+      super(obj);
+      _query = query;
+      _smarts = smarts;
    }
    
    public static IndigoQueryReactionCell fromString(String str) {
@@ -144,6 +156,17 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
    public int hashCode ()
    {
       return 0;
+   }
+
+   public IndigoQueryReactionCell clone() {
+      try {
+         IndigoPlugin.lock();
+         IndigoQueryReactionCell ret = new IndigoQueryReactionCell(_object.clone(), _query, _smarts);
+         return ret;
+      }
+      finally {
+         IndigoPlugin.unlock();
+      }
    }
 
 }

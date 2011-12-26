@@ -110,7 +110,8 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
                newcell = new IndigoReactionCell(((IndigoReactionCell)inputRow.getCell(colIdx)).getIndigoObject().clone());
             }
             else if (inputRow.getCell(colIdx) instanceof IndigoQueryReactionCell) {
-               newcell = new IndigoQueryReactionCell(((IndigoQueryReactionCell)inputRow.getCell(colIdx)).getIndigoObject().clone());
+               IndigoQueryReactionCell reactionCell = (IndigoQueryReactionCell)inputRow.getCell(colIdx);
+               newcell = reactionCell.clone();
             }
             ((IndigoDataValue)newcell).getIndigoObject().automap(AAMode.values()[m_mode.getIntValue()].name().toLowerCase());
          }
