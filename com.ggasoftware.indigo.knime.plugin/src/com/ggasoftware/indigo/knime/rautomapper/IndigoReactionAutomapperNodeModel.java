@@ -27,8 +27,6 @@ import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
-import com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperSettings.AAMode;
-
 /**
  * This is the model implementation of ReactionAutomapper.
  * 
@@ -64,7 +62,9 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
          throw new Exception("column not found");
 
       int newColIdx = _settings.m_replace.getBooleanValue() ? colIdx : inputTableSpec.getNumColumns();
-
+      
+      String aamParameters = _settings.getAAMParameters();
+      
       int rowNumber = 1;
       for (DataRow inputRow : inData[0]) {
          DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.m_replace.getBooleanValue() ? 0 : 1)];
@@ -84,7 +84,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
                newcell = DataType.getMissingCell();
             }
             if (!newcell.isMissing())
-               ((IndigoDataValue) newcell).getIndigoObject().automap(AAMode.values()[_settings.m_mode.getIntValue()].name().toLowerCase());
+               ((IndigoDataValue) newcell).getIndigoObject().automap(aamParameters);
          } catch (IndigoException e) {
             message = e.getMessage();
          } finally {

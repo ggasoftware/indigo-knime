@@ -36,6 +36,11 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
 
    private final JComboBox _mode = new JComboBox(new String[] { AAMode.Discard.toString(), AAMode.Keep.toString(), AAMode.Alter.toString(),
          AAMode.Clear.toString() });
+   
+   private final JCheckBox _ignoreCharges = new JCheckBox("Ignore Charges");
+   private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore Isotopes");
+   private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore Radicals");
+   private final JCheckBox _ignoreValence = new JCheckBox("Ignore Valence");
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
@@ -80,6 +85,22 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
          }
       });
       _newColName.setEnabled(_appendColumn.isSelected());
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_ignoreCharges, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_ignoreIsotopes, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_ignoreRadicals, c);
+      
+      c.gridy++;
+      c.gridx = 0;
+      p.add(_ignoreValence, c);
 
       addTab("Standard settings", p);
    }
@@ -93,6 +114,13 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
          _appendColumn.setSelected(!_settings.m_replace.getBooleanValue());
          _newColName.setText(_settings.m_newColumn.getStringValue());
          _mode.setSelectedIndex(_settings.m_mode.getIntValue());
+         /*
+          * Ignore flags
+          */
+         _ignoreCharges.setSelected(_settings.m_ignoreCharges.getBooleanValue());
+         _ignoreIsotopes.setSelected(_settings.m_ignoreIsotopes.getBooleanValue());
+         _ignoreRadicals.setSelected(_settings.m_ignoreRadicals.getBooleanValue());
+         _ignoreValence.setSelected(_settings.m_ignoreValence.getBooleanValue());
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage(), e);
       }
@@ -105,7 +133,14 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       _settings.m_replace.setBooleanValue(!_appendColumn.isSelected());
       _settings.m_newColumn.setStringValue(_newColName.getText());
       _settings.m_mode.setIntValue(_mode.getSelectedIndex());
-
+      /*
+       * Ignore flags
+       */
+      _settings.m_ignoreCharges.setBooleanValue(_ignoreCharges.isSelected());
+      _settings.m_ignoreIsotopes.setBooleanValue(_ignoreIsotopes.isSelected());
+      _settings.m_ignoreRadicals.setBooleanValue(_ignoreRadicals.isSelected());
+      _settings.m_ignoreValence.setBooleanValue(_ignoreValence.isSelected());
+      
       _settings.saveSettingsTo(settings);
    }
 }
