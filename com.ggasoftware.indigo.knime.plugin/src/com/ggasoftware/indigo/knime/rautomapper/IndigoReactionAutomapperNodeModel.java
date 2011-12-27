@@ -20,9 +20,6 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
-import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
-import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
@@ -30,45 +27,19 @@ import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
+import com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperSettings.AAMode;
 
 /**
  * This is the model implementation of ReactionAutomapper.
  * 
- *
- * @author 
+ * 
+ * @author
  */
 public class IndigoReactionAutomapperNodeModel extends NodeModel {
 
-   public enum AAMode {
-      Discard,
-      Keep,
-      Alter,
-      Clear
-   }
+   private final IndigoReactionAutomapperSettings _settings = new IndigoReactionAutomapperSettings();
 
-   static final String CFGKEY_COLUMN = "column";
-   static final String CFGKEY_REPLACE = "replaceColumn";
-   static final String CFGKEY_NEWCOLUMN = "newColumn";
-   static final String CFGKEY_MODE = "mode";
-
-   static final String DEFAULT_COLUMN = null;
-   static final boolean DEFAULT_REPLACE = true;
-   static final String DEFAULT_NEWCOLUMN = null;
-   static final int DEFAULT_MODE = AAMode.Discard.ordinal();
-
-   private final SettingsModelColumnName m_column = new SettingsModelColumnName(
-         IndigoReactionAutomapperNodeModel.CFGKEY_COLUMN,
-         IndigoReactionAutomapperNodeModel.DEFAULT_COLUMN);
-   private final SettingsModelBoolean m_replace = new SettingsModelBoolean(
-         IndigoReactionAutomapperNodeModel.CFGKEY_REPLACE,
-         IndigoReactionAutomapperNodeModel.DEFAULT_REPLACE);
-   private final SettingsModelColumnName m_newColumn = new SettingsModelColumnName(
-         IndigoReactionAutomapperNodeModel.CFGKEY_NEWCOLUMN,
-         IndigoReactionAutomapperNodeModel.DEFAULT_NEWCOLUMN);
-   private final SettingsModelInteger m_mode = new SettingsModelInteger(
-         IndigoReactionAutomapperNodeModel.CFGKEY_MODE,
-         IndigoReactionAutomapperNodeModel.DEFAULT_MODE );
-
+   public static final int INPUT_PORT = 0;
 
    /**
     * Constructor for the node model.
@@ -81,69 +52,63 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     * {@inheritDoc}
     */
    @Override
-   protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
-         final ExecutionContext exec) throws Exception {
+   protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec) throws Exception {
       DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
       BufferedDataContainer validOutputContainer = exec.createDataContainer(outputSpecs[0]);
       BufferedDataContainer invalidOutputContainer = exec.createDataContainer(outputSpecs[1]);
 
-      int colIdx = inputTableSpec.findColumnIndex(m_column.getStringValue());
+      int colIdx = inputTableSpec.findColumnIndex(_settings.m_column.getStringValue());
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      int newColIdx = m_replace.getBooleanValue() ? colIdx : inputTableSpec.getNumColumns();
+      int newColIdx = _settings.m_replace.getBooleanValue() ? colIdx : inputTableSpec.getNumColumns();
 
       int rowNumber = 1;
       for (DataRow inputRow : inData[0]) {
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + (m_replace.getBooleanValue() ? 0 : 1)];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.m_replace.getBooleanValue() ? 0 : 1)];
 
          DataCell newcell = null;
          String message = null;
 
-         try
-         {
+         try {
             IndigoPlugin.lock();
-            
+
             if (inputRow.getCell(colIdx) instanceof IndigoReactionCell) {
-               newcell = new IndigoReactionCell(((IndigoReactionCell)inputRow.getCell(colIdx)).getIndigoObject().clone());
-            }
-            else if (inputRow.getCell(colIdx) instanceof IndigoQueryReactionCell) {
-               IndigoQueryReactionCell reactionCell = (IndigoQueryReactionCell)inputRow.getCell(colIdx);
+               newcell = new IndigoReactionCell(((IndigoReactionCell) inputRow.getCell(colIdx)).getIndigoObject().clone());
+            } else if (inputRow.getCell(colIdx) instanceof IndigoQueryReactionCell) {
+               IndigoQueryReactionCell reactionCell = (IndigoQueryReactionCell) inputRow.getCell(colIdx);
                newcell = reactionCell.clone();
             } else {
                newcell = DataType.getMissingCell();
             }
-            if(!newcell.isMissing())
-               ((IndigoDataValue)newcell).getIndigoObject().automap(AAMode.values()[m_mode.getIntValue()].name().toLowerCase());
-         }
-         catch (IndigoException e) {
+            if (!newcell.isMissing())
+               ((IndigoDataValue) newcell).getIndigoObject().automap(AAMode.values()[_settings.m_mode.getIntValue()].name().toLowerCase());
+         } catch (IndigoException e) {
             message = e.getMessage();
-         }
-         finally {
+         } finally {
             IndigoPlugin.unlock();
          }
-         
+
          if (newcell != null) {
             for (int i = 0; i < inputRow.getNumCells(); i++) {
-               cells[i] = m_replace.getBooleanValue() && i == newColIdx ? newcell : inputRow.getCell(i);
+               cells[i] = _settings.m_replace.getBooleanValue() && i == newColIdx ? newcell : inputRow.getCell(i);
             }
-            if (!m_replace.getBooleanValue()) {
+            if (!_settings.m_replace.getBooleanValue()) {
                cells[newColIdx] = newcell;
             }
             validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
-         }
-         else {
+         } else {
             for (int i = 0; i < inputRow.getNumCells(); i++) {
-               cells[i] = (m_replace.getBooleanValue() && i == newColIdx) ? new StringCell(message) : inputRow.getCell(i);
+               cells[i] = (_settings.m_replace.getBooleanValue() && i == newColIdx) ? new StringCell(message) : inputRow.getCell(i);
             }
-            if (!m_replace.getBooleanValue()) {
+            if (!_settings.m_replace.getBooleanValue()) {
                cells[newColIdx] = new StringCell(message);
             }
             invalidOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
          }
-         
+
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double) inData[0].getRowCount(), "Adding row " + rowNumber);
 
@@ -162,24 +127,22 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
    protected void reset() {
    }
 
-   protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
-      throws InvalidSettingsException
-   {
-      if (m_column.getStringValue() == null || m_column.getStringValue().length() < 1)
+   protected DataTableSpec[] getDataTableSpecs(DataTableSpec inputTableSpec) throws InvalidSettingsException {
+      if (_settings.m_column.getStringValue() == null || _settings.m_column.getStringValue().length() < 1)
          throw new InvalidSettingsException("Column name not specified");
-      
-      if (!m_replace.getBooleanValue())
-         if (m_newColumn.getStringValue() == null || m_newColumn.getStringValue().length() < 1)
+
+      if (!_settings.m_replace.getBooleanValue())
+         if (_settings.m_newColumn.getStringValue() == null || _settings.m_newColumn.getStringValue().length() < 1)
             throw new InvalidSettingsException("No new column name specified");
 
-      int colIdx = inputTableSpec.findColumnIndex(m_column.getStringValue());
+      int colIdx = inputTableSpec.findColumnIndex(_settings.m_column.getStringValue());
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
-      String newColName = m_newColumn.getStringValue();
+      String newColName = _settings.m_newColumn.getStringValue();
       int newColIdx = inputTableSpec.getNumColumns();
-      if (m_replace.getBooleanValue()) {
-         newColName = m_column.getStringValue();
+      if (_settings.m_replace.getBooleanValue()) {
+         newColName = _settings.m_column.getStringValue();
          newColIdx = colIdx;
       }
 
@@ -190,11 +153,10 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
 
       DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
-      if (m_replace.getBooleanValue()) {
+      if (_settings.m_replace.getBooleanValue()) {
          validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
          invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
-      }
-      else {
+      } else {
          validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
          invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
       }
@@ -202,17 +164,16 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
       for (int i = 0; i < inputTableSpec.getNumColumns(); i++) {
          DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
 
-         if (m_replace.getBooleanValue() && i == newColIdx) {
+         if (_settings.m_replace.getBooleanValue() && i == newColIdx) {
             validOutputColumnSpecs[i] = validOutputColumnSpec;
             invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
-         }
-         else {
+         } else {
             validOutputColumnSpecs[i] = columnSpec;
             invalidOutputColumnSpecs[i] = columnSpec;
          }
       }
 
-      if (!m_replace.getBooleanValue()) {
+      if (!_settings.m_replace.getBooleanValue()) {
          validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
          invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
       }
@@ -225,7 +186,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
-      return getDataTableSpecs(inSpecs[0]);
+      return getDataTableSpecs(inSpecs[INPUT_PORT]);
    }
 
    /**
@@ -233,10 +194,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected void saveSettingsTo(final NodeSettingsWO settings) {
-      m_column.saveSettingsTo(settings);
-      m_replace.saveSettingsTo(settings);
-      m_newColumn.saveSettingsTo(settings);
-      m_mode.saveSettingsTo(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -244,10 +202,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings) throws InvalidSettingsException {
-      m_column.loadSettingsFrom(settings);
-      m_replace.loadSettingsFrom(settings);
-      m_newColumn.loadSettingsFrom(settings);
-      m_mode.loadSettingsFrom(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -255,28 +210,21 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-      m_column.validateSettings(settings);
-      m_replace.validateSettings(settings);
-      m_newColumn.validateSettings(settings);
-      m_mode.validateSettings(settings);
+      _settings.validateSettings(settings);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected void loadInternals(final File internDir, final ExecutionMonitor exec) throws IOException,
-         CanceledExecutionException {
+   protected void loadInternals(final File internDir, final ExecutionMonitor exec) throws IOException, CanceledExecutionException {
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected void saveInternals(final File internDir,
-         final ExecutionMonitor exec) throws IOException,
-         CanceledExecutionException {
+   protected void saveInternals(final File internDir, final ExecutionMonitor exec) throws IOException, CanceledExecutionException {
    }
 
 }
-
