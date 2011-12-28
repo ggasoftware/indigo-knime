@@ -1,13 +1,7 @@
 package com.ggasoftware.indigo.knime.rautomapper;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -21,6 +15,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperSettings.AAMode;
@@ -44,33 +39,12 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
-
-      JPanel p = new JPanel(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridx = 0;
-      c.gridy = 0;
-
-      p.add(new JLabel("Reaction column"), c);
-
-      c.gridx = 1;
-      p.add(_colName, c);
-
-      c.gridy++;
-
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-
-      c.gridx = 0;
-      p.add(new JLabel("Reaction AAM mode"), c);
-      c.gridx = 1;
-      p.add(_mode, c);
+      
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      
+      dialogPanel.addItem("Reaction column", _colName);
+      dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItem("Reaction AAM mode", _mode);
 
       _appendColumn.addChangeListener(new ChangeListener() {
          public void stateChanged(final ChangeEvent e) {
@@ -86,23 +60,12 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       });
       _newColName.setEnabled(_appendColumn.isSelected());
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_ignoreCharges, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_ignoreIsotopes, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_ignoreRadicals, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_ignoreValence, c);
+      dialogPanel.addItem(_ignoreCharges, null);
+      dialogPanel.addItem(_ignoreIsotopes, null);
+      dialogPanel.addItem(_ignoreRadicals, null);
+      dialogPanel.addItem(_ignoreValence, null);
 
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    @Override

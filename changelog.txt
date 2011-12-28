@@ -1,5 +1,6 @@
 1. Bug with QueryReactionCell was fixed. Thanks to Simon http://tech.knime.org/forum/indigo/reaction-automapper-errors
 2. Reaction AAM ignore flags support was added.
+3. New filters for all the indigo nodes were added.
 
 
 >****************************************************************************************************************8
