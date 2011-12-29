@@ -1,11 +1,11 @@
 package com.ggasoftware.indigo.knime.rautomapper;
 
+import java.awt.Font;
+
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.InvalidSettingsException;
@@ -26,44 +26,35 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
 
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _colName = new ColumnSelectionComboxBox((Border) null, IndigoReactionValue.class, IndigoQueryReactionValue.class);
-   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
 
    private final JComboBox _mode = new JComboBox(new String[] { AAMode.Discard.toString(), AAMode.Keep.toString(), AAMode.Alter.toString(),
          AAMode.Clear.toString() });
    
-   private final JCheckBox _ignoreCharges = new JCheckBox("Ignore Charges");
-   private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore Isotopes");
-   private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore Radicals");
-   private final JCheckBox _ignoreValence = new JCheckBox("Ignore Valence");
+   private final JCheckBox _ignoreCharges = new JCheckBox();
+   private final JCheckBox _ignoreIsotopes = new JCheckBox();
+   private final JCheckBox _ignoreRadicals = new JCheckBox();
+   private final JCheckBox _ignoreValence = new JCheckBox();
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
       
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
+      dialogPanel.addItemsPanel("Column settings");
       dialogPanel.addItem("Reaction column", _colName);
       dialogPanel.addItem(_appendColumn, _newColName);
-      dialogPanel.addItem("Reaction AAM mode", _mode);
-
-      _appendColumn.addChangeListener(new ChangeListener() {
-         public void stateChanged(final ChangeEvent e) {
-            if (_appendColumn.isSelected()) {
-               _newColName.setEnabled(true);
-               if ("".equals(_newColName.getText())) {
-                  _newColName.setText(_colName.getSelectedColumn() + " (mapped)");
-               }
-            } else {
-               _newColName.setEnabled(false);
-            }
-         }
-      });
-      _newColName.setEnabled(_appendColumn.isSelected());
       
-      dialogPanel.addItem(_ignoreCharges, null);
-      dialogPanel.addItem(_ignoreIsotopes, null);
-      dialogPanel.addItem(_ignoreRadicals, null);
-      dialogPanel.addItem(_ignoreValence, null);
+      dialogPanel.addItemsPanel("Automapping settings");
+      dialogPanel.addItem("Reaction AAM mode", _mode);
+      dialogPanel.addItem("Ignore Charges", _ignoreCharges);
+      dialogPanel.addItem("Ignore Isotopes", _ignoreIsotopes);
+      dialogPanel.addItem("Ignore Radicals", _ignoreRadicals);
+      dialogPanel.addItem("Ignore Valence", _ignoreValence);
+      
+      _appendColumn.setFont(new Font("Serif", Font.PLAIN, 12));
+      IndigoDialogPanel.addColumnChangeListener(_appendColumn, _colName, _newColName, " (mapped)");
 
       addTab("Standard settings", dialogPanel.getPanel());
    }
