@@ -96,8 +96,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    {
       super();
       
-      //addDialogComponent()
-
+      _registerDialogComponents();
+      
       JPanel p = new JPanel(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
@@ -204,32 +204,36 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       addTab("Standard settings", p);
    }
 
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_molColumn, IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT, _settings.targetColName);
+      _settings.registerDialogComponent(_molColumn2, IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT, _settings.queryColName);
+      
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_align, _settings.align);
+      _settings.registerDialogComponent(_alignByQuery,_settings.alignByQuery);
+      _settings.registerDialogComponent(_exact, _settings.exact);
+      _settings.registerDialogComponent(_highlight, _settings.highlight);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_mode, _settings.mode);
+      _settings.registerDialogComponent(_appendQueryKeyColumn, _settings.appendQueryKeyColumn);
+
+      _settings.registerDialogComponent(_appendQueryKeyColumn, _settings.appendQueryKeyColumn);
+      _settings.registerDialogComponent(_queryKeyColumnName, _settings.queryKeyColumn);
+
+      _settings.registerDialogComponent(_appendQueryMatchCountKeyColumn, _settings.appendQueryMatchCountKeyColumn);
+      _settings.registerDialogComponent(_queryMatchCountKeyColumn, _settings.queryMatchCountKeyColumn);
+
+      _settings.registerDialogComponent(_matchAllExceptSelected, _settings.matchAllSelected);
+      _settings.registerDialogComponent(_matchAnyAtLeastSelected, _settings.matchAnyAtLeastSelected);
+      _settings.registerDialogComponent(_matchAnyAtLeast, _settings.matchAnyAtLeast);
+      
+   }
+
    @Override
    protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
       try {
          _settings.loadSettingsFrom(settings);
-
-         _molColumn.update(specs[IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT], _settings.targetColName.getStringValue());
-         _molColumn2.update(specs[IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT], _settings.queryColName.getStringValue());
-         
-         _newColName.setText(_settings.newColName.getStringValue());
-         _align.setSelected(_settings.align.getBooleanValue());
-         _alignByQuery.setSelected(_settings.alignByQuery.getBooleanValue());
-         _exact.setSelected(_settings.exact.getBooleanValue());
-         _highlight.setSelected(_settings.highlight.getBooleanValue());
-         _appendColumn.setSelected(_settings.appendColumn.getBooleanValue());
-         _mode.setSelectedIndex(_settings.mode.getIntValue());
-         _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn.getBooleanValue());
-
-         _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn.getBooleanValue());
-         _queryKeyColumnName.setText(_settings.queryKeyColumn.getStringValue());
-
-         _appendQueryMatchCountKeyColumn.setSelected(_settings.appendQueryMatchCountKeyColumn.getBooleanValue());
-         _queryMatchCountKeyColumn.setText(_settings.queryMatchCountKeyColumn.getStringValue());
-
-         _matchAllExceptSelected.setSelected(_settings.matchAllSelected.getBooleanValue());
-         _matchAnyAtLeastSelected.setSelected(_settings.matchAnyAtLeastSelected.getBooleanValue());
-         _matchAnyAtLeast.setValue(_settings.matchAnyAtLeast.getIntValue());
+         _settings.loadDialogSettings(specs);
 
          _changeListener.stateChanged(null);
       } catch (InvalidSettingsException e) {
@@ -241,26 +245,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.targetColName.setStringValue(_molColumn.getSelectedColumn());
-      _settings.queryColName.setStringValue(_molColumn2.getSelectedColumn());
-      _settings.appendColumn.setBooleanValue(_appendColumn.isSelected());
-      _settings.highlight.setBooleanValue(_highlight.isSelected());
-      _settings.align.setBooleanValue(_align.isSelected());
-      _settings.alignByQuery.setBooleanValue(_alignByQuery.isSelected());
-      _settings.exact.setBooleanValue(_exact.isSelected());
-      _settings.newColName.setStringValue(_newColName.getText());
-      _settings.mode.setIntValue(((Mode)_mode.getSelectedItem()).ordinal());
-
-      _settings.appendQueryKeyColumn.setBooleanValue(_appendQueryKeyColumn.isSelected());
-      _settings.queryKeyColumn.setStringValue(_queryKeyColumnName.getText());
-
-      _settings.appendQueryMatchCountKeyColumn.setBooleanValue(_appendQueryMatchCountKeyColumn.isSelected());
-      _settings.queryMatchCountKeyColumn.setStringValue(_queryMatchCountKeyColumn.getText());
-      
-      _settings.matchAllSelected.setBooleanValue(_matchAllExceptSelected.isSelected());
-      _settings.matchAnyAtLeastSelected.setBooleanValue(_matchAnyAtLeastSelected.isSelected());
-      _settings.matchAnyAtLeast.setIntValue((Integer)_matchAnyAtLeast.getValue());
-
+      _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
    }
 }

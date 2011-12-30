@@ -17,6 +17,7 @@ package com.ggasoftware.indigo.knime.submatcher;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
@@ -35,13 +36,13 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
    public SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);
    public SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
    public SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
-   public SettingsModelColumnName newColName = new SettingsModelColumnName("newColName", null);
+   public SettingsModelString newColName = new SettingsModelString("newColName", null);
    
    public SettingsModelBoolean appendQueryKeyColumn = new SettingsModelBoolean("appendQueryKeyColumn", false);
-   public SettingsModelColumnName queryKeyColumn = new SettingsModelColumnName("queryKeyColumn", null);
+   public SettingsModelString queryKeyColumn = new SettingsModelString("queryKeyColumn", null);
 
    public SettingsModelBoolean appendQueryMatchCountKeyColumn = new SettingsModelBoolean("appendQueryMatchCountKeyColumn", false);
-   public SettingsModelColumnName queryMatchCountKeyColumn = new SettingsModelColumnName("queryMatchCountKeyColumn", null);
+   public SettingsModelString queryMatchCountKeyColumn = new SettingsModelString("queryMatchCountKeyColumn", null);
    
    public SettingsModelBoolean matchAllSelected = new SettingsModelBoolean("matchAllExceptSelected", false);
    public SettingsModelBoolean matchAnyAtLeastSelected = new SettingsModelBoolean("matchAnyAtLeastSelected", true);
@@ -65,5 +66,6 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       addSettingsParameter(matchAnyAtLeastSelected);
       addSettingsParameter(matchAnyAtLeast);
    }
+
    
 }

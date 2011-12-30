@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
@@ -29,8 +30,8 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    static final int DEFAULT_MODE = AAMode.Discard.ordinal();
 
    public final SettingsModelColumnName m_column = new SettingsModelColumnName(CFGKEY_COLUMN, DEFAULT_COLUMN);
-   public final SettingsModelBoolean m_replace = new SettingsModelBoolean(CFGKEY_REPLACE, DEFAULT_REPLACE);
-   public final SettingsModelColumnName m_newColumn = new SettingsModelColumnName(CFGKEY_NEWCOLUMN, DEFAULT_NEWCOLUMN);
+   public final SettingsModelBoolean m_appendColumn = new SettingsModelBoolean(CFGKEY_REPLACE, DEFAULT_REPLACE);
+   public final SettingsModelString m_newColumn = new SettingsModelString(CFGKEY_NEWCOLUMN, DEFAULT_NEWCOLUMN);
    public final SettingsModelInteger m_mode = new SettingsModelInteger(CFGKEY_MODE, DEFAULT_MODE);
    
    public final SettingsModelBoolean m_ignoreCharges = new SettingsModelBoolean(CFGKEY_IGNORE_CHARGES, false);
@@ -42,7 +43,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
 
    public IndigoReactionAutomapperSettings() {
       addSettingsParameter(m_column);
-      addSettingsParameter(m_replace);
+      addSettingsParameter(m_appendColumn);
       addSettingsParameter(m_newColumn);
       addSettingsParameter(m_mode);
       addSettingsParameter(m_ignoreCharges);

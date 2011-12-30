@@ -19,10 +19,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="newColumn">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value=""/>
-</config>
+<entry key="newColumn" type="xstring" value="column1 (mapped)"/>
 <config key="mode_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -32,7 +29,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="ignore_charges" type="xboolean" value="true"/>
+<entry key="ignore_charges" type="xboolean" value="false"/>
 <config key="ignore_isotopes_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

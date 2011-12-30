@@ -40,6 +40,8 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
    protected IndigoReactionAutomapperNodeDialog() {
       super();
       
+      _registerDialogComponents();
+      
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column settings");
@@ -59,22 +61,27 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       addTab("Standard settings", dialogPanel.getPanel());
    }
 
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_colName, IndigoReactionAutomapperNodeModel.INPUT_PORT, _settings.m_column);
+      _settings.registerDialogComponent(_newColName, _settings.m_newColumn);
+      _settings.registerDialogComponent(_appendColumn, _settings.m_appendColumn);
+      _settings.registerDialogComponent(_mode, _settings.m_mode);
+      /*
+       * Ignore flags
+       */
+      _settings.registerDialogComponent(_ignoreCharges, _settings.m_ignoreCharges);
+      _settings.registerDialogComponent(_ignoreIsotopes, _settings.m_ignoreIsotopes);
+      _settings.registerDialogComponent(_ignoreRadicals, _settings.m_ignoreRadicals);
+      _settings.registerDialogComponent(_ignoreValence, _settings.m_ignoreValence);
+      
+      
+   }
+
    @Override
    protected void loadSettingsFrom(NodeSettingsRO settings, DataTableSpec[] specs) throws NotConfigurableException {
       try {
          _settings.loadSettingsFrom(settings);
-
-         _colName.update(specs[IndigoReactionAutomapperNodeModel.INPUT_PORT], _settings.m_column.getStringValue());
-         _appendColumn.setSelected(!_settings.m_replace.getBooleanValue());
-         _newColName.setText(_settings.m_newColumn.getStringValue());
-         _mode.setSelectedIndex(_settings.m_mode.getIntValue());
-         /*
-          * Ignore flags
-          */
-         _ignoreCharges.setSelected(_settings.m_ignoreCharges.getBooleanValue());
-         _ignoreIsotopes.setSelected(_settings.m_ignoreIsotopes.getBooleanValue());
-         _ignoreRadicals.setSelected(_settings.m_ignoreRadicals.getBooleanValue());
-         _ignoreValence.setSelected(_settings.m_ignoreValence.getBooleanValue());
+         _settings.loadDialogSettings(specs);
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage(), e);
       }
@@ -83,18 +90,7 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
 
    @Override
    protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
-      _settings.m_column.setStringValue(_colName.getSelectedColumn());
-      _settings.m_replace.setBooleanValue(!_appendColumn.isSelected());
-      _settings.m_newColumn.setStringValue(_newColName.getText());
-      _settings.m_mode.setIntValue(_mode.getSelectedIndex());
-      /*
-       * Ignore flags
-       */
-      _settings.m_ignoreCharges.setBooleanValue(_ignoreCharges.isSelected());
-      _settings.m_ignoreIsotopes.setBooleanValue(_ignoreIsotopes.isSelected());
-      _settings.m_ignoreRadicals.setBooleanValue(_ignoreRadicals.isSelected());
-      _settings.m_ignoreValence.setBooleanValue(_ignoreValence.isSelected());
-      
+      _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
    }
 }
