@@ -33,6 +33,9 @@ import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings
 
 public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 {
+   public static final int INDIGO_TARGET_PORT = 0;
+   public static final int INDIGO_QUERY_PORT = 1;
+   
    IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 
    private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoSubstructureMatcherNodeModel.class);
@@ -47,18 +50,18 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
-      if (_settings.appendColumn)
-         if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.appendColumn.getBooleanValue())
+         if (_settings.newColName == null || _settings.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
       
       int columnsCount = inputTableSpec.getNumColumns();
-      if (_settings.appendColumn)
+      if (_settings.appendColumn.getBooleanValue())
          columnsCount++;
-      if (_settings.appendQueryKeyColumn)
+      if (_settings.appendQueryKeyColumn.getBooleanValue())
          columnsCount++;
-      if (_settings.appendQueryMatchCountKeyColumn)
+      if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
          columnsCount++;
       
       specs = new DataColumnSpec[columnsCount];
@@ -68,12 +71,12 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       for (i = 0; i < inputTableSpec.getNumColumns(); i++)
          specs[i] = inputTableSpec.getColumnSpec(i);
       
-      if (_settings.appendColumn)
-         specs[i++] = new DataColumnSpecCreator(_settings.newColName, IndigoMolCell.TYPE).createSpec();
-      if (_settings.appendQueryKeyColumn)
-         specs[i++] = new DataColumnSpecCreator(_settings.queryKeyColumn, StringCell.TYPE).createSpec();
-      if (_settings.appendQueryMatchCountKeyColumn)
-         specs[i++] = new DataColumnSpecCreator(_settings.queryMatchCountKeyColumn, IntCell.TYPE).createSpec();
+      if (_settings.appendColumn.getBooleanValue())
+         specs[i++] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
+      if (_settings.appendQueryKeyColumn.getBooleanValue())
+         specs[i++] = new DataColumnSpecCreator(_settings.queryKeyColumn.getStringValue(), StringCell.TYPE).createSpec();
+      if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
+         specs[i++] = new DataColumnSpecCreator(_settings.queryMatchCountKeyColumn.getStringValue(), IntCell.TYPE).createSpec();
       
       return new DataTableSpec(specs);
    }
@@ -82,10 +85,10 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       DataTableSpec queryItemsSpec = queriesTableData.getDataTableSpec();
-      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.colName2);
+      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.queryColName.getStringValue());
       if (queryColIdx == -1)
          throw new InvalidSettingsException("query column '"
-               + _settings.colName2 + "' not found");
+               + _settings.queryColName + "' not found");
 
       QueryWithData[] queries = new QueryWithData[queriesTableData.getRowCount()];
       if (queries.length == 0)
@@ -146,7 +149,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                   IndigoObject mapped = match.mapAtom(atom);
                   
                   IndigoObject atomForAlign;
-                  if (_settings.alignByQuery)
+                  if (_settings.alignByQuery.getBooleanValue())
                      atomForAlign = atom;
                   else 
                      atomForAlign = mapped;
@@ -157,7 +160,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                      System.arraycopy(atomForAlign.xyz(), 0, xyz, i++ * 3, 3);
                   }
                }
-               if (_settings.alignByQuery)
+               if (_settings.alignByQuery.getBooleanValue())
                   target.alignAtoms(atoms, xyz);
             }
             first = false;
@@ -200,7 +203,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       BufferedDataContainer invalidOutputContainer = exec
             .createDataContainer(inputTableSpec);
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.targetColName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -237,34 +240,34 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 
          boolean hasMatch = true;
          // Check matchCount
-         if (_settings.matchAnyAtLeastSelected)
-            hasMatch = (matchCount >= _settings.matchAnyAtLeast);
-         if (_settings.matchAllSelected)
+         if (_settings.matchAnyAtLeastSelected.getBooleanValue())
+            hasMatch = (matchCount >= _settings.matchAnyAtLeast.getIntValue());
+         if (_settings.matchAllSelected.getBooleanValue())
             hasMatch = (matchCount == queries.length);
          
          if (hasMatch) {
             int columnsCount = inputRow.getNumCells();
-            if (_settings.appendColumn)
+            if (_settings.appendColumn.getBooleanValue())
                columnsCount++;
-            if (_settings.appendQueryKeyColumn)
+            if (_settings.appendQueryKeyColumn.getBooleanValue())
                columnsCount++;
-            if (_settings.appendQueryMatchCountKeyColumn)
+            if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
                columnsCount++;
             
             DataCell[] cells = new DataCell[columnsCount];
             int i;
 
             for (i = 0; i < inputRow.getNumCells(); i++) {
-               if (!_settings.appendColumn && i == colIdx)
+               if (!_settings.appendColumn.getBooleanValue() && i == colIdx)
                   cells[i] = new IndigoMolCell(target);
                else
                   cells[i] = inputRow.getCell(i);
             }
-            if (_settings.appendColumn)
+            if (_settings.appendColumn.getBooleanValue())
                cells[i++] = new IndigoMolCell(target);
-            if (_settings.appendQueryKeyColumn)
+            if (_settings.appendQueryKeyColumn.getBooleanValue())
                cells[i++] = new StringCell(queriesRowKey.toString());
-            if (_settings.appendQueryMatchCountKeyColumn)
+            if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
                cells[i++] = new IntCell(matchCount);
             
             validOutputContainer.addRowToTable(new DefaultRow(inputRow
@@ -292,11 +295,11 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       IndigoObject match = null;
       
-      if (!_settings.exact || target.countHeavyAtoms() <= query.countAtoms())
+      if (!_settings.exact.getBooleanValue() || target.countHeavyAtoms() <= query.countAtoms())
       {
-         if (_settings.mode == Mode.Resonance)
+         if (_settings.mode.getIntValue() == Mode.Resonance.ordinal())
             mode = "RES";
-         else if (_settings.mode == Mode.Tautomer)
+         else if (_settings.mode.getIntValue() == Mode.Tautomer.ordinal())
          {
             mode = "TAU R* R-C";
  
@@ -309,7 +312,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          match = indigo.substructureMatcher(target, mode).match(query);
       }
       
-      if (match != null && _settings.exact)
+      if (match != null && _settings.exact.getBooleanValue())
       {
          // test that the target does not have unmapped heavy atoms
          int nmapped_heavy = 0;
@@ -328,7 +331,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       if (match != null)
       {
-         if (_settings.highlight)
+         if (_settings.highlight.getBooleanValue())
          {
             for (IndigoObject atom : query.iterateAtoms())
             {
@@ -344,7 +347,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             }
          }
          
-         if (_settings.align)
+         if (_settings.align.getBooleanValue())
             alignData.align(target, query, match);
       }
       return (match != null);
@@ -365,9 +368,9 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
-      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, IndigoQueryMolValue.class);
-      return new DataTableSpec[] { getDataTableSpec(inSpecs[0]), inSpecs[0] };
+//      _settings.colName = searchIndigoColumn(inSpecs[INDIGO_TARGET_PORT], _settings.colName, IndigoMolValue.class);
+//      _settings.colName2 = searchIndigoColumn(inSpecs[INDIGO_QUERY_PORT], _settings.colName2, IndigoQueryMolValue.class);
+      return new DataTableSpec[] { null, null };
    }
 
    /**
@@ -376,7 +379,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -386,7 +389,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -397,21 +400,22 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoSubstructureMatcherSettings s = new IndigoSubstructureMatcherSettings();
-      s.loadSettings(settings);
+      s.loadSettingsFrom(settings);
+      s.validateSettings(settings);
 
-      if (s.colName == null || s.colName.length() < 1)
+      if (s.targetColName == null || s.targetColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.colName2 == null || s.colName2.length() < 1)
+      if (s.queryColName == null || s.queryColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
-      if (s.appendColumn && (s.newColName == null || s.newColName.length() < 1))
+      if (s.appendColumn.getBooleanValue() && (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1))
          throw new InvalidSettingsException("new column name must be specified");
-      if (s.appendQueryKeyColumn && (s.queryKeyColumn == null || s.queryKeyColumn.length() < 1))
+      if (s.appendQueryKeyColumn.getBooleanValue() && (s.queryKeyColumn.getStringValue() == null || s.queryKeyColumn.getStringValue().length() < 1))
          throw new InvalidSettingsException("query key column name must be specified");
-      if (s.appendQueryMatchCountKeyColumn && (s.queryMatchCountKeyColumn == null || s.queryMatchCountKeyColumn.length() < 1))
+      if (s.appendQueryMatchCountKeyColumn.getBooleanValue() && (s.queryMatchCountKeyColumn.getStringValue() == null || s.queryMatchCountKeyColumn.getStringValue().length() < 1))
          throw new InvalidSettingsException("query match count column name must be specified");
-      if (!s.matchAllSelected && !s.matchAnyAtLeastSelected)
+      if (!s.matchAllSelected.getBooleanValue() && !s.matchAnyAtLeastSelected.getBooleanValue())
          throw new InvalidSettingsException("At least one match option should be selected: match any or match all");
-      if (s.appendColumn && !s.highlight && !s.align)
+      if (s.appendColumn.getBooleanValue() && !s.highlight.getBooleanValue() && !s.align.getBooleanValue())
          throw new InvalidSettingsException("without highlighting or alignment, appending new column makes no sense");
    }
 

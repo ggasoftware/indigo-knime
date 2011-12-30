@@ -205,59 +205,62 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    }
 
    @Override
-   protected void loadSettingsFrom (final NodeSettingsRO settings,
-         final DataTableSpec[] specs) throws NotConfigurableException
-   {
-      _settings.loadSettingsForDialog(settings);
+   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
+      try {
+         _settings.loadSettingsFrom(settings);
 
-      _molColumn.update(specs[0], _settings.colName);
-      _molColumn2.update(specs[1], _settings.colName2);
-      _newColName.setText(_settings.newColName);
-      _align.setSelected(_settings.align);
-      _alignByQuery.setSelected(_settings.alignByQuery);
-      _exact.setSelected(_settings.exact);
-      _highlight.setSelected(_settings.highlight);
-      _appendColumn.setSelected(_settings.appendColumn);
-      _mode.setSelectedItem(_settings.mode);
-      _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn);
-      
-      _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn);
-      _queryKeyColumnName.setText(_settings.queryKeyColumn);
+         _molColumn.update(specs[IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT], _settings.targetColName.getStringValue());
+         _molColumn2.update(specs[IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT], _settings.queryColName.getStringValue());
+         
+         _newColName.setText(_settings.newColName.getStringValue());
+         _align.setSelected(_settings.align.getBooleanValue());
+         _alignByQuery.setSelected(_settings.alignByQuery.getBooleanValue());
+         _exact.setSelected(_settings.exact.getBooleanValue());
+         _highlight.setSelected(_settings.highlight.getBooleanValue());
+         _appendColumn.setSelected(_settings.appendColumn.getBooleanValue());
+         _mode.setSelectedIndex(_settings.mode.getIntValue());
+         _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn.getBooleanValue());
 
-      _appendQueryMatchCountKeyColumn.setSelected(_settings.appendQueryMatchCountKeyColumn);
-      _queryMatchCountKeyColumn.setText(_settings.queryMatchCountKeyColumn);
-      
-      _matchAllExceptSelected.setSelected(_settings.matchAllSelected);
-      _matchAnyAtLeastSelected.setSelected(_settings.matchAnyAtLeastSelected);
-      _matchAnyAtLeast.setValue(_settings.matchAnyAtLeast);
-      
-      _changeListener.stateChanged(null);
+         _appendQueryKeyColumn.setSelected(_settings.appendQueryKeyColumn.getBooleanValue());
+         _queryKeyColumnName.setText(_settings.queryKeyColumn.getStringValue());
+
+         _appendQueryMatchCountKeyColumn.setSelected(_settings.appendQueryMatchCountKeyColumn.getBooleanValue());
+         _queryMatchCountKeyColumn.setText(_settings.queryMatchCountKeyColumn.getStringValue());
+
+         _matchAllExceptSelected.setSelected(_settings.matchAllSelected.getBooleanValue());
+         _matchAnyAtLeastSelected.setSelected(_settings.matchAnyAtLeastSelected.getBooleanValue());
+         _matchAnyAtLeast.setValue(_settings.matchAnyAtLeast.getIntValue());
+
+         _changeListener.stateChanged(null);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    @Override
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.colName2 = _molColumn2.getSelectedColumn();
-      _settings.appendColumn = _appendColumn.isSelected();
-      _settings.highlight = _highlight.isSelected();
-      _settings.align = _align.isSelected();
-      _settings.alignByQuery = _alignByQuery.isSelected();
-      _settings.exact = _exact.isSelected();
-      _settings.newColName = _newColName.getText();
-      _settings.mode = (Mode)_mode.getSelectedItem();
+      _settings.targetColName.setStringValue(_molColumn.getSelectedColumn());
+      _settings.queryColName.setStringValue(_molColumn2.getSelectedColumn());
+      _settings.appendColumn.setBooleanValue(_appendColumn.isSelected());
+      _settings.highlight.setBooleanValue(_highlight.isSelected());
+      _settings.align.setBooleanValue(_align.isSelected());
+      _settings.alignByQuery.setBooleanValue(_alignByQuery.isSelected());
+      _settings.exact.setBooleanValue(_exact.isSelected());
+      _settings.newColName.setStringValue(_newColName.getText());
+      _settings.mode.setIntValue(((Mode)_mode.getSelectedItem()).ordinal());
 
-      _settings.appendQueryKeyColumn = _appendQueryKeyColumn.isSelected();
-      _settings.queryKeyColumn = _queryKeyColumnName.getText();
+      _settings.appendQueryKeyColumn.setBooleanValue(_appendQueryKeyColumn.isSelected());
+      _settings.queryKeyColumn.setStringValue(_queryKeyColumnName.getText());
 
-      _settings.appendQueryMatchCountKeyColumn = _appendQueryMatchCountKeyColumn.isSelected();
-      _settings.queryMatchCountKeyColumn = _queryMatchCountKeyColumn.getText();
+      _settings.appendQueryMatchCountKeyColumn.setBooleanValue(_appendQueryMatchCountKeyColumn.isSelected());
+      _settings.queryMatchCountKeyColumn.setStringValue(_queryMatchCountKeyColumn.getText());
       
-      _settings.matchAllSelected = _matchAllExceptSelected.isSelected();
-      _settings.matchAnyAtLeastSelected = _matchAnyAtLeastSelected.isSelected();
-      _settings.matchAnyAtLeast = (Integer)_matchAnyAtLeast.getValue();
+      _settings.matchAllSelected.setBooleanValue(_matchAllExceptSelected.isSelected());
+      _settings.matchAnyAtLeastSelected.setBooleanValue(_matchAnyAtLeastSelected.isSelected());
+      _settings.matchAnyAtLeast.setIntValue((Integer)_matchAnyAtLeast.getValue());
 
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 }

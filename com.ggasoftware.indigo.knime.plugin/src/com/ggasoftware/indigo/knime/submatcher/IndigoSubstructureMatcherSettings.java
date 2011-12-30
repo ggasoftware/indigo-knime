@@ -14,92 +14,56 @@
 
 package com.ggasoftware.indigo.knime.submatcher;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 
-public class IndigoSubstructureMatcherSettings
-{
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
+   
    enum Mode
    {
       Normal, Tautomer, Resonance
    }
    
-   public String colName;
-   public String colName2;
-   public Mode mode = Mode.Normal;
-   public boolean exact = false;
-   public boolean align = false;
-   public boolean alignByQuery = false;
-   public boolean highlight = false;
-   public boolean appendColumn = false;
-   public String newColName;
+   public SettingsModelColumnName targetColName = new SettingsModelColumnName("colName", null);
+   public SettingsModelColumnName queryColName = new SettingsModelColumnName("colName2", null);
+   public SettingsModelInteger mode = new SettingsModelInteger("mode", Mode.Normal.ordinal());
+   public SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
+   public SettingsModelBoolean align = new SettingsModelBoolean("align", false);
+   public SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);
+   public SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
+   public SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public SettingsModelColumnName newColName = new SettingsModelColumnName("newColName", null);
    
-   public boolean appendQueryKeyColumn = false;
-   public String queryKeyColumn;
+   public SettingsModelBoolean appendQueryKeyColumn = new SettingsModelBoolean("appendQueryKeyColumn", false);
+   public SettingsModelColumnName queryKeyColumn = new SettingsModelColumnName("queryKeyColumn", null);
 
-   public boolean appendQueryMatchCountKeyColumn = false;
-   public String queryMatchCountKeyColumn;
+   public SettingsModelBoolean appendQueryMatchCountKeyColumn = new SettingsModelBoolean("appendQueryMatchCountKeyColumn", false);
+   public SettingsModelColumnName queryMatchCountKeyColumn = new SettingsModelColumnName("queryMatchCountKeyColumn", null);
    
-   public boolean matchAllSelected = false;
-   public boolean matchAnyAtLeastSelected = true;
-   public int matchAnyAtLeast = 1;
+   public SettingsModelBoolean matchAllSelected = new SettingsModelBoolean("matchAllExceptSelected", false);
+   public SettingsModelBoolean matchAnyAtLeastSelected = new SettingsModelBoolean("matchAnyAtLeastSelected", true);
+   public SettingsModelInteger matchAnyAtLeast = new SettingsModelInteger("matchAnyAtLeast", 1);
    
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      loadSettingsForDialog(settings);
+   public IndigoSubstructureMatcherSettings() {
+      addSettingsParameter(targetColName);
+      addSettingsParameter(queryColName);
+      addSettingsParameter(mode);
+      addSettingsParameter(exact);
+      addSettingsParameter(align);
+      addSettingsParameter(alignByQuery);
+      addSettingsParameter(highlight);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(newColName);
+      addSettingsParameter(appendQueryKeyColumn);
+      addSettingsParameter(queryKeyColumn);
+      addSettingsParameter(appendQueryMatchCountKeyColumn);
+      addSettingsParameter(queryMatchCountKeyColumn);
+      addSettingsParameter(matchAllSelected);
+      addSettingsParameter(matchAnyAtLeastSelected);
+      addSettingsParameter(matchAnyAtLeast);
    }
-
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      colName2 = settings.getString("colName2", null);
-      newColName = settings.getString("newColName", null);
-      mode = Mode.valueOf(settings.getString("mode", Mode.Normal.name()));
-      align = settings.getBoolean("align", false);
-      alignByQuery = settings.getBoolean("alignByQuery", false);
-      exact = settings.getBoolean("exact", false);
-      highlight = settings.getBoolean("highlight", false);
-      appendColumn = settings.getBoolean("appendColumn", false);
-
-      appendQueryKeyColumn = settings.getBoolean("appendQueryKeyColumn", false);
-      queryKeyColumn = settings.getString("queryKeyColumn", null);
-
-      appendQueryMatchCountKeyColumn = settings.getBoolean("appendQueryMatchCountKeyColumn", false);
-      queryMatchCountKeyColumn = settings.getString("queryMatchCountKeyColumn", null);
-      
-      matchAllSelected = settings.getBoolean("matchAllExceptSelected", false);
-      
-      matchAnyAtLeastSelected = settings.getBoolean("matchAnyAtLeastSelected", true);
-      matchAnyAtLeast = settings.getInt("matchAnyAtLeast", 1);
-   }
-
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (colName2 != null)
-         settings.addString("colName2", colName2);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      if (mode != null)
-         settings.addString("mode", mode.name());
-      settings.addBoolean("appendColumn", appendColumn);
-      settings.addBoolean("exact", exact);
-      settings.addBoolean("align", align);
-      settings.addBoolean("alignByQuery", alignByQuery);
-      settings.addBoolean("highlight", highlight);
-      
-      settings.addBoolean("appendQueryKeyColumn", appendQueryKeyColumn);
-      if (queryKeyColumn != null)
-         settings.addString("queryKeyColumn", queryKeyColumn);
-
-      settings.addBoolean("appendQueryMatchCountKeyColumn", appendQueryMatchCountKeyColumn);
-      if (queryMatchCountKeyColumn != null)
-         settings.addString("queryMatchCountKeyColumn", queryMatchCountKeyColumn);
-      
-      settings.addBoolean("matchAllExceptSelected", matchAllSelected);
-      
-      settings.addBoolean("matchAnyAtLeastSelected", matchAnyAtLeastSelected);
-      settings.addInt("matchAnyAtLeast", matchAnyAtLeast);
-   }
+   
 }

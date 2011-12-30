@@ -1,17 +1,14 @@
 package com.ggasoftware.indigo.knime.rautomapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
-import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 
-public class IndigoReactionAutomapperSettings {
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public static enum AAMode {
       Discard, Keep, Alter, Clear
    }
@@ -41,43 +38,24 @@ public class IndigoReactionAutomapperSettings {
    public final SettingsModelBoolean m_ignoreRadicals = new SettingsModelBoolean(CFGKEY_IGNORE_RADICALS, false);
    public final SettingsModelBoolean m_ignoreValence = new SettingsModelBoolean(CFGKEY_IGNORE_VALENCE, false);
    
-   private final ArrayList<SettingsModel> _allSettings = new ArrayList<SettingsModel>();
    private final HashMap<String, SettingsModelBoolean> _ignoreFlags = new HashMap<String, SettingsModelBoolean>();
 
    public IndigoReactionAutomapperSettings() {
-      _allSettings.add(m_column);
-      _allSettings.add(m_replace);
-      _allSettings.add(m_newColumn);
-      _allSettings.add(m_mode);
-      _allSettings.add(m_ignoreCharges);
-      _allSettings.add(m_ignoreIsotopes);
-      _allSettings.add(m_ignoreRadicals);
-      _allSettings.add(m_ignoreValence);
+      addSettingsParameter(m_column);
+      addSettingsParameter(m_replace);
+      addSettingsParameter(m_newColumn);
+      addSettingsParameter(m_mode);
+      addSettingsParameter(m_ignoreCharges);
+      addSettingsParameter(m_ignoreIsotopes);
+      addSettingsParameter(m_ignoreRadicals);
+      addSettingsParameter(m_ignoreValence);
       
       _ignoreFlags.put(CFGKEY_IGNORE_CHARGES, m_ignoreCharges);
       _ignoreFlags.put(CFGKEY_IGNORE_ISOTOPES, m_ignoreIsotopes);
       _ignoreFlags.put(CFGKEY_IGNORE_RADICALS, m_ignoreRadicals);
       _ignoreFlags.put(CFGKEY_IGNORE_VALENCE, m_ignoreValence);
    }
-
-   public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-      for (SettingsModel param : _allSettings) {
-         param.loadSettingsFrom(settings);
-      }
-   }
-
-   public void saveSettingsTo(NodeSettingsWO settings) {
-      for (SettingsModel param : _allSettings) {
-         param.saveSettingsTo(settings);
-      }
-   }
-
-   public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-      for (SettingsModel param : _allSettings) {
-         param.validateSettings(settings);
-      }
-   }
-
+   
    public String getAAMParameters() {
       StringBuilder result = new StringBuilder();
       /*
