@@ -1,7 +1,5 @@
 package com.ggasoftware.indigo.knime.rautomapper;
 
-import java.awt.Font;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -55,7 +53,7 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       dialogPanel.addItem("Ignore Radicals", _ignoreRadicals);
       dialogPanel.addItem("Ignore Valence", _ignoreValence);
       
-      _appendColumn.setFont(new Font("Serif", Font.PLAIN, 12));
+      IndigoDialogPanel.setDefaultFont(_appendColumn);
       IndigoDialogPanel.addColumnChangeListener(_appendColumn, _colName, _newColName, " (mapped)");
 
       addTab("Standard settings", dialogPanel.getPanel());

@@ -25,6 +25,7 @@ import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
@@ -39,8 +40,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
    private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
-   private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
-   private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
+   private final JCheckBox _exact = new JCheckBox();
+   private final JCheckBox _highlight = new JCheckBox();
    private final JCheckBox _align = new JCheckBox("Align matched structures");
    private final JCheckBox _alignByQuery = new JCheckBox("Align by query");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -98,53 +99,17 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       
       _registerDialogComponents();
       
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridy = 0;
-      c.gridx = 0;
-      p.add(new JLabel("Molecule column"), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Query molecule column"), c);
-      c.gridx = 1;
-      p.add(_molColumn2, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Mode: "), c);
-      c.gridx = 1;
-      p.add(_mode, c);
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_exact, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_highlight, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_align, c);
-      c.gridx = 1;
-      p.add(_alignByQuery, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-      
-      _appendColumn.addChangeListener(_changeListener);
-      _align.addChangeListener(_changeListener);
-      _highlight.addChangeListener(_changeListener);
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Molecule column", _molColumn);
+      dialogPanel.addItem("Query molecule column", _molColumn2);
+      dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItemsPanel("Substructure Settings");
+      dialogPanel.addItem("Mode: ", _mode);
+      dialogPanel.addItem("Allow only exact matches", _exact);
+      dialogPanel.addItem("Highlight matched structures", _highlight);
+      dialogPanel.addItem(_align, _alignByQuery);
       
       ((JSpinner.DefaultEditor)_matchAnyAtLeast.getEditor()).getTextField().setColumns(4);
 
@@ -155,13 +120,17 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c2.gridy = 0;
       c2.gridx = 0;
       
-      p2.add(new JLabel("Match"), c2);
+      JLabel matchLabel = new JLabel("Match");
+      IndigoDialogPanel.setDefaultFont(matchLabel);
+      p2.add(matchLabel, c2);
       c2.gridx++;
       p2.add(_matchAnyAtLeastSelected, c2);
       c2.gridx++;
       p2.add(_matchAnyAtLeast, c2);
       c2.gridx++;
-      p2.add(new JLabel(" queries"), c2);
+      JLabel queriesLabel = new JLabel(" queries");
+      IndigoDialogPanel.setDefaultFont(queriesLabel);
+      p2.add(queriesLabel, c2);
      
       c2.gridy++;
       c2.gridx = 1;
@@ -171,37 +140,44 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       ButtonGroup bg = new ButtonGroup();
       bg.add(_matchAllExceptSelected);
       bg.add(_matchAnyAtLeastSelected);
+      
+      
+      dialogPanel.addItem(p2, new JPanel());
+      
+      dialogPanel.addItemsPanel("Column Key Settings");
+      dialogPanel.addItem(_appendQueryKeyColumn, _queryKeyColumnName);
+      dialogPanel.addItem(_appendQueryMatchCountKeyColumn, _queryMatchCountKeyColumn);
+      
+      /*
+       * Add all change listeners
+       */
+      _appendQueryKeyColumn.addChangeListener(_changeListener);
+      _appendQueryMatchCountKeyColumn.addChangeListener(_changeListener);
+      
+      _appendColumn.addChangeListener(_changeListener);
+      _align.addChangeListener(_changeListener);
+      _highlight.addChangeListener(_changeListener);
+      
       _matchAllExceptSelected.addChangeListener(_changeListener);
       _matchAnyAtLeastSelected.addChangeListener(_changeListener);
       
-      c.gridy++;
-      c.gridx = 0;
-      c.gridwidth = 2;
-      p.add(p2, c);
-      c.gridwidth = 1;
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendQueryKeyColumn, c);
-      c.gridx = 1;
-      p.add(_queryKeyColumnName, c);
-      
-      _appendQueryKeyColumn.addChangeListener(_changeListener);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendQueryMatchCountKeyColumn, c);
-      c.gridx = 1;
-      p.add(_queryMatchCountKeyColumn, c);
-      
-      _appendQueryMatchCountKeyColumn.addChangeListener(_changeListener);
+      /*
+       * Set fonts
+       */
+      IndigoDialogPanel.setDefaultFont(_align);
+      IndigoDialogPanel.setDefaultFont(_alignByQuery);
+      IndigoDialogPanel.setDefaultFont(_appendColumn);
+      IndigoDialogPanel.setDefaultFont(_appendQueryKeyColumn);
+      IndigoDialogPanel.setDefaultFont(_appendQueryMatchCountKeyColumn);
+      IndigoDialogPanel.setDefaultFont(_matchAllExceptSelected);
+      IndigoDialogPanel.setDefaultFont(_matchAnyAtLeastSelected);
       
       _align.setSelected(false);
       _highlight.setSelected(false);
       _appendColumn.setEnabled(false);
       _newColName.setEnabled(false);
       
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    private void _registerDialogComponents() {

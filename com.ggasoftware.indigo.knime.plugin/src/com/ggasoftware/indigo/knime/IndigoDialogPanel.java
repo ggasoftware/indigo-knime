@@ -72,9 +72,11 @@ public class IndigoDialogPanel {
    
    public void addItem(String itemLabel, JComponent itemComponent) {
       JLabel label = new JLabel(itemLabel);
-      label.setFont(new Font("Serif", Font.PLAIN, 12));
+      setDefaultFont(label);
       addItem(label, itemComponent);
    }
+
+   
 
    public void addItem(JComponent leftComponent, JComponent rightComponent) {
       if(_currentPanel == null) {
@@ -180,6 +182,10 @@ public class IndigoDialogPanel {
          }
       });
       newColName.setEnabled(appendColumn.isSelected());
+   }
+
+   public static void setDefaultFont(JComponent button) {
+      button.setFont(new Font("Serif", Font.PLAIN, 12));
    }
    
 }
