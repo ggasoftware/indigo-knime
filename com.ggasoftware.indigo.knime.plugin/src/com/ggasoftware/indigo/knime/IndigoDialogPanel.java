@@ -76,7 +76,9 @@ public class IndigoDialogPanel {
       addItem(label, itemComponent);
    }
 
-   
+   public void addItem(JComponent leftComponent) {
+      addItem(leftComponent, new JPanel());
+   }
 
    public void addItem(JComponent leftComponent, JComponent rightComponent) {
       if(_currentPanel == null) {

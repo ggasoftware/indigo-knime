@@ -30,10 +30,10 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
    private final JComboBox _mode = new JComboBox(new String[] { AAMode.Discard.toString(), AAMode.Keep.toString(), AAMode.Alter.toString(),
          AAMode.Clear.toString() });
    
-   private final JCheckBox _ignoreCharges = new JCheckBox();
-   private final JCheckBox _ignoreIsotopes = new JCheckBox();
-   private final JCheckBox _ignoreRadicals = new JCheckBox();
-   private final JCheckBox _ignoreValence = new JCheckBox();
+   private final JCheckBox _ignoreCharges = new JCheckBox("Ignore Charges");
+   private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore Isotopes");
+   private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore Radicals");
+   private final JCheckBox _ignoreValence = new JCheckBox("Ignore Valence");
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
@@ -48,12 +48,16 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       
       dialogPanel.addItemsPanel("Automapping settings");
       dialogPanel.addItem("Reaction AAM mode", _mode);
-      dialogPanel.addItem("Ignore Charges", _ignoreCharges);
-      dialogPanel.addItem("Ignore Isotopes", _ignoreIsotopes);
-      dialogPanel.addItem("Ignore Radicals", _ignoreRadicals);
-      dialogPanel.addItem("Ignore Valence", _ignoreValence);
+      dialogPanel.addItem(_ignoreCharges);
+      dialogPanel.addItem(_ignoreIsotopes);
+      dialogPanel.addItem(_ignoreRadicals);
+      dialogPanel.addItem(_ignoreValence);
       
       IndigoDialogPanel.setDefaultFont(_appendColumn);
+      IndigoDialogPanel.setDefaultFont(_ignoreCharges);
+      IndigoDialogPanel.setDefaultFont(_ignoreIsotopes);
+      IndigoDialogPanel.setDefaultFont(_ignoreRadicals);
+      IndigoDialogPanel.setDefaultFont(_ignoreValence);
       IndigoDialogPanel.addColumnChangeListener(_appendColumn, _colName, _newColName, " (mapped)");
 
       addTab("Standard settings", dialogPanel.getPanel());

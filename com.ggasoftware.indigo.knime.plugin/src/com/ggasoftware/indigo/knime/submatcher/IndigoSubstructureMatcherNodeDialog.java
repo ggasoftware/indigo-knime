@@ -40,8 +40,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
    private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
-   private final JCheckBox _exact = new JCheckBox();
-   private final JCheckBox _highlight = new JCheckBox();
+   private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
+   private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
    private final JCheckBox _align = new JCheckBox("Align matched structures");
    private final JCheckBox _alignByQuery = new JCheckBox("Align by query");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -107,8 +107,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       dialogPanel.addItem(_appendColumn, _newColName);
       dialogPanel.addItemsPanel("Substructure Settings");
       dialogPanel.addItem("Mode: ", _mode);
-      dialogPanel.addItem("Allow only exact matches", _exact);
-      dialogPanel.addItem("Highlight matched structures", _highlight);
+      dialogPanel.addItem(_exact);
+      dialogPanel.addItem(_highlight);
       dialogPanel.addItem(_align, _alignByQuery);
       
       ((JSpinner.DefaultEditor)_matchAnyAtLeast.getEditor()).getTextField().setColumns(4);
@@ -171,6 +171,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       IndigoDialogPanel.setDefaultFont(_appendQueryMatchCountKeyColumn);
       IndigoDialogPanel.setDefaultFont(_matchAllExceptSelected);
       IndigoDialogPanel.setDefaultFont(_matchAnyAtLeastSelected);
+      IndigoDialogPanel.setDefaultFont(_exact);
+      IndigoDialogPanel.setDefaultFont(_highlight);
       
       _align.setSelected(false);
       _highlight.setSelected(false);
