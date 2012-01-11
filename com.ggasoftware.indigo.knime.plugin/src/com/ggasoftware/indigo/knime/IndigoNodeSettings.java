@@ -20,6 +20,11 @@ import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
+import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+
 /*
  * Class for basic settings handling
  */
@@ -209,4 +214,39 @@ public class IndigoNodeSettings {
       }
    }
    
+   public enum COLUMN_STATE {
+      Reaction, Molecule, Mixed;
+   }
+   
+   /*
+    * Returns current column selection state
+    */
+   public static COLUMN_STATE getColumnState(DataTableSpec tSpec, DataTableSpec qSpec, String tName, String qName) {
+      COLUMN_STATE result = COLUMN_STATE.Mixed;
+      
+      int reactions = 0;
+      int molecules = 0;
+      
+      if(tSpec != null) {
+         if(tSpec.containsName(tName))
+            if(tSpec.getColumnSpec(tName).getType().isCompatible(IndigoReactionValue.class))
+               ++reactions;
+            else if (tSpec.getColumnSpec(tName).getType().isCompatible(IndigoMolValue.class)) 
+               ++molecules;
+      }
+      
+      if(qSpec != null) {
+         if(qSpec.containsName(qName))
+            if(qSpec.getColumnSpec(qName).getType().isCompatible(IndigoQueryReactionValue.class))
+               ++reactions;
+            else if(qSpec.getColumnSpec(qName).getType().isCompatible(IndigoQueryMolValue.class))
+               ++molecules;
+      }
+      if(reactions == 2)
+         result = COLUMN_STATE.Reaction;
+      else if(molecules == 2)
+         result = COLUMN_STATE.Molecule;
+      
+      return result;
+   }
 }

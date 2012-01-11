@@ -28,6 +28,8 @@ import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
 import com.ggasoftware.indigo.knime.IndigoDialogPanel;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.COLUMN_STATE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
@@ -36,10 +38,6 @@ import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings
 
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
-   private enum COLUMN_STATE {
-      Reaction, Molecule, Mixed;
-   }
-
    private final IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _targetColumn = new ColumnSelectionComboxBox(
@@ -113,23 +111,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
     * Returns current column selection state
     */
    private COLUMN_STATE _getColumnState() {
-      COLUMN_STATE result = COLUMN_STATE.Molecule;
-      if(_targetSpec != null) {
-         String tName = _targetColumn.getSelectedColumn();
-         if(_targetSpec.containsName(tName))
-            if(_targetSpec.getColumnSpec(tName).getType().isCompatible(IndigoReactionValue.class))
-               result = COLUMN_STATE.Mixed;
-      }
-      if(_querySpec != null) {
-         String tName = _queryColumn.getSelectedColumn();
-         if(_querySpec.containsName(tName))
-            if(_querySpec.getColumnSpec(tName).getType().isCompatible(IndigoQueryReactionValue.class))
-               if(result.equals(COLUMN_STATE.Mixed))
-                  result = COLUMN_STATE.Reaction;
-               else
-                  result = COLUMN_STATE.Mixed;
-      }
-      return result;
+      return IndigoNodeSettings.getColumnState(_targetSpec, _querySpec, 
+            _targetColumn.getSelectedColumn(), _queryColumn.getSelectedColumn());
    }
    
    
@@ -231,8 +214,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    }
 
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_targetColumn, IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT, _settings.targetColName);
-      _settings.registerDialogComponent(_queryColumn, IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT, _settings.queryColName);
+      _settings.registerDialogComponent(_targetColumn, IndigoSubstructureMatcherNodeModel.TARGET_PORT, _settings.targetColName);
+      _settings.registerDialogComponent(_queryColumn, IndigoSubstructureMatcherNodeModel.QUERY_PORT, _settings.queryColName);
       
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_align, _settings.align);
@@ -263,9 +246,12 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 
          _changeListener.stateChanged(null);
          
-         _targetSpec = specs[IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT];
-         _querySpec = specs[IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT];
-         
+         _targetSpec = specs[IndigoSubstructureMatcherNodeModel.TARGET_PORT];
+         _querySpec = specs[IndigoSubstructureMatcherNodeModel.QUERY_PORT];
+         /*
+          * Update mode
+          */
+         _columnChangeListener.itemStateChanged(null);
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());
@@ -278,6 +264,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    {
       
       COLUMN_STATE state = _getColumnState();
+      
       if(state.equals(COLUMN_STATE.Mixed))
          throw new InvalidSettingsException("can not select reaction and molecule column in the same time!");
       

@@ -24,17 +24,21 @@ import org.knime.core.data.def.StringCell;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.COLUMN_STATE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
 
 public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 {
-   public static final int INDIGO_TARGET_PORT = 0;
-   public static final int INDIGO_QUERY_PORT = 1;
+   public static final int TARGET_PORT = 0;
+   public static final int QUERY_PORT = 1;
    
    IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
 
@@ -51,7 +55,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
       if (_settings.appendColumn.getBooleanValue())
-         if (_settings.newColName == null || _settings.newColName.getStringValue().length() < 1)
+         if (_settings.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
@@ -96,12 +100,12 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 
       int index = 0;
       boolean warningPrinted = false;
-      RowIterator it = queriesTableData.iterator();
-      while (it.hasNext()) {
-         DataRow row = it.next();
+      
+      for(DataRow row : queriesTableData) {
          queries[index] = new QueryWithData();
          queries[index].query = getIndigoQueryMoleculeOrNull(row.getCell(queryColIdx));
          queries[index].rowKey = row.getKey().toString();
+         
          if (queries[index].query == null && !warningPrinted) {
             LOGGER.warn("query table contains missing cells");
             warningPrinted = true;
@@ -196,7 +200,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec = inData[TARGET_PORT].getDataTableSpec();
       
       BufferedDataContainer validOutputContainer = exec
             .createDataContainer(getDataTableSpec(inputTableSpec));
@@ -208,11 +212,11 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      QueryWithData[] queries = loadQueries(inData[1]);
+      QueryWithData[] queries = loadQueries(inData[QUERY_PORT]);
       
       int rowNumber = 1;
 
-      for (DataRow inputRow : inData[0]) {
+      for (DataRow inputRow : inData[TARGET_PORT]) {
          IndigoObject target = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
 
          int matchCount = 0;
@@ -368,8 +372,15 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-//      _settings.colName = searchIndigoColumn(inSpecs[INDIGO_TARGET_PORT], _settings.colName, IndigoMolValue.class);
-//      _settings.colName2 = searchIndigoColumn(inSpecs[INDIGO_QUERY_PORT], _settings.colName2, IndigoQueryMolValue.class);
+      searchMixedIndigoColumn(inSpecs[TARGET_PORT], _settings.targetColName, IndigoMolValue.class, IndigoReactionValue.class);
+      searchMixedIndigoColumn(inSpecs[QUERY_PORT], _settings.queryColName, IndigoQueryMolValue.class, IndigoQueryReactionValue.class);
+      
+      COLUMN_STATE state = IndigoNodeSettings.getColumnState(inSpecs[TARGET_PORT], inSpecs[QUERY_PORT],
+            _settings.targetColName.getColumnName(), _settings.queryColName.getColumnName());
+      if(state.equals(COLUMN_STATE.Mixed)) {
+         throw new InvalidSettingsException("can not select mixed reaction and molecule columns");
+      }
+      
       return new DataTableSpec[] { null, null };
    }
 
@@ -403,9 +414,9 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       s.loadSettingsFrom(settings);
       s.validateSettings(settings);
 
-      if (s.targetColName == null || s.targetColName.getStringValue().length() < 1)
+      if (s.targetColName.getStringValue() == null || s.targetColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.queryColName == null || s.queryColName.getStringValue().length() < 1)
+      if (s.queryColName.getStringValue() == null || s.queryColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
       if (s.appendColumn.getBooleanValue() && (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1))
          throw new InvalidSettingsException("new column name must be specified");
