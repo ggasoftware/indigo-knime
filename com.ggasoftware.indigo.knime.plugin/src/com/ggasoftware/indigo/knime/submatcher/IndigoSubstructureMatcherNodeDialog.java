@@ -15,6 +15,8 @@
 package com.ggasoftware.indigo.knime.submatcher;
 
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -34,6 +36,10 @@ import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings
 
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
+   private enum COLUMN_STATE {
+      Reaction, Molecule, Mixed;
+   }
+
    private final IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _targetColumn = new ColumnSelectionComboxBox(
@@ -57,6 +63,9 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final JRadioButton _matchAllExceptSelected = new JRadioButton("All queries");
    private final JRadioButton _matchAnyAtLeastSelected = new JRadioButton("At least ");
    private final JSpinner _matchAnyAtLeast = new JSpinner(new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1));
+   
+   private DataTableSpec _targetSpec;
+   private DataTableSpec _querySpec;
 
    private static void updateNullableEdit (JTextField field, String defValue)
    {
@@ -85,12 +94,45 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          
          if (_appendColumn.isEnabled())
             _newColName.setEnabled(_appendColumn.isSelected());
+         
 
          updateNullableEdit(_queryKeyColumnName, _targetColumn.getSelectedColumn() + " (query row ID)");
          updateNullableEdit(_queryMatchCountKeyColumn, _targetColumn.getSelectedColumn() + " (queries matched)");
          updateNullableEdit(_newColName, _targetColumn.getSelectedColumn() + " (matched)");
       }
    };
+   
+   private final ItemListener _columnChangeListener = new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+         COLUMN_STATE state = _getColumnState();
+         _mode.setEnabled(state.equals(COLUMN_STATE.Molecule));
+      }
+   };
+   /*
+    * Returns current column selection state
+    */
+   private COLUMN_STATE _getColumnState() {
+      COLUMN_STATE result = COLUMN_STATE.Molecule;
+      if(_targetSpec != null) {
+         String tName = _targetColumn.getSelectedColumn();
+         if(_targetSpec.containsName(tName))
+            if(_targetSpec.getColumnSpec(tName).getType().isCompatible(IndigoReactionValue.class))
+               result = COLUMN_STATE.Mixed;
+      }
+      if(_querySpec != null) {
+         String tName = _queryColumn.getSelectedColumn();
+         if(_querySpec.containsName(tName))
+            if(_querySpec.getColumnSpec(tName).getType().isCompatible(IndigoQueryReactionValue.class))
+               if(result.equals(COLUMN_STATE.Mixed))
+                  result = COLUMN_STATE.Reaction;
+               else
+                  result = COLUMN_STATE.Mixed;
+      }
+      return result;
+   }
+   
+   
    
    /**
     * New pane for configuring the IndigoSmartsMatcher node.
@@ -162,7 +204,11 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       
       _matchAllExceptSelected.addChangeListener(_changeListener);
       _matchAnyAtLeastSelected.addChangeListener(_changeListener);
-      
+      /*
+       * Add reaction molecule change listener
+       */
+      _targetColumn.addItemListener(_columnChangeListener);
+      _queryColumn.addItemListener(_columnChangeListener);
       /*
        * Set fonts
        */
@@ -216,6 +262,11 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          _settings.loadDialogSettings(specs);
 
          _changeListener.stateChanged(null);
+         
+         _targetSpec = specs[IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT];
+         _querySpec = specs[IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT];
+         
+         
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());
       }
@@ -225,6 +276,11 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
+      
+      COLUMN_STATE state = _getColumnState();
+      if(state.equals(COLUMN_STATE.Mixed))
+         throw new InvalidSettingsException("can not select reaction and molecule column in the same time!");
+      
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
    }
