@@ -28,17 +28,19 @@ import org.knime.core.node.util.*;
 import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
 
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
    private final IndigoSubstructureMatcherSettings _settings = new IndigoSubstructureMatcherSettings();
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
+   private final ColumnSelectionComboxBox _targetColumn = new ColumnSelectionComboxBox(
+         (Border) null, IndigoMolValue.class, IndigoReactionValue.class);
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
-         (Border) null, IndigoQueryMolValue.class);
+   private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox(
+         (Border) null, IndigoQueryMolValue.class, IndigoQueryReactionValue.class);
    private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
    private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
@@ -84,9 +86,9 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          if (_appendColumn.isEnabled())
             _newColName.setEnabled(_appendColumn.isSelected());
 
-         updateNullableEdit(_queryKeyColumnName, _molColumn.getSelectedColumn() + " (query row ID)");
-         updateNullableEdit(_queryMatchCountKeyColumn, _molColumn.getSelectedColumn() + " (queries matched)");
-         updateNullableEdit(_newColName, _molColumn.getSelectedColumn() + " (matched)");
+         updateNullableEdit(_queryKeyColumnName, _targetColumn.getSelectedColumn() + " (query row ID)");
+         updateNullableEdit(_queryMatchCountKeyColumn, _targetColumn.getSelectedColumn() + " (queries matched)");
+         updateNullableEdit(_newColName, _targetColumn.getSelectedColumn() + " (matched)");
       }
    };
    
@@ -102,8 +104,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Molecule column", _molColumn);
-      dialogPanel.addItem("Query molecule column", _molColumn2);
+      dialogPanel.addItem("Molecule column", _targetColumn);
+      dialogPanel.addItem("Query molecule column", _queryColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
       dialogPanel.addItemsPanel("Substructure Settings");
       dialogPanel.addItem("Mode: ", _mode);
@@ -183,8 +185,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    }
 
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_molColumn, IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT, _settings.targetColName);
-      _settings.registerDialogComponent(_molColumn2, IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT, _settings.queryColName);
+      _settings.registerDialogComponent(_targetColumn, IndigoSubstructureMatcherNodeModel.INDIGO_TARGET_PORT, _settings.targetColName);
+      _settings.registerDialogComponent(_queryColumn, IndigoSubstructureMatcherNodeModel.INDIGO_QUERY_PORT, _settings.queryColName);
       
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_align, _settings.align);
