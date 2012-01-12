@@ -261,11 +261,16 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                   totalQueries--;
                   continue;
                }
-               if (_matchTarget(query.query, query.alignData, target)) {
-                  matchCount++;
-                  if (queriesRowKey.length() > 0)
-                     queriesRowKey.append(", ");
-                  queriesRowKey.append(query.rowKey);
+               try {
+                  if (_matchTarget(query.query, query.alignData, target)) {
+                     matchCount++;
+                     if (queriesRowKey.length() > 0)
+                        queriesRowKey.append(", ");
+                     queriesRowKey.append(query.rowKey);
+                  }
+               } catch (IndigoException e) {
+                  LOGGER.warn("indigo error while matching: target key='" + inputRow.getKey().getString() + "' query key='" + query.rowKey + "': "
+                        + e.getMessage());
                }
             }
          } finally {
@@ -358,7 +363,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          mode = "Daylight-AAM";
 
       match = indigo.substructureMatcher(target, mode).match(query);
-
+      
       if (match != null && _settings.exact.getBooleanValue()) {
          // test that the target does not have unmapped heavy atoms
          int nmapped_heavy = 0;
@@ -379,7 +384,6 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          if (nmapped_heavy < target_heavy)
             match = null;
       }
-
       if (match != null) {
          if (_settings.highlight.getBooleanValue()) {
             for (IndigoObject mol : query.iterateMolecules()) {
