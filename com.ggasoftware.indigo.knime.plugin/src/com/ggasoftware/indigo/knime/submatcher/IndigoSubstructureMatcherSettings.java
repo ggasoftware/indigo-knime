@@ -24,14 +24,16 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
 public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
    
-   enum Mode
-   {
+   enum MoleculeMode {
       Normal, Tautomer, Resonance
+   }
+   enum ReactionMode {
+      Standard, DaylightAAM
    }
    
    public SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
    public SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
-   public SettingsModelInteger mode = new SettingsModelInteger("mode", Mode.Normal.ordinal());
+   public SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
    public SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
    public SettingsModelBoolean align = new SettingsModelBoolean("align", false);
    public SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);

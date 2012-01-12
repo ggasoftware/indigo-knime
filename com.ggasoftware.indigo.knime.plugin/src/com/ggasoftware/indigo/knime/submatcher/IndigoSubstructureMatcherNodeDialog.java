@@ -34,7 +34,8 @@ import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
-import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.MoleculeMode;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.ReactionMode;
 
 public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
 {
@@ -46,7 +47,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class, IndigoQueryReactionValue.class);
    private final JLabel _structureType = new JLabel();
-   private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
+   private final JComboBox _mode = new JComboBox(new Object[] {MoleculeMode.Normal, MoleculeMode.Tautomer, MoleculeMode.Resonance});
    private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
    private final JCheckBox _align = new JCheckBox("Align matched structures");
@@ -104,17 +105,25 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ItemListener _columnChangeListener = new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
-         STRUCTURE_TYPE state = _getStructureType();
-         _mode.setEnabled(state.equals(STRUCTURE_TYPE.Molecule));
-         switch(state) {
+         STRUCTURE_TYPE stype = _getStructureType();
+         switch(stype) {
             case Unknown:
                _structureType.setText("Unknown");
+               _mode.setEnabled(false);
                break;
             case Reaction:
                _structureType.setText("Reaction");
+               _mode.setEnabled(true);
+               _mode.removeAllItems();
+               for(ReactionMode mode : ReactionMode.values())
+                  _mode.addItem(mode);
                break;
             case Molecule:
                _structureType.setText("Molecule");
+               _mode.setEnabled(true);
+               _mode.removeAllItems();
+               for(MoleculeMode mode : MoleculeMode.values())
+                  _mode.addItem(mode);
                break;
          }
       }

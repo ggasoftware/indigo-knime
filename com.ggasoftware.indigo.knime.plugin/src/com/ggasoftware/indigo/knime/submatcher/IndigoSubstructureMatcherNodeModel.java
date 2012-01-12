@@ -36,7 +36,8 @@ import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
-import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.Mode;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.MoleculeMode;
+import com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherSettings.ReactionMode;
 
 public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 {
@@ -352,7 +353,49 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       String mode = "";
       
       Indigo indigo = IndigoPlugin.getIndigo();
+      
+      if(_settings.mode.getIntValue() == ReactionMode.DaylightAAM.ordinal())
+         mode = "Daylight-AAM";
+
       match = indigo.substructureMatcher(target, mode).match(query);
+
+      if (match != null && _settings.exact.getBooleanValue()) {
+         // test that the target does not have unmapped heavy atoms
+         int nmapped_heavy = 0;
+         int target_heavy = 0;
+         
+         for (IndigoObject mol : query.iterateMolecules()) {
+            for (IndigoObject atom : mol.iterateAtoms()) {
+               IndigoObject mapped = match.mapAtom(atom);
+               if (mapped != null)
+                  if (mapped.isRSite() || mapped.isPseudoatom() || mapped.atomicNumber() > 1)
+                     nmapped_heavy++;
+            }
+         }
+
+         for (IndigoObject mol : target.iterateMolecules()) 
+            target_heavy += mol.countHeavyAtoms();
+         
+         if (nmapped_heavy < target_heavy)
+            match = null;
+      }
+
+      if (match != null) {
+         if (_settings.highlight.getBooleanValue()) {
+            for (IndigoObject mol : query.iterateMolecules()) {
+               for (IndigoObject atom : mol.iterateAtoms()) {
+                  IndigoObject mapped = match.mapAtom(atom);
+                  if (mapped != null)
+                     mapped.highlight();
+               }
+               for (IndigoObject bond : mol.iterateBonds()) {
+                  IndigoObject mapped = match.mapBond(bond);
+                  if (mapped != null)
+                     mapped.highlight();
+               }
+            }
+         }
+      }
       
       return (match != null);
    }
@@ -368,9 +411,9 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       if (!_settings.exact.getBooleanValue() || target.countHeavyAtoms() <= query.countAtoms())
       {
-         if (_settings.mode.getIntValue() == Mode.Resonance.ordinal())
+         if (_settings.mode.getIntValue() == MoleculeMode.Resonance.ordinal())
             mode = "RES";
-         else if (_settings.mode.getIntValue() == Mode.Tautomer.ordinal())
+         else if (_settings.mode.getIntValue() == MoleculeMode.Tautomer.ordinal())
          {
             mode = "TAU R* R-C";
  
