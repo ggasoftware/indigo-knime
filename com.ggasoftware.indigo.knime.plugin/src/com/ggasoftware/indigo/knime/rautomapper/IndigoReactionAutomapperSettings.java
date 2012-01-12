@@ -2,6 +2,7 @@ package com.ggasoftware.indigo.knime.rautomapper;
 
 import java.util.HashMap;
 
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
@@ -75,6 +76,10 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
          }
       }
       return result.toString();
+   }
+
+   public int getColumnIdx(DataTableSpec inPortSpec) {
+      return searchColumnIdx(m_column.getStringValue(), "reaction" , inPortSpec);
    }
 
 }

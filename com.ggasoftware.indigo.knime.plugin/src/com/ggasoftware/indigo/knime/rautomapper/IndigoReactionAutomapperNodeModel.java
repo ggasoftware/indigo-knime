@@ -17,14 +17,16 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 /**
@@ -33,7 +35,7 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
  * 
  * @author
  */
-public class IndigoReactionAutomapperNodeModel extends NodeModel {
+public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
 
    private final IndigoReactionAutomapperSettings _settings = new IndigoReactionAutomapperSettings();
 
@@ -51,13 +53,14 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec) throws Exception {
-      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec = inData[INPUT_PORT].getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
       BufferedDataContainer validOutputContainer = exec.createDataContainer(outputSpecs[0]);
       BufferedDataContainer invalidOutputContainer = exec.createDataContainer(outputSpecs[1]);
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.m_column.getStringValue());
+      
+      int colIdx = _settings.getColumnIdx(inputTableSpec);
       if (colIdx == -1)
          throw new Exception("column not found");
 
@@ -66,7 +69,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
       String aamParameters = _settings.getAAMParameters();
       
       int rowNumber = 1;
-      for (DataRow inputRow : inData[0]) {
+      for (DataRow inputRow : inData[INPUT_PORT]) {
          DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.m_appendColumn.getBooleanValue() ? 1 : 0)];
 
          DataCell newcell = null;
@@ -110,7 +113,7 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
          }
 
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(), "Adding row " + rowNumber);
+         exec.setProgress(rowNumber / (double) inData[INPUT_PORT].getRowCount(), "Adding row " + rowNumber);
 
          rowNumber++;
       }
@@ -186,6 +189,9 @@ public class IndigoReactionAutomapperNodeModel extends NodeModel {
     */
    @Override
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
+      
+      searchMixedIndigoColumn(inSpecs[INPUT_PORT], _settings.m_column, IndigoReactionValue.class, IndigoQueryReactionValue.class);
+      
       return getDataTableSpecs(inSpecs[INPUT_PORT]);
    }
 
