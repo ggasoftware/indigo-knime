@@ -214,15 +214,15 @@ public class IndigoNodeSettings {
       }
    }
    
-   public enum COLUMN_STATE {
-      Reaction, Molecule, Mixed;
+   public enum STRUCTURE_TYPE {
+      Reaction, Molecule, Unknown;
    }
    
    /*
     * Returns current column selection state
     */
-   public static COLUMN_STATE getColumnState(DataTableSpec tSpec, DataTableSpec qSpec, String tName, String qName) {
-      COLUMN_STATE result = COLUMN_STATE.Mixed;
+   public static STRUCTURE_TYPE getStructureType(DataTableSpec tSpec, DataTableSpec qSpec, String tName, String qName) {
+      STRUCTURE_TYPE result = STRUCTURE_TYPE.Unknown;
       
       int reactions = 0;
       int molecules = 0;
@@ -243,9 +243,9 @@ public class IndigoNodeSettings {
                ++molecules;
       }
       if(reactions == 2)
-         result = COLUMN_STATE.Reaction;
+         result = STRUCTURE_TYPE.Reaction;
       else if(molecules == 2)
-         result = COLUMN_STATE.Molecule;
+         result = STRUCTURE_TYPE.Molecule;
       
       return result;
    }

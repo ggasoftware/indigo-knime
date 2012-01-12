@@ -29,7 +29,7 @@ import org.knime.core.node.util.*;
 
 import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.COLUMN_STATE;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
@@ -45,6 +45,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class, IndigoQueryReactionValue.class);
+   private final JLabel _structureType = new JLabel();
    private final JComboBox _mode = new JComboBox(new Object[] {Mode.Normal, Mode.Tautomer, Mode.Resonance});
    private final JCheckBox _exact = new JCheckBox("Allow only exact matches");
    private final JCheckBox _highlight = new JCheckBox("Highlight matched structures");
@@ -103,15 +104,26 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
    private final ItemListener _columnChangeListener = new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
-         COLUMN_STATE state = _getColumnState();
-         _mode.setEnabled(state.equals(COLUMN_STATE.Molecule));
+         STRUCTURE_TYPE state = _getStructureType();
+         _mode.setEnabled(state.equals(STRUCTURE_TYPE.Molecule));
+         switch(state) {
+            case Unknown:
+               _structureType.setText("Unknown");
+               break;
+            case Reaction:
+               _structureType.setText("Reaction");
+               break;
+            case Molecule:
+               _structureType.setText("Molecule");
+               break;
+         }
       }
    };
    /*
     * Returns current column selection state
     */
-   private COLUMN_STATE _getColumnState() {
-      return IndigoNodeSettings.getColumnState(_targetSpec, _querySpec, 
+   private STRUCTURE_TYPE _getStructureType() {
+      return IndigoNodeSettings.getStructureType(_targetSpec, _querySpec, 
             _targetColumn.getSelectedColumn(), _queryColumn.getSelectedColumn());
    }
    
@@ -129,6 +141,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Structure type", _structureType);
       dialogPanel.addItem("Molecule column", _targetColumn);
       dialogPanel.addItem("Query molecule column", _queryColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
@@ -263,9 +276,9 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
          throws InvalidSettingsException
    {
       
-      COLUMN_STATE state = _getColumnState();
+      STRUCTURE_TYPE stype = _getStructureType();
       
-      if(state.equals(COLUMN_STATE.Mixed))
+      if(stype.equals(STRUCTURE_TYPE.Unknown))
          throw new InvalidSettingsException("can not select reaction and molecule column in the same time!");
       
       _settings.saveDialogSettings();

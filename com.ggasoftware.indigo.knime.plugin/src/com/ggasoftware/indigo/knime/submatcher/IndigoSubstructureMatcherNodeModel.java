@@ -25,7 +25,7 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.COLUMN_STATE;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
@@ -356,6 +356,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       }
       return (match != null);
    }
+   
 
    /**
     * {@inheritDoc}
@@ -375,13 +376,18 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       searchMixedIndigoColumn(inSpecs[TARGET_PORT], _settings.targetColName, IndigoMolValue.class, IndigoReactionValue.class);
       searchMixedIndigoColumn(inSpecs[QUERY_PORT], _settings.queryColName, IndigoQueryMolValue.class, IndigoQueryReactionValue.class);
       
-      COLUMN_STATE state = IndigoNodeSettings.getColumnState(inSpecs[TARGET_PORT], inSpecs[QUERY_PORT],
-            _settings.targetColName.getColumnName(), _settings.queryColName.getColumnName());
-      if(state.equals(COLUMN_STATE.Mixed)) {
-         throw new InvalidSettingsException("can not select mixed reaction and molecule columns");
-      }
+      STRUCTURE_TYPE stype = _defineStructureType(inSpecs[TARGET_PORT], inSpecs[QUERY_PORT]);
+      if(stype.equals(STRUCTURE_TYPE.Unknown)) 
+         throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
       
       return new DataTableSpec[] { null, null };
+   }
+
+   private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec, DataTableSpec qSpec) {
+      
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, qSpec,
+            _settings.targetColName.getColumnName(), _settings.queryColName.getColumnName());
+      return stype;
    }
 
    /**
