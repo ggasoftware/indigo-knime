@@ -26,10 +26,13 @@ import org.knime.core.node.*;
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
+import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
@@ -76,7 +79,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          specs[i] = inputTableSpec.getColumnSpec(i);
       
       if (_settings.appendColumn.getBooleanValue())
-         specs[i++] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
+         specs[i++] = _getNewColumnSpec();
       if (_settings.appendQueryKeyColumn.getBooleanValue())
          specs[i++] = new DataColumnSpecCreator(_settings.queryKeyColumn.getStringValue(), StringCell.TYPE).createSpec();
       if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
@@ -85,16 +88,31 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       return new DataTableSpec(specs);
    }
    
-   private QueryWithData[] loadQueries(BufferedDataTable queriesTableData)
+   private DataColumnSpec _getNewColumnSpec() throws InvalidSettingsException {
+      String colName = _settings.newColName.getStringValue();
+      DataColumnSpec result = null;
+      switch(_settings.structureType){
+         case Molecule:
+            result = new DataColumnSpecCreator(colName, IndigoMolCell.TYPE).createSpec();
+            break;
+         case Reaction:
+            result = new DataColumnSpecCreator(colName, IndigoReactionCell.TYPE).createSpec();
+            break;
+         case Unknown:
+            throw new InvalidSettingsException("Structure type is not defined");
+      }
+      return result;
+   }
+
+   private QueryWithData[] _loadQueries(BufferedDataTable queriesTableData)
          throws InvalidSettingsException
    {
       DataTableSpec queryItemsSpec = queriesTableData.getDataTableSpec();
-      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.queryColName.getStringValue());
-      if (queryColIdx == -1)
-         throw new InvalidSettingsException("query column '"
-               + _settings.queryColName + "' not found");
+
+      int queryColIdx = _settings.getQueryColIdx(queryItemsSpec);
 
       QueryWithData[] queries = new QueryWithData[queriesTableData.getRowCount()];
+      
       if (queries.length == 0)
          LOGGER.warn("There are no query molecules in the table");
 
@@ -103,7 +121,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       for(DataRow row : queriesTableData) {
          queries[index] = new QueryWithData();
-         queries[index].query = getIndigoQueryMoleculeOrNull(row.getCell(queryColIdx));
+         queries[index].query = getIndigoQueryStructureOrNull(row.getCell(queryColIdx));
          queries[index].rowKey = row.getKey().toString();
          
          if (queries[index].query == null && !warningPrinted) {
@@ -115,10 +133,10 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       return queries;
    }
 
-   private IndigoObject getIndigoQueryMoleculeOrNull(DataCell cell) {
+   private IndigoObject getIndigoQueryStructureOrNull(DataCell cell) {
       if (cell.isMissing())
          return null;
-      return ((IndigoQueryMolValue) cell).getIndigoObject();
+      return ((IndigoDataValue)cell).getIndigoObject();
    }
    
    class AlignTargetQueryData
@@ -201,23 +219,34 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
       DataTableSpec inputTableSpec = inData[TARGET_PORT].getDataTableSpec();
+      DataTableSpec queryTableSpec = inData[QUERY_PORT].getDataTableSpec();
+      
+      _defineStructureType(inputTableSpec, queryTableSpec);
       
       BufferedDataContainer validOutputContainer = exec
             .createDataContainer(getDataTableSpec(inputTableSpec));
+      
       BufferedDataContainer invalidOutputContainer = exec
             .createDataContainer(inputTableSpec);
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.targetColName.getStringValue());
+      int colIdx = _settings.getTargetColIdx(inputTableSpec);
 
-      if (colIdx == -1)
-         throw new Exception("column not found");
-
-      QueryWithData[] queries = loadQueries(inData[QUERY_PORT]);
+      QueryWithData[] queries = _loadQueries(inData[QUERY_PORT]);
       
       int rowNumber = 1;
-
+      boolean warningPrinted = false;
+      
       for (DataRow inputRow : inData[TARGET_PORT]) {
-         IndigoObject target = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+         DataCell inputCell = inputRow.getCell(colIdx);
+         
+         if(inputCell.isMissing()) {
+            if(!warningPrinted)
+               LOGGER.warn("target table contains missing cells");
+            warningPrinted = true;
+            continue;
+         }
+         
+         IndigoObject target = ((IndigoDataCell) inputCell).getIndigoObject();
 
          int matchCount = 0;
          StringBuilder queriesRowKey = new StringBuilder();
@@ -231,7 +260,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                   totalQueries--;
                   continue;
                }
-               if (matchTarget(query.query, query.alignData, target)) {
+               if (_matchTarget(query.query, query.alignData, target)) {
                   matchCount++;
                   if (queriesRowKey.length() > 0)
                      queriesRowKey.append(", ");
@@ -263,12 +292,12 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
 
             for (i = 0; i < inputRow.getNumCells(); i++) {
                if (!_settings.appendColumn.getBooleanValue() && i == colIdx)
-                  cells[i] = new IndigoMolCell(target);
+                  cells[i] = _createNewDataCell(target);
                else
                   cells[i] = inputRow.getCell(i);
             }
             if (_settings.appendColumn.getBooleanValue())
-               cells[i++] = new IndigoMolCell(target);
+               cells[i++] = _createNewDataCell(target);
             if (_settings.appendQueryKeyColumn.getBooleanValue())
                cells[i++] = new StringCell(queriesRowKey.toString());
             if (_settings.appendQueryMatchCountKeyColumn.getBooleanValue())
@@ -279,7 +308,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          } else
             invalidOutputContainer.addRowToTable(inputRow);
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) inData[TARGET_PORT].getRowCount(),
                "Processing row " + rowNumber);
          rowNumber++;
       }
@@ -290,7 +319,45 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             invalidOutputContainer.getTable() };
    }
 
-   private boolean matchTarget(IndigoObject query,
+   private DataCell _createNewDataCell(IndigoObject target) {
+      DataCell result = null;
+      switch (_settings.structureType) {
+      case Molecule:
+         result = new IndigoMolCell(target);
+         break;
+      case Reaction:
+         result = new IndigoReactionCell(target);
+         break;
+      case Unknown:
+         throw new RuntimeException("Structure type is not defined");
+      }
+      return result;
+   }
+
+   private boolean _matchTarget(IndigoObject query, AlignTargetQueryData alignData, IndigoObject target) {
+      switch (_settings.structureType) {
+      case Molecule:
+         return _matchMoleculeTarget(query, alignData, target);
+      case Reaction:
+         return _matchReactionTarget(query, alignData, target);
+      case Unknown:
+         throw new RuntimeException("Structure type is not defined");
+      }
+      return false;
+   }
+
+   private boolean _matchReactionTarget(IndigoObject query, AlignTargetQueryData alignData, IndigoObject target) {
+
+      IndigoObject match = null;
+      String mode = "";
+      
+      Indigo indigo = IndigoPlugin.getIndigo();
+      match = indigo.substructureMatcher(target, mode).match(query);
+      
+      return (match != null);
+   }
+
+   private boolean _matchMoleculeTarget(IndigoObject query,
          AlignTargetQueryData alignData, IndigoObject target)
    {
       Indigo indigo = IndigoPlugin.getIndigo();
@@ -384,9 +451,9 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    }
 
    private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec, DataTableSpec qSpec) {
-      
       STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, qSpec,
             _settings.targetColName.getColumnName(), _settings.queryColName.getColumnName());
+      _settings.structureType = stype;
       return stype;
    }
 

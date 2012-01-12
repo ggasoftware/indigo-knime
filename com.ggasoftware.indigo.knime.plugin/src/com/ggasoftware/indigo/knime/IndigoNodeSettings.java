@@ -249,4 +249,18 @@ public class IndigoNodeSettings {
       
       return result;
    }
+   
+   public static int searchColumnIdx(String colName, String errorMsg, DataTableSpec inPortSpec) {
+      int colIdx = -1;
+
+      if (colName == null)
+         throw new RuntimeException(errorMsg + " column not found");
+
+      colIdx = inPortSpec.findColumnIndex(colName);
+
+      if (colIdx == -1)
+         throw new RuntimeException(errorMsg + " column not found");
+      
+      return colIdx;
+   }
 }

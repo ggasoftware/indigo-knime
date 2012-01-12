@@ -14,6 +14,7 @@
 
 package com.ggasoftware.indigo.knime.submatcher;
 
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
@@ -28,8 +29,8 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       Normal, Tautomer, Resonance
    }
    
-   public SettingsModelColumnName targetColName = new SettingsModelColumnName("colName", null);
-   public SettingsModelColumnName queryColName = new SettingsModelColumnName("colName2", null);
+   public SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
+   public SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
    public SettingsModelInteger mode = new SettingsModelInteger("mode", Mode.Normal.ordinal());
    public SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
    public SettingsModelBoolean align = new SettingsModelBoolean("align", false);
@@ -47,6 +48,10 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
    public SettingsModelBoolean matchAllSelected = new SettingsModelBoolean("matchAllExceptSelected", false);
    public SettingsModelBoolean matchAnyAtLeastSelected = new SettingsModelBoolean("matchAnyAtLeastSelected", true);
    public SettingsModelInteger matchAnyAtLeast = new SettingsModelInteger("matchAnyAtLeast", 1);
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
    
    public IndigoSubstructureMatcherSettings() {
       addSettingsParameter(targetColName);
@@ -65,6 +70,14 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       addSettingsParameter(matchAllSelected);
       addSettingsParameter(matchAnyAtLeastSelected);
       addSettingsParameter(matchAnyAtLeast);
+   }
+
+   public int getTargetColIdx(DataTableSpec inPortSpec) {
+      return searchColumnIdx(targetColName.getStringValue(), "target", inPortSpec);
+   }
+   
+   public int getQueryColIdx(DataTableSpec inPortSpec) {
+      return searchColumnIdx(queryColName.getStringValue(), "query", inPortSpec);
    }
 
    
