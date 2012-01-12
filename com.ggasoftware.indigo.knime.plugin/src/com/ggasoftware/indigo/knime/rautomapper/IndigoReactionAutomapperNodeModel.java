@@ -61,8 +61,6 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
 
       
       int colIdx = _settings.getColumnIdx(inputTableSpec);
-      if (colIdx == -1)
-         throw new Exception("column not found");
 
       int newColIdx = _settings.m_appendColumn.getBooleanValue() ? inputTableSpec.getNumColumns() : colIdx;
       

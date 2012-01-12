@@ -151,8 +151,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       
       dialogPanel.addItemsPanel("Column Settings");
       dialogPanel.addItem("Structure type", _structureType);
-      dialogPanel.addItem("Molecule column", _targetColumn);
-      dialogPanel.addItem("Query molecule column", _queryColumn);
+      dialogPanel.addItem("Target column", _targetColumn);
+      dialogPanel.addItem("Query column", _queryColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
       dialogPanel.addItemsPanel("Substructure Settings");
       dialogPanel.addItem("Mode: ", _mode);
