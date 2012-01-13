@@ -31,25 +31,25 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       Standard, DaylightAAM
    }
    
-   public SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
-   public SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
-   public SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
-   public SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
-   public SettingsModelBoolean align = new SettingsModelBoolean("align", false);
-   public SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);
-   public SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
-   public SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
-   public SettingsModelString newColName = new SettingsModelString("newColName", null);
+   public final SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
+   public final SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
+   public final SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
+   public final SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
+   public final SettingsModelBoolean align = new SettingsModelBoolean("align", false);
+   public final SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);
+   public final SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    
-   public SettingsModelBoolean appendQueryKeyColumn = new SettingsModelBoolean("appendQueryKeyColumn", false);
-   public SettingsModelString queryKeyColumn = new SettingsModelString("queryKeyColumn", null);
+   public final SettingsModelBoolean appendQueryKeyColumn = new SettingsModelBoolean("appendQueryKeyColumn", false);
+   public final SettingsModelString queryKeyColumn = new SettingsModelString("queryKeyColumn", null);
 
-   public SettingsModelBoolean appendQueryMatchCountKeyColumn = new SettingsModelBoolean("appendQueryMatchCountKeyColumn", false);
-   public SettingsModelString queryMatchCountKeyColumn = new SettingsModelString("queryMatchCountKeyColumn", null);
+   public final SettingsModelBoolean appendQueryMatchCountKeyColumn = new SettingsModelBoolean("appendQueryMatchCountKeyColumn", false);
+   public final SettingsModelString queryMatchCountKeyColumn = new SettingsModelString("queryMatchCountKeyColumn", null);
    
-   public SettingsModelBoolean matchAllSelected = new SettingsModelBoolean("matchAllExceptSelected", false);
-   public SettingsModelBoolean matchAnyAtLeastSelected = new SettingsModelBoolean("matchAnyAtLeastSelected", true);
-   public SettingsModelInteger matchAnyAtLeast = new SettingsModelInteger("matchAnyAtLeast", 1);
+   public final SettingsModelBoolean matchAllSelected = new SettingsModelBoolean("matchAllExceptSelected", false);
+   public final SettingsModelBoolean matchAnyAtLeastSelected = new SettingsModelBoolean("matchAnyAtLeastSelected", true);
+   public final SettingsModelInteger matchAnyAtLeast = new SettingsModelInteger("matchAnyAtLeast", 1);
    /*
     * Parameter is not saved
     */

@@ -26,9 +26,14 @@ import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
+import com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterSettings.Uniqueness;
 
 public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 {
+   
+   public static final int TARGET_PORT = 0;
+   public static final int QUERY_PORT = 1;
+   
    IndigoSubstructureMatchCounterSettings _settings = new IndigoSubstructureMatchCounterSettings();
 
    private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoSubstructureMatchCounterNodeModel.class);
@@ -45,8 +50,8 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      final BufferedDataTable targetsTable = inData[0];
-      final BufferedDataTable queriesTable = inData[1];
+      final BufferedDataTable targetsTable = inData[TARGET_PORT];
+      final BufferedDataTable queriesTable = inData[QUERY_PORT];
       
       final DataTableSpec targetItemsSpec = targetsTable.getDataTableSpec();
       final DataTableSpec outSpec = 
@@ -55,9 +60,9 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(outSpec);
 
-      int targetColIdx = targetItemsSpec.findColumnIndex(_settings.colName);
+      int targetColIdx = targetItemsSpec.findColumnIndex(_settings.targetColName.getStringValue());
       if (targetColIdx == -1)
-         throw new InvalidSettingsException("column '" + _settings.colName + "' is not found in the first port");
+         throw new InvalidSettingsException("column '" + _settings.targetColName + "' is not found in the first port");
 
       IndigoObject[] queries = loadQueries(queriesTable);
       
@@ -89,9 +94,9 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    private IndigoObject[] loadQueries(BufferedDataTable queriesTableData)
          throws InvalidSettingsException {
       DataTableSpec queryItemsSpec = queriesTableData.getDataTableSpec();
-      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.colName2);
+      int queryColIdx = queryItemsSpec.findColumnIndex(_settings.queryColName.getStringValue());
       if (queryColIdx == -1)
-         throw new InvalidSettingsException("query column '" + _settings.colName2 + "' not found");
+         throw new InvalidSettingsException("query column '" + _settings.queryColName + "' not found");
       
       IndigoObject[] queries = new IndigoObject[queriesTableData.getRowCount()];
       if (queries.length == 0)
@@ -134,7 +139,7 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       DataCell targetCell = inputRow.getCell(colIdx);
       if (targetCell.isMissing()) {
          // Mark all columns as missing
-         if (_settings.appendColumn) {
+         if (_settings.appendColumn.getBooleanValue()) {
             cells[i] = DataType.getMissingCell();
             i++;
          }
@@ -152,13 +157,13 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
          IndigoObject target = ((IndigoMolCell)targetCell).getIndigoObject();
          
          IndigoObject highlighted = null, mapping = null;
-         if (_settings.highlight) {
+         if (_settings.highlight.getBooleanValue()) {
             highlighted = indigo.createMolecule();
             mapping = highlighted.merge(target);
          }
          
-         indigo.setOption("embedding-uniqueness", _settings.uniqueness
-               .name().toLowerCase());
+         indigo.setOption("embedding-uniqueness", Uniqueness.values()[_settings.uniqueness
+               .getIntValue()].name().toLowerCase());
          IndigoObject matcher = indigo.substructureMatcher(target);
          
          for (IndigoObject q : queries) {
@@ -168,7 +173,7 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
             }
             cells[i++] = new IntCell(matcher.countMatches(q));
 
-            if (_settings.highlight) {
+            if (_settings.highlight.getBooleanValue()) {
                for (IndigoObject match : matcher.iterateMatches(q)) {
                   for (IndigoObject qatom : q.iterateAtoms()) {
                      IndigoObject mapped = match.mapAtom(qatom);
@@ -184,8 +189,8 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
             }
          }
 
-         if (_settings.highlight) {
-            if (_settings.appendColumn)
+         if (_settings.highlight.getBooleanValue()) {
+            if (_settings.appendColumn.getBooleanValue())
                cells[i] = new IndigoMolCell(highlighted);
             else
                cells[colIdx] = new IndigoMolCell(highlighted);
@@ -206,13 +211,13 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
 
    protected DataTableSpec getOutDataTableSpec (DataTableSpec inSpec, int queryRowsCount) throws InvalidSettingsException
    {
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.newColName == null || _settings.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
 
       int additionalRows = queryRowsCount;
-      if (_settings.appendColumn)
+      if (_settings.appendColumn.getBooleanValue())
          additionalRows += 1;
       
       specs = new DataColumnSpec[inSpec.getNumColumns() + additionalRows];
@@ -232,8 +237,8 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
       }
 
       // Add molecule column that highlighted by each query   
-      if (_settings.appendColumn) {
-         specs[i] = new DataColumnSpecCreator(_settings.newColName2, IndigoMolCell.TYPE).createSpec();
+      if (_settings.appendColumn.getBooleanValue()) {
+         specs[i] = new DataColumnSpecCreator(_settings.appendColumnName.getStringValue(), IndigoMolCell.TYPE).createSpec();
          i++;
       }
       
@@ -258,7 +263,7 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -268,7 +273,7 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -279,15 +284,15 @@ public class IndigoSubstructureMatchCounterNodeModel extends NodeModel
          throws InvalidSettingsException
    {
       IndigoSubstructureMatchCounterSettings s = new IndigoSubstructureMatchCounterSettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.targetColName == null || s.targetColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.colName2 == null || s.colName2.length() < 1)
+      if (s.queryColName == null || s.queryColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
-      if (s.newColName == null || s.newColName.length() < 1)
+      if (s.newColName == null || s.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("new counter column name must be specified");
-      if (s.appendColumn)
-         if (s.newColName2 == null || s.newColName2.length() < 1)
+      if (s.appendColumn.getBooleanValue())
+         if (s.appendColumnName == null || s.appendColumnName.getStringValue().length() < 1)
             throw new InvalidSettingsException("new highlighted column name must be specified");
    }
 

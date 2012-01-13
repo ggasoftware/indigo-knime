@@ -14,59 +14,35 @@
 
 package com.ggasoftware.indigo.knime.submatchcounter;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
-public class IndigoSubstructureMatchCounterSettings
+public class IndigoSubstructureMatchCounterSettings extends IndigoNodeSettings
 {
    public enum Uniqueness
    {
       Atoms, Bonds, None
    }
 
-   public String colName;
-   public String colName2;
-   public String newColName = "Number of matches";
-   Uniqueness uniqueness = Uniqueness.Atoms;
-   public boolean highlight = false;
-   public boolean appendColumn = false;
-   public String newColName2;
+   public final SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
+   public final SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", "Number of matches");
+   public final SettingsModelInteger uniqueness = new SettingsModelInteger("uniqueness", Uniqueness.Atoms.ordinal());
+   public final SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final SettingsModelString appendColumnName = new SettingsModelString("appendColumnName", null);
 
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      colName2 = settings.getString("colName2");
-      newColName = settings.getString("newColName");
-      uniqueness = Uniqueness.valueOf(settings.getString("uniqueness"));
-      highlight = settings.getBoolean("highlight", false);
-      appendColumn = settings.getBoolean("appendColumn", false);
-      newColName2 = settings.getString("newColName2", null);
-   }
-
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      colName2 = settings.getString("colName2", null);
-      newColName = settings.getString("newColName", "Number of matches");
-      uniqueness = Uniqueness.valueOf(settings.getString("uniqueness", Uniqueness.Atoms.name()));
-      highlight = settings.getBoolean("highlight", false);
-      appendColumn = settings.getBoolean("appendColumn", false);
-      newColName2 = settings.getString("newColName2", null);
-   }
-
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (colName2 != null)
-         settings.addString("colName2", colName2);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      if (uniqueness != null)
-         settings.addString("uniqueness", uniqueness.name());
-      settings.addBoolean("highlight", highlight);
-      settings.addBoolean("appendColumn", appendColumn);
-      if (newColName2 != null)
-         settings.addString("newColName2", newColName2);
+   
+   public IndigoSubstructureMatchCounterSettings() {
+      addSettingsParameter(targetColName);
+      addSettingsParameter(queryColName);
+      addSettingsParameter(newColName);
+      addSettingsParameter(uniqueness);
+      addSettingsParameter(highlight);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(appendColumnName);
    }
 }

@@ -15,6 +15,9 @@
 package com.ggasoftware.indigo.knime.submatchcounter;
 
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ChangeEvent;
@@ -24,27 +27,30 @@ import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterSettings.Uniqueness;
 
-public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
-{
+public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
    private final IndigoSubstructureMatchCounterSettings _settings = new IndigoSubstructureMatchCounterSettings();
-   @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
-   @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
-         (Border) null, IndigoQueryMolValue.class);
-   private final JTextField _newColName = new JTextField(20);
-
-   private final JComboBox _uniqueness = new JComboBox(new Object[] {
-         Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None });
    
+   
+   @SuppressWarnings("unchecked")
+   private final ColumnSelectionComboxBox _targetColumn = new ColumnSelectionComboxBox((Border) null, IndigoMolValue.class);
+   @SuppressWarnings("unchecked")
+   private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox((Border) null, IndigoQueryMolValue.class);
+
+   private final JLabel _structureType = new JLabel();
+   private final JTextField _newColName = new JTextField(20);
+   private final JComboBox _uniqueness = new JComboBox(new Object[] { Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None });
    private final JCheckBox _highlight = new JCheckBox("Highlight all matches");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
-   private final JTextField _newColName2 = new JTextField(20);
+   private final JTextField _appendColumnName = new JTextField(20);
+
+   private DataTableSpec _targetSpec;
+   private DataTableSpec _querySpec;
    
    private final ChangeListener _changeListener = new ChangeListener() {
       public void stateChanged (ChangeEvent e)
@@ -56,12 +62,38 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
             _appendColumn.setSelected(false);
          
          if (_appendColumn.isEnabled())
-            _newColName2.setEnabled(_appendColumn.isSelected());
+            _appendColumnName.setEnabled(_appendColumn.isSelected());
          
-         if (_newColName2.isEnabled() && _newColName2.getText().length() < 1)
-            _newColName2.setText(_molColumn.getSelectedColumn() + " (highlihghted)");
+         if (_appendColumnName.isEnabled() && _appendColumnName.getText().length() < 1)
+            _appendColumnName.setText(_targetColumn.getSelectedColumn() + " (highlihghted)");
       }
    };
+   
+   private final ItemListener _columnChangeListener = new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+         STRUCTURE_TYPE stype = _getStructureType();
+         switch(stype) {
+            case Unknown:
+               _structureType.setText("Unknown");
+               break;
+            case Reaction:
+               _structureType.setText("Reaction");
+               break;
+            case Molecule:
+               _structureType.setText("Molecule");
+               break;
+         }
+      }
+   };
+   
+   /*
+    * Returns current column selection state
+    */
+   private STRUCTURE_TYPE _getStructureType() {
+      return IndigoNodeSettings.getStructureType(_targetSpec, _querySpec, 
+            _targetColumn.getSelectedColumn(), _queryColumn.getSelectedColumn());
+   }
    
    /**
     * New pane for configuring the IndigoSmartsMatcher node.
@@ -69,6 +101,8 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
    protected IndigoSubstructureMatchCounterNodeDialog()
    {
       super();
+      
+      _registerDialogComponents();
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -80,13 +114,13 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(new JLabel("Molecule column"), c);
       c.gridx = 1;
-      p.add(_molColumn, c);
+      p.add(_targetColumn, c);
 
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Query molecule column"), c);
       c.gridx = 1;
-      p.add(_molColumn2, c);
+      p.add(_queryColumn, c);
       
       c.gridy++;
       c.gridx = 0;
@@ -108,45 +142,60 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(_appendColumn, c);
       c.gridx = 1;
-      p.add(_newColName2, c);
+      p.add(_appendColumnName, c);
       
       _highlight.addChangeListener(_changeListener);
       _appendColumn.addChangeListener(_changeListener);
       
       _highlight.setSelected(false);
       _appendColumn.setEnabled(false);
-      _newColName2.setEnabled(false);
+      _appendColumnName.setEnabled(false);
       
       addTab("Standard settings", p);
    }
 
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_targetColumn, IndigoSubstructureMatchCounterNodeModel.TARGET_PORT, _settings.targetColName);
+      _settings.registerDialogComponent(_queryColumn, IndigoSubstructureMatchCounterNodeModel.QUERY_PORT, _settings.queryColName);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_uniqueness, _settings.uniqueness);
+      _settings.registerDialogComponent(_appendColumnName, _settings.appendColumnName);
+      _settings.registerDialogComponent(_highlight, _settings.highlight);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+   }
+   
    @Override
-   protected void loadSettingsFrom (final NodeSettingsRO settings,
-         final DataTableSpec[] specs) throws NotConfigurableException
-   {
-      _settings.loadSettingsForDialog(settings);
+   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
 
-      _molColumn.update(specs[0], _settings.colName);
-      _molColumn2.update(specs[1], _settings.colName2);
-      _newColName.setText(_settings.newColName);
-      _uniqueness.setSelectedItem(_settings.uniqueness);
-      _newColName2.setText(_settings.newColName2);
-      _highlight.setSelected(_settings.highlight);
-      _appendColumn.setSelected(_settings.appendColumn);
-      _changeListener.stateChanged(null);
+         _changeListener.stateChanged(null);
+         
+         _targetSpec = specs[IndigoSubstructureMatchCounterNodeModel.TARGET_PORT];
+         _querySpec = specs[IndigoSubstructureMatchCounterNodeModel.QUERY_PORT];
+         /*
+          * Update mode
+          */
+         _columnChangeListener.itemStateChanged(null);
+         
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    @Override
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.colName2 = _molColumn2.getSelectedColumn();
-      _settings.newColName = _newColName.getText();
-      _settings.uniqueness = ((Uniqueness)_uniqueness.getSelectedItem());
-      _settings.highlight = _highlight.isSelected();
-      _settings.appendColumn = _appendColumn.isSelected();
-      _settings.newColName2 = _newColName2.getText();
-      _settings.saveSettings(settings);
+      
+      STRUCTURE_TYPE stype = _getStructureType();
+      
+      if(stype.equals(STRUCTURE_TYPE.Unknown))
+         throw new InvalidSettingsException("can not select reaction and molecule column in the same time!");
+      
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
+
 }
