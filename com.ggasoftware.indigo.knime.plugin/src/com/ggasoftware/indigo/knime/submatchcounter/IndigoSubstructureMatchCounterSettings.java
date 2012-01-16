@@ -14,6 +14,7 @@
 
 package com.ggasoftware.indigo.knime.submatchcounter;
 
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
@@ -34,6 +35,10 @@ public class IndigoSubstructureMatchCounterSettings extends IndigoNodeSettings
    public final SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
    public final SettingsModelString appendColumnName = new SettingsModelString("appendColumnName", null);
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
 
    
    public IndigoSubstructureMatchCounterSettings() {
@@ -44,5 +49,15 @@ public class IndigoSubstructureMatchCounterSettings extends IndigoNodeSettings
       addSettingsParameter(highlight);
       addSettingsParameter(appendColumn);
       addSettingsParameter(appendColumnName);
+   }
+
+
+   public int getTargetColumnIdx(DataTableSpec inPortSpec) {
+      return searchColumnIdx(targetColName.getStringValue(), "target", inPortSpec);
+   }
+
+
+   public int getQueryColumnIdx(DataTableSpec inPortSpec) {
+      return searchColumnIdx(queryColName.getStringValue(), "query", inPortSpec);
    }
 }

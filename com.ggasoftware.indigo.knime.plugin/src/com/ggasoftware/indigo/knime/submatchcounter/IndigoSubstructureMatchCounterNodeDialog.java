@@ -14,9 +14,6 @@
 
 package com.ggasoftware.indigo.knime.submatchcounter;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ChangeEvent;
@@ -42,7 +39,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox((Border) null, IndigoQueryMolValue.class);
 
-   private final JLabel _structureType = new JLabel();
+//   private final JLabel _structureType = new JLabel();
    private final JTextField _newColName = new JTextField(20);
    private final JComboBox _uniqueness = new JComboBox(new Object[] { Uniqueness.Atoms, Uniqueness.Bonds, Uniqueness.None });
    private final JCheckBox _highlight = new JCheckBox("Highlight all matches");
@@ -69,23 +66,29 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       }
    };
    
-   private final ItemListener _columnChangeListener = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-         STRUCTURE_TYPE stype = _getStructureType();
-         switch(stype) {
-            case Unknown:
-               _structureType.setText("Unknown");
-               break;
-            case Reaction:
-               _structureType.setText("Reaction");
-               break;
-            case Molecule:
-               _structureType.setText("Molecule");
-               break;
-         }
-      }
-   };
+   /*
+    * Not working for reactions at the moment
+    */
+   
+//   private final ItemListener _columnChangeListener = new ItemListener() {
+//      @Override
+//      public void itemStateChanged(ItemEvent e) {
+//         STRUCTURE_TYPE stype = _getStructureType();
+//         switch(stype) {
+//            case Unknown:
+//               _structureType.setText("Unknown");
+//               break;
+//            case Reaction:
+//               _structureType.setText("Reaction");
+//               _newColName.setEnabled(false);
+//               break;
+//            case Molecule:
+//               _structureType.setText("Molecule");
+//               _newColName.setEnabled(true);
+//               break;
+//         }
+//      }
+//   };
    
    /*
     * Returns current column selection state
@@ -107,7 +110,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Structure type", _structureType);
+//      dialogPanel.addItem("Structure type", _structureType);
       dialogPanel.addItem("Target column", _targetColumn);
       dialogPanel.addItem("Query column", _queryColumn);
       dialogPanel.addItem("New column name", _newColName);
@@ -115,9 +118,17 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       dialogPanel.addItem("Uniqueness", _uniqueness);
       dialogPanel.addItem(_highlight);
       dialogPanel.addItem(_appendColumn, _appendColumnName);
-
+      /*
+       * Add change listeners
+       */
       _highlight.addChangeListener(_changeListener);
       _appendColumn.addChangeListener(_changeListener);
+      
+//      /*
+//       * Add reaction molecule change listener
+//       */
+//      _targetColumn.addItemListener(_columnChangeListener);
+//      _queryColumn.addItemListener(_columnChangeListener);
       
       _highlight.setSelected(false);
       _appendColumn.setEnabled(false);
@@ -151,7 +162,7 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
          /*
           * Update mode
           */
-         _columnChangeListener.itemStateChanged(null);
+//         _columnChangeListener.itemStateChanged(null);
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());

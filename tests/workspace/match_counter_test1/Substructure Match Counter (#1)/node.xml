@@ -32,17 +32,17 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="highlight" type="xboolean" value="false"/>
+<entry key="highlight" type="xboolean" value="true"/>
 <config key="appendColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumn" type="xboolean" value="false"/>
+<entry key="appendColumn" type="xboolean" value="true"/>
 <config key="appendColumnName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumnName" type="xstring" value=""/>
+<entry key="appendColumnName" type="xstring" value="column2 (highlihghted)"/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>
