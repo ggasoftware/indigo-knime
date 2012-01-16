@@ -14,7 +14,6 @@
 
 package com.ggasoftware.indigo.knime.submatchcounter;
 
-import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -27,6 +26,7 @@ import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
@@ -103,47 +103,19 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       super();
       
       _registerDialogComponents();
-
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridy = 0;
-      c.gridx = 0;
-      p.add(new JLabel("Molecule column"), c);
-      c.gridx = 1;
-      p.add(_targetColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Query molecule column"), c);
-      c.gridx = 1;
-      p.add(_queryColumn, c);
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("New column name"), c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Uniqueness"), c);
-      c.gridx = 1;
-      p.add(_uniqueness, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_highlight, c);
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_appendColumnName, c);
-      
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Structure type", _structureType);
+      dialogPanel.addItem("Target column", _targetColumn);
+      dialogPanel.addItem("Query column", _queryColumn);
+      dialogPanel.addItem("New column name", _newColName);
+      dialogPanel.addItemsPanel("Substructure Settings");
+      dialogPanel.addItem("Uniqueness", _uniqueness);
+      dialogPanel.addItem(_highlight);
+      dialogPanel.addItem(_appendColumn, _appendColumnName);
+
       _highlight.addChangeListener(_changeListener);
       _appendColumn.addChangeListener(_changeListener);
       
@@ -151,7 +123,9 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       _appendColumn.setEnabled(false);
       _appendColumnName.setEnabled(false);
       
-      addTab("Standard settings", p);
+      IndigoDialogPanel.setDefaultFont(_highlight);
+      
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    private void _registerDialogComponents() {
@@ -159,9 +133,9 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       _settings.registerDialogComponent(_queryColumn, IndigoSubstructureMatchCounterNodeModel.QUERY_PORT, _settings.queryColName);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_uniqueness, _settings.uniqueness);
-      _settings.registerDialogComponent(_appendColumnName, _settings.appendColumnName);
       _settings.registerDialogComponent(_highlight, _settings.highlight);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_appendColumnName, _settings.appendColumnName);
    }
    
    @Override
