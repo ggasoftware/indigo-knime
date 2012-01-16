@@ -16,6 +16,7 @@ package com.ggasoftware.indigo.knime.submatcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.knime.core.data.*;
 import org.knime.core.data.def.DefaultRow;
@@ -121,9 +122,8 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       boolean warningPrinted = false;
       
       for(DataRow row : queriesTableData) {
-         queries[index] = new QueryWithData();
-         queries[index].query = getIndigoQueryStructureOrNull(row.getCell(queryColIdx));
-         queries[index].rowKey = row.getKey().toString();
+         
+         queries[index] = new QueryWithData(row, queryColIdx, _settings.structureType.equals(STRUCTURE_TYPE.Reaction));
          
          if (queries[index].query == null && !warningPrinted) {
             LOGGER.warn("query table contains missing cells");
@@ -142,12 +142,17 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    
    class AlignTargetQueryData
    {
+      final IndigoObject query;
       boolean first = true;
       int natoms_align = 0;
       int[] atoms = null;
       float[] xyz = null;
       
-      public void align (IndigoObject target, IndigoObject query, IndigoObject match)
+      public AlignTargetQueryData(IndigoObject mol) {
+         query = mol;
+      }
+
+      public void align (IndigoObject target, IndigoObject match)
       {
          int i = 0;
          
@@ -209,7 +214,32 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    {
       IndigoObject query;
       String rowKey;
-      AlignTargetQueryData alignData = new AlignTargetQueryData(); 
+      final ArrayList<AlignTargetQueryData> alignData = new ArrayList<AlignTargetQueryData>();
+      private final boolean _reaction; 
+      
+      public QueryWithData(DataRow row, int colIdx, boolean reaction) {
+         _reaction = reaction;
+         query = getIndigoQueryStructureOrNull(row.getCell(colIdx));
+         rowKey = row.getKey().toString();
+         /*
+          * Prepare align data
+          */
+         if (query != null) {
+            if (_reaction) {
+               for(IndigoObject mol : query.iterateMolecules())
+                  alignData.add(new AlignTargetQueryData(mol));
+            } else {
+               alignData.add(new AlignTargetQueryData(query));
+            }
+         }
+      }
+      public void align (IndigoObject target, IndigoObject match) {
+         for (AlignTargetQueryData qdata : alignData) {
+            if (_reaction)
+               target = match.mapMolecule(qdata.query);
+            qdata.align(target, match);
+         }
+      }
    }
    
    /**
@@ -324,7 +354,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                continue;
             
             try {
-               if (_matchTarget(query.query, query.alignData, target)) {
+               if (_matchTarget(query, target)) {
                   matchCount++;
                   if (queriesRowKey.length() > 0)
                      queriesRowKey.append(", ");
@@ -356,23 +386,24 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       return result;
    }
 
-   private boolean _matchTarget(IndigoObject query, AlignTargetQueryData alignData, IndigoObject target) {
+   private boolean _matchTarget(QueryWithData queryData, IndigoObject target) {
       switch (_settings.structureType) {
       case Molecule:
-         return _matchMoleculeTarget(query, alignData, target);
+         return _matchMoleculeTarget(queryData, target);
       case Reaction:
-         return _matchReactionTarget(query, alignData, target);
+         return _matchReactionTarget(queryData, target);
       case Unknown:
          throw new RuntimeException("Structure type is not defined");
       }
       return false;
    }
 
-   private boolean _matchReactionTarget(IndigoObject query, AlignTargetQueryData alignData, IndigoObject target) {
+   private boolean _matchReactionTarget(QueryWithData queryData, IndigoObject target) {
 
       IndigoObject match = null;
       String mode = "";
       
+      IndigoObject query = queryData.query;
       Indigo indigo = IndigoPlugin.getIndigo();
       
       if(_settings.mode.getIntValue() == ReactionMode.DaylightAAM.ordinal())
@@ -415,15 +446,18 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                }
             }
          }
+         if (_settings.align.getBooleanValue())
+            queryData.align(target, match);
       }
+      
       
       return (match != null);
    }
 
-   private boolean _matchMoleculeTarget(IndigoObject query,
-         AlignTargetQueryData alignData, IndigoObject target)
+   private boolean _matchMoleculeTarget(QueryWithData queryData, IndigoObject target)
    {
       Indigo indigo = IndigoPlugin.getIndigo();
+      IndigoObject query = queryData.query;
       
       String mode = "";
       
@@ -482,7 +516,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          }
          
          if (_settings.align.getBooleanValue())
-            alignData.align(target, query, match);
+            queryData.align(target, match);
       }
       return (match != null);
    }
