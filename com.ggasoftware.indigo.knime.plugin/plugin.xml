@@ -44,22 +44,22 @@
       <category description="IO" icon="icons/indigo-translators.png" level-id="io" name="IO" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Molecule Translators" level-id="molecule_translators" name="Molecule Translators" path="/community/indigo"/>
+      <category description="Molecule Translators" icon="icons/groups/molecule-translators.png" level-id="molecule_translators" name="Molecule Translators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Reaction Translators" level-id="reaction_translators" name="Reaction Translators" path="/community/indigo"/>
+      <category description="Reaction Translators" icon="icons/groups/reaction-translators.png" level-id="reaction_translators" name="Reaction Translators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Molecule" level-id="molecule" name="Molecule" path="/community/indigo"/>
+      <category description="Molecule" level-id="molecule" icon="icons/groups/molecules.png" name="Molecule" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Reaction" level-id="reaction" name="Reaction" path="/community/indigo"/>
+      <category description="Reaction" level-id="reaction" icon="icons/groups/reactions.png" name="Reaction" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
       <category description="Combinatorial Chemistry" level-id="combinatorial_chemistry" name="Combinatorial Chemistry" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Manipulators" level-id="manipulators" name="Manipulators" path="/community/indigo"/>
+      <category description="Manipulators" level-id="manipulators" icon="icons/groups/manipulators.png" name="Manipulators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
       <category description="Properties" level-id="properties" name="Properties" path="/community/indigo"/>
