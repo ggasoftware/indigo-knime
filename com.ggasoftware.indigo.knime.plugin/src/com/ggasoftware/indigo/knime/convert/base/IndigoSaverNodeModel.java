@@ -103,28 +103,28 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
 
          DataType type = null;
 
-         if (_settings.destFormat == Format.Mol)
+         if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()))
             type = MolCell.TYPE;
-         else if (_settings.destFormat == Format.Rxn)
+         else if (_settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
              type = RxnCell.TYPE;
-         else if (_settings.destFormat == Format.SDF)
+         else if (_settings.destFormat.getStringValue().equals(Format.SDF.toString()))
             type = SdfCell.TYPE;
-         else if (_settings.destFormat == Format.Smiles || _settings.destFormat == Format.CanonicalSmiles)
+         else if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()) || _settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
             type = SmilesCell.TYPE;
          else
             type = CMLCell.TYPE;
 
-         if (settings.replaceColumn)
+         if (settings.appendColumn.getBooleanValue())
          {
             m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  settings.colName, type).createSpec() };
+                  DataTableSpec
+                  .getUniqueColumnName(inSpec, settings.newColName.getStringValue()),
+                  type).createSpec() };
          }
          else
          {
             m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  DataTableSpec
-                        .getUniqueColumnName(inSpec, settings.newColName),
-                  type).createSpec() };
+                  settings.colName.getStringValue(), type).createSpec() };
          }
       }
 
@@ -142,23 +142,26 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                
-               if (_settings.destFormat == Format.Mol || _settings.destFormat == Format.SDF ||_settings.destFormat == Format.CML || _settings.destFormat == Format.Rxn)
-                  if (_settings.generateCoords && !io.hasCoord())
+               if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()) || 
+                     _settings.destFormat.getStringValue().equals(Format.SDF.toString()) ||
+                     _settings.destFormat.getStringValue().equals(Format.CML.toString()) ||
+                     _settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
+                  if (_settings.generateCoords.getBooleanValue() && !io.hasCoord())
                   {
                      io = io.clone();
                      io.layout();
                   }
                
-               if (_settings.destFormat == Format.Mol)
+               if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()))
                   return MolCellFactory.create(io.molfile());
-               if (_settings.destFormat == Format.Rxn)
+               if (_settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
                    return RxnCellFactory.create(io.rxnfile());
-               if (_settings.destFormat == Format.SDF) {
+               if (_settings.destFormat.getStringValue().equals(Format.SDF.toString())) {
                   return SdfCellFactory.create(io.molfile() + "\n$$$$\n");
                }
-               if (_settings.destFormat == Format.Smiles)
+               if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()))
                   return new SmilesCell(io.smiles());
-               if (_settings.destFormat == Format.CanonicalSmiles)
+               if (_settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
                {
                   IndigoObject clone = io.clone();
                   clone.aromatize();
@@ -203,39 +206,40 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
       ColumnRearranger crea = new ColumnRearranger(inSpec);
 
       DataType type = null;
-      if (_settings.destFormat == Format.Mol)
+      if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()))
          type = MolCell.TYPE;
-      else if (_settings.destFormat == Format.Rxn)
+      else if (_settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
           type = RxnCell.TYPE;
-      else if (_settings.destFormat == Format.SDF)
+      else if (_settings.destFormat.getStringValue().equals(Format.SDF.toString()))
          type = SdfCell.TYPE;
-      else if (_settings.destFormat == Format.Smiles || _settings.destFormat == Format.CanonicalSmiles)
+      else if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()) ||
+            _settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
          type = SmilesCell.TYPE;
-      else if (_settings.destFormat == Format.CML)
+      else if (_settings.destFormat.getStringValue().equals(Format.CML.toString()))
          type = CMLCell.TYPE;
 
       DataColumnSpec cs;
-      if (_settings.replaceColumn)
+      if (_settings.appendColumn.getBooleanValue())
       {
-         cs = new DataColumnSpecCreator(_settings.colName, type).createSpec();
+         String name = DataTableSpec.getUniqueColumnName(inSpec,
+               _settings.newColName.getStringValue());
+         cs = new DataColumnSpecCreator(name, type).createSpec();
       }
       else
       {
-         String name = DataTableSpec.getUniqueColumnName(inSpec,
-               _settings.newColName);
-         cs = new DataColumnSpecCreator(name, type).createSpec();
+         cs = new DataColumnSpecCreator(_settings.colName.getStringValue(), type).createSpec();
       }
 
       Converter conv = new Converter(inSpec, cs, _settings,
-            inSpec.findColumnIndex(_settings.colName));
+            inSpec.findColumnIndex(_settings.colName.getStringValue()));
 
-      if (_settings.replaceColumn)
+      if (_settings.appendColumn.getBooleanValue())
       {
-         crea.replace(conv, _settings.colName);
+         crea.append(conv);
       }
       else
       {
-         crea.append(conv);
+         crea.replace(conv, _settings.colName.getStringValue());
       }
 
       return crea;
@@ -248,7 +252,7 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-	   _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, _dataValueClass);
+	   _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), _dataValueClass));
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
    }
 
@@ -258,7 +262,7 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -268,7 +272,7 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -279,9 +283,9 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoSaverSettings s = new IndigoSaverSettings();
-      s.loadSettings(settings);
-      if (!s.replaceColumn)
-         if (s.newColName == null || s.newColName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.appendColumn.getBooleanValue())
+         if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("No name for the new column given");
       
    }

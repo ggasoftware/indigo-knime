@@ -14,70 +14,32 @@
 
 package com.ggasoftware.indigo.knime.convert.base;
 
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoSaverSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoSaverSettings extends IndigoNodeSettings
 {
    public enum Format
    {
       Mol, SDF, Smiles, CanonicalSmiles, CML, Rxn
    }
 
-   public String colName;
-   public Format destFormat = Format.Smiles;
-   public boolean replaceColumn = true;
-   public String newColName;
-   public boolean generateCoords = true;
-
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    * @throws InvalidSettingsException
-    *            if some settings are missing
-    */
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      replaceColumn = settings.getBoolean("replaceColumn");
-      newColName = settings.getString("newColName");
-      destFormat = Format.valueOf(settings.getString("destFormat"));
-      generateCoords = settings.getBoolean("generateCoords");
+   public static final int INPUT_PORT = 0;
+   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", null);
+   public final SettingsModelString destFormat = new SettingsModelString("destFormat", Format.Smiles.toString());
+   public final SettingsModelBoolean generateCoords = new SettingsModelBoolean("generateCoords", true);
+   
+   public IndigoSaverSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(newColName);
+      addSettingsParameter(destFormat);
+      addSettingsParameter(generateCoords);
    }
 
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    */
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      replaceColumn = settings.getBoolean("replaceColumn", true);
-      newColName = settings.getString("newColName", "");
-      destFormat = Format.valueOf(settings.getString("destFormat", Format.Mol.name()));
-      generateCoords = settings.getBoolean("generateCoords", true);
-   }
-
-   /**
-    * Saves the settings to the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    */
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      settings.addBoolean("replaceColumn", replaceColumn);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      settings.addString("destFormat", destFormat.name());
-      settings.addBoolean("generateCoords", generateCoords);
-   }
 }

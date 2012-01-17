@@ -33,7 +33,7 @@ import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 
 public class IndigoLoaderNodeDialog extends NodeDialogPane
 {
-   private final ColumnSelectionComboxBox _colName;
+   private final ColumnSelectionComboxBox _indigoColumn;
    private final JCheckBox _treatXAsPseudoatom = new JCheckBox("Treat X as pseudoatom");
    private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox("Ignore stereochemistry errors");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -45,7 +45,7 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
          if (_appendColumn.isSelected()) {
             _newColName.setEnabled(true);
             if ("".equals(_newColName.getText())) {
-               _newColName.setText(_colName.getSelectedColumn() + " (Indigo)");
+               _newColName.setText(_indigoColumn.getSelectedColumn() + " (Indigo)");
             }
          } else
             _newColName.setEnabled(false);
@@ -60,13 +60,13 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
    {
       super();
       
-      _colName = new ColumnSelectionComboxBox((Border) null, filterValueClasses);
+      _indigoColumn = new ColumnSelectionComboxBox((Border) null, filterValueClasses);
       _registerDialogComponents();
       
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Indigo column", _colName);
+      dialogPanel.addItem("Indigo column", _indigoColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
       dialogPanel.addItemsPanel("Loader Settings");
       dialogPanel.addItem(_treatXAsPseudoatom);
@@ -84,7 +84,7 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
    }
 
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_colName, IndigoLoaderSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_indigoColumn, IndigoLoaderSettings.INPUT_PORT, _settings.colName);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_treatXAsPseudoatom, _settings.treatXAsPseudoatom);

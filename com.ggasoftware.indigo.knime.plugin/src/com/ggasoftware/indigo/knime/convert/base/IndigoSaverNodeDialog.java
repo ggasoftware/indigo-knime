@@ -35,21 +35,51 @@ import com.ggasoftware.indigo.knime.convert.base.IndigoSaverSettings.Format;
 public class IndigoSaverNodeDialog extends NodeDialogPane
 {
 
+   private final IndigoSaverSettings _settings = new IndigoSaverSettings();
+   
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
          (Border) null,
          IndigoMolValue.class, IndigoQueryMolValue.class, IndigoReactionValue.class, IndigoQueryReactionValue.class);
-   private JComboBox _destFormat;
+   private final JComboBox _destFormat;
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
    private final JCheckBox _generateCoords = new JCheckBox("Generate coordinates if needed");
-   private final IndigoSaverSettings _settings = new IndigoSaverSettings();
+   
+   private final ChangeListener _changeListener = new ChangeListener() {
+      public void stateChanged(final ChangeEvent e) {
+         if (_appendColumn.isSelected()) {
+            _newColName.setEnabled(true);
+            if ("".equals(_newColName.getText())) {
+               _newColName.setText(_indigoColumn.getSelectedColumn() + " (saved)");
+            }
+         } else {
+            _newColName.setEnabled(false);
+         }
+      }
+   };
+
+   private final ItemListener _formatListener = new ItemListener()
+   {
+      @Override
+      public void itemStateChanged (ItemEvent arg0)
+      {
+         Format selected = (Format)_destFormat.getSelectedItem(); 
+         if (selected == Format.CML || selected == Format.Mol || selected == Format.SDF || selected == Format.Rxn)
+            _generateCoords.setEnabled(true);
+         else
+            _generateCoords.setEnabled(false);
+      }
+   };
 
    /**
     * New pane for configuring the IndigoMoleculeSaver node.
     */
    protected IndigoSaverNodeDialog (Object[] formats)
    {
+      
+      _registerDialogComponents();
+      
       JPanel p = new JPanel(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
@@ -60,7 +90,7 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
       c.gridy = 0;
       p.add(new JLabel("Indigo column   "), c);
       c.gridx = 1;
-      p.add(_molColumn, c);
+      p.add(_indigoColumn, c);
 
       c.gridy++;
       c.gridx = 0;
@@ -81,41 +111,18 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
       p.add(_generateCoords, c);
       _generateCoords.setSelected(true);
 
-      _destFormat.addItemListener(new ItemListener()
-      {
-         @Override
-         public void itemStateChanged (ItemEvent arg0)
-         {
-            Format selected = (Format)_destFormat.getSelectedItem(); 
-            if (selected == Format.CML || selected == Format.Mol || selected == Format.SDF || selected == Format.Rxn)
-               _generateCoords.setEnabled(true);
-            else
-               _generateCoords.setEnabled(false);
-         }
-      });
+      _destFormat.addItemListener(_formatListener );
       
-      _appendColumn.addChangeListener(new ChangeListener()
-      {
-         public void stateChanged (final ChangeEvent e)
-         {
-            if (_appendColumn.isSelected())
-            {
-               _newColName.setEnabled(true);
-               if ("".equals(_newColName.getText()))
-               {
-                  _newColName.setText(_molColumn.getSelectedColumn()
-                        + " (saved)");
-               }
-            }
-            else
-            {
-               _newColName.setEnabled(false);
-            }
-         }
-      });
-      _newColName.setEnabled(_appendColumn.isSelected());
+      _appendColumn.addChangeListener(_changeListener );
 
       addTab("Standard settings", p);
+   }
+
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_indigoColumn, IndigoSaverSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_generateCoords, _settings.generateCoords);
    }
 
    /**
@@ -125,14 +132,17 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-
-      _molColumn.update(specs[0], _settings.colName);
-      _appendColumn.setSelected(!_settings.replaceColumn);
-      _newColName.setEnabled(!_settings.replaceColumn);
-      _newColName.setText(_settings.newColName);
-      _destFormat.setSelectedItem(_settings.destFormat);
-      _generateCoords.setSelected(_settings.generateCoords);
+      try {
+         _settings.loadSettingsFrom(settings);
+         
+         _settings.loadDialogSettings(specs);
+         _destFormat.setSelectedItem(Format.valueOf(_settings.destFormat.getStringValue()));
+         
+         _changeListener.stateChanged(null);
+         _formatListener.itemStateChanged(null);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    /**
@@ -142,11 +152,9 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.replaceColumn = !_appendColumn.isSelected();
-      _settings.newColName = _newColName.getText();
-      _settings.destFormat = ((Format)_destFormat.getSelectedItem());
-      _settings.generateCoords = _generateCoords.isSelected();
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.destFormat.setStringValue(_destFormat.getSelectedItem().toString());
+      
+      _settings.saveSettingsTo(settings);
    }
 }
