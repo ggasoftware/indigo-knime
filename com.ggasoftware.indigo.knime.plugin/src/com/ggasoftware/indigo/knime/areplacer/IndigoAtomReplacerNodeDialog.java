@@ -135,6 +135,8 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    protected IndigoAtomReplacerNodeDialog()
    {
       super();
+      
+      _registerDialogComponents();
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -186,6 +188,21 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       addTab("Standard settings", p);
    }
    
+   private void _registerDialogComponents() {
+      
+      _settings.registerDialogComponent(_molColumn, 0, _settings.colName);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_newAtomLabel, _settings.newAtomLabel);
+
+      _settings.registerDialogComponent(_replaceHighlighted, _settings.replaceHighlighted);
+      _settings.registerDialogComponent(_replaceSpecificAtoms, _settings.replaceSpecificAtom);
+      _settings.registerDialogComponent(_specificAtoms, _settings.specificAtom);
+      
+      _settings.registerDialogComponent(_replaceAttachmentPoints, _settings.replaceAttachmentPoints);
+      
+   }
+
    private void loadAtomGroups ()
    {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -240,22 +257,16 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         
+         _changeListener.stateChanged(null);
+         updateAtomsListByEvent(_specificAtoms);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
 
-      _molColumn.update(specs[0], _settings.colName);
-      _appendColumn.setSelected(!_settings.replaceColumn);
-      _newColName.setEnabled(!_settings.replaceColumn);
-      _newColName.setText(_settings.newColName);
-      _newAtomLabel.setText(_settings.newAtomLabel);
-
-      _replaceHighlighted.setSelected(_settings.replaceHighlighted);
-      _replaceSpecificAtoms.setSelected(_settings.replaceSpecificAtom);
-      _specificAtoms.setText(_settings.specificAtom);
-      
-      _replaceAttachmentPoints.setSelected(_settings.replaceAttachmentPoints);
-      
-      _changeListener.stateChanged(null);
-      updateAtomsListByEvent(_specificAtoms);
    }
 
    /**
@@ -265,17 +276,7 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.replaceColumn = !_appendColumn.isSelected();
-      _settings.newColName = _newColName.getText();
-      _settings.newAtomLabel = _newAtomLabel.getText();
-      
-      _settings.replaceHighlighted = _replaceHighlighted.isSelected();
-      _settings.replaceSpecificAtom = _replaceSpecificAtoms.isSelected();
-      _settings.specificAtom = _specificAtoms.getText();
-
-      _settings.replaceAttachmentPoints = _replaceAttachmentPoints.isSelected();
-      
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 }

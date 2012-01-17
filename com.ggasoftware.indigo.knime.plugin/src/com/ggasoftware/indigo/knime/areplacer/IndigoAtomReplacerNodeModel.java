@@ -38,7 +38,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
       DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = spec.findColumnIndex(_settings.colName);
+      int colIdx = spec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -48,9 +48,9 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
 
       // Split atoms to replace into a set
       HashSet<String> atomToReplace = new HashSet<String>();
-      if (_settings.replaceSpecificAtom)
+      if (_settings.replaceSpecificAtom.getBooleanValue())
       {
-         String[] atoms = _settings.specificAtom.split("\\s*,\\s*");
+         String[] atoms = _settings.specificAtom.getStringValue().split("\\s*,\\s*");
          atomToReplace.addAll(Arrays.asList(atoms));
       }
      
@@ -61,17 +61,17 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          DataCell[] cells;
          int i;
          
-         if (_settings.replaceColumn)
-            cells = new DataCell[inputRow.getNumCells()];
-         else
+         if (_settings.appendColumn.getBooleanValue())
             cells = new DataCell[inputRow.getNumCells() + 1];
+         else
+            cells = new DataCell[inputRow.getNumCells()];
          
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
          
          if (inputRow.getCell(colIdx).isMissing())
          {
-            if (!_settings.replaceColumn)
+            if (_settings.appendColumn.getBooleanValue())
                cells[i] = DataType.getMissingCell();
          }
          else
@@ -85,15 +85,15 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    
                List<Integer> atoms = new ArrayList<Integer>(); 
                
-               boolean replaceAllAtoms = !_settings.replaceHighlighted && !_settings.replaceSpecificAtom;
+               boolean replaceAllAtoms = !_settings.replaceHighlighted.getBooleanValue() && !_settings.replaceSpecificAtom.getBooleanValue();
 
-               if (!_settings.replaceAttachmentPoints || !replaceAllAtoms)
+               if (!_settings.replaceAttachmentPoints.getBooleanValue() || !replaceAllAtoms)
                {
                   for (IndigoObject atom : mol.iterateAtoms())
                   {
-                     if (_settings.replaceHighlighted && !atom.isHighlighted())
+                     if (_settings.replaceHighlighted.getBooleanValue() && !atom.isHighlighted())
                         continue;
-                     if (_settings.replaceSpecificAtom && !atomToReplace.contains(atom.symbol()))
+                     if (_settings.replaceSpecificAtom.getBooleanValue() && !atomToReplace.contains(atom.symbol()))
                         continue;
                      atoms.add(atom.index());
                   }
@@ -101,14 +101,14 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                   for (int idx : atoms)
                   {
                      IndigoObject atom = mol.getAtom(idx);
-                     if (_settings.newAtomLabel.matches("R\\d*"))
-                        atom.setRSite(_settings.newAtomLabel);
+                     if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
+                        atom.setRSite(_settings.newAtomLabel.getStringValue());
                      else
-                        atom.resetAtom(_settings.newAtomLabel);
+                        atom.resetAtom(_settings.newAtomLabel.getStringValue());
                   }
                }
                
-               if (_settings.replaceAttachmentPoints)
+               if (_settings.replaceAttachmentPoints.getBooleanValue())
                {
                   List<Integer> atomsWithAttach = new ArrayList<Integer>();
                   int maxOrder = mol.countAttachmentPoints();
@@ -122,10 +122,10 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                   {
                      IndigoObject atom = mol.getAtom(idx);
                      IndigoObject newAtom;
-                     if (_settings.newAtomLabel.matches("R\\d*"))
-                        newAtom = mol.addRSite(_settings.newAtomLabel);
+                     if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
+                        newAtom = mol.addRSite(_settings.newAtomLabel.getStringValue());
                      else
-                        newAtom = mol.addAtom(_settings.newAtomLabel);
+                        newAtom = mol.addAtom(_settings.newAtomLabel.getStringValue());
                      atom.addBond(newAtom, 1);
                      newAtoms.add(newAtom.index());
                   }
@@ -142,10 +142,10 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                   }
                }
                
-               if (_settings.replaceColumn)
-                  cells[colIdx] = new IndigoMolCell(mol);
-               else
+               if (_settings.appendColumn.getBooleanValue())
                   cells[i] = new IndigoMolCell(mol);
+               else
+                  cells[colIdx] = new IndigoMolCell(mol);
             }
             finally
             {
@@ -175,23 +175,23 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
 
    protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
    {
-      if (!_settings.replaceColumn && (_settings.newColName == null || _settings.newColName.length() < 1))
+      if (_settings.appendColumn.getBooleanValue() && (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1))
          throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
       
-      if (_settings.replaceColumn)
-         specs = new DataColumnSpec[inSpec.getNumColumns()];
-      else
+      if (_settings.appendColumn.getBooleanValue())
          specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
+      else
+         specs = new DataColumnSpec[inSpec.getNumColumns()];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      if (!_settings.replaceColumn)
-         specs[i] = new DataColumnSpecCreator(_settings.newColName, IndigoMolCell.TYPE).createSpec();
+      if (_settings.appendColumn.getBooleanValue())
+         specs[i] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
    }
@@ -203,7 +203,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -213,7 +213,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo(final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -223,7 +223,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -234,12 +234,12 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoAtomReplacerSettings s = new IndigoAtomReplacerSettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
-      if (!s.replaceColumn && ((s.newColName == null) || (s.newColName.length() < 1)))
+      if (s.appendColumn.getBooleanValue() && ((s.newColName.getStringValue() == null) || (s.newColName.getStringValue().length() < 1)))
          throw new InvalidSettingsException("No name for new column given");
-      if (s.newAtomLabel == null || s.newAtomLabel.length() < 1)
+      if (s.newAtomLabel.getStringValue() == null || s.newAtomLabel.getStringValue().length() < 1)
          throw new InvalidSettingsException("newAtomLabel label must not be empty");
    }
 

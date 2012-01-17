@@ -1,59 +1,31 @@
 package com.ggasoftware.indigo.knime.areplacer;
 
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoAtomReplacerSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoAtomReplacerSettings extends IndigoNodeSettings
 {
-   public String colName;
-   public boolean replaceColumn = true;
-   public String newColName;
-   public String newAtomLabel = "*";
-   public boolean replaceHighlighted = false;
-   public boolean replaceSpecificAtom = false;
-   public boolean replaceAttachmentPoints = false;
-   public String specificAtom;
-
-   public void loadSettings(final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      replaceColumn = settings.getBoolean("replaceColumn");
-      newColName = settings.getString("newColName");
-      newAtomLabel = settings.getString("newAtomLabel");
-      
-      replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
-      replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
-      specificAtom = settings.getString("specificAtom", null);
-      replaceAttachmentPoints = settings.getBoolean("replaceAttachmentPoints", false);
+   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("replaceColumn", true);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", null);
+   public final SettingsModelString newAtomLabel = new SettingsModelString("newAtomLabel", "*");
+   public final SettingsModelBoolean replaceHighlighted = new SettingsModelBoolean("replaceHighlighted", false);
+   public final SettingsModelBoolean replaceSpecificAtom = new SettingsModelBoolean("replaceSpecificAtom", false);
+   public final SettingsModelBoolean replaceAttachmentPoints = new SettingsModelBoolean("replaceAttachmentPoints", false);
+   public final SettingsModelString specificAtom = new SettingsModelString("specificAtom", null);
+   
+   public IndigoAtomReplacerSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(newColName);
+      addSettingsParameter(newAtomLabel);
+      addSettingsParameter(replaceHighlighted);
+      addSettingsParameter(replaceSpecificAtom);
+      addSettingsParameter(specificAtom);
+      addSettingsParameter(replaceAttachmentPoints);
    }
 
-   public void loadSettingsForDialog(final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      replaceColumn = settings.getBoolean("replaceColumn", true);
-      newColName = settings.getString("newColName", null);
-      newAtomLabel = settings.getString("newAtomLabel", "*");
-      replaceHighlighted = settings.getBoolean("replaceHighlighted", false);
-      replaceSpecificAtom = settings.getBoolean("replaceSpecificAtom", false);
-      specificAtom = settings.getString("specificAtom", null);
-      replaceAttachmentPoints = settings.getBoolean("replaceAttachmentPoints", false);
-   }
-
-   public void saveSettings(final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      settings.addBoolean("replaceColumn", replaceColumn);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      if (newAtomLabel != null)
-         settings.addString("newAtomLabel", newAtomLabel);
-      settings.addBoolean("replaceHighlighted", replaceHighlighted);
-      settings.addBoolean("replaceSpecificAtom", replaceSpecificAtom);
-      settings.addBoolean("replaceAttachmentPoints", replaceAttachmentPoints);
-      if (specificAtom != null)
-      	settings.addString("specificAtom", specificAtom);
-   }
 }
