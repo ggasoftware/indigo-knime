@@ -148,13 +148,13 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
-      if (_settings.appendColumn)
-         if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.appendColumn.getBooleanValue())
+         if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("New column name must be specified");
       
       DataColumnSpec[] specs;
       
-      if (_settings.appendColumn)
+      if (_settings.appendColumn.getBooleanValue())
          specs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
       else
          specs = new DataColumnSpec[inputTableSpec.getNumColumns()];
@@ -164,8 +164,8 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
       for (i = 0; i < inputTableSpec.getNumColumns(); i++)
          specs[i] = inputTableSpec.getColumnSpec(i);
       
-      if (_settings.appendColumn)
-         specs[i] = new DataColumnSpecCreator(_settings.newColName, IndigoMolCell.TYPE).createSpec();
+      if (_settings.appendColumn.getBooleanValue())
+         specs[i] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
       
       return new DataTableSpec(specs);
    }
@@ -181,7 +181,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(getDataTableSpec(inputTableSpec));
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -205,7 +205,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                target = target.clone();
-               for (String s : _settings.selectedFeatures)
+               for (String s : _settings.selectedFeatures.getStringArrayValue())
                   target = removers.get(s).removeFeature(target);
             }
             finally
@@ -214,7 +214,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
             }
          }
          
-         if (_settings.appendColumn)
+         if (_settings.appendColumn.getBooleanValue())
          {
             DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
             int i;
@@ -270,7 +270,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -280,7 +280,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo(final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -290,7 +290,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -301,11 +301,11 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoFeatureRemoverSettings s = new IndigoFeatureRemoverSettings();
-      s.loadSettings(settings);
+      s.loadSettingsFrom(settings);
 
-      if (s.colName == null || s.colName.length() < 1)
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.appendColumn && (s.newColName == null || s.newColName.length() < 1))
+      if (s.appendColumn.getBooleanValue() && (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1))
          throw new InvalidSettingsException("new column name must be specified");
    }
 
