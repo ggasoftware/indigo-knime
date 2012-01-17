@@ -33,7 +33,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
-   private final JCheckBox _appendColumn = new JCheckBox("Append Column");
+   private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
    private final IndigoSimpleSettings _settings = new IndigoSimpleSettings();
    private final String _desc;
