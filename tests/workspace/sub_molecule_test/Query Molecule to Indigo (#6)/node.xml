@@ -2,10 +2,33 @@
 <config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
 <entry key="name" type="xstring" value="Query Molecule to Indigo"/>
 <config key="model">
-<entry key="colName" type="xstring" value="column1"/>
-<entry key="replaceColumn" type="xboolean" value="true"/>
+<config key="colName_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<config key="colName">
+<entry key="useRowID" type="xboolean" value="false"/>
+<entry key="columnName" type="xstring" value="column1"/>
+</config>
+<config key="appendColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="appendColumn" type="xboolean" value="false"/>
+<config key="newColName_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
 <entry key="newColName" type="xstring" value="column1 (Indigo)"/>
+<config key="treatXAsPseudoatom_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
 <entry key="treatXAsPseudoatom" type="xboolean" value="true"/>
+<config key="ignoreStereochemistryErrors_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
 <entry key="ignoreStereochemistryErrors" type="xboolean" value="true"/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>

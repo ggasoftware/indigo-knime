@@ -51,22 +51,22 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
          throws InvalidSettingsException
    {
-      if (_settings.colName == null || _settings.colName.length() < 1)
+      if (_settings.colName.getStringValue() == null || _settings.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("Column name not specified");
-      if (!_settings.replaceColumn)
-         if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.appendColumn.getBooleanValue())
+         if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("No new column name specified");
       
-      String newColName = _settings.newColName;
+      String newColName = _settings.newColName.getStringValue();
       int newColIdx = inputTableSpec.getNumColumns();
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
  
-      if (_settings.replaceColumn)
+      if (!_settings.appendColumn.getBooleanValue())
       {
-         newColName = _settings.colName;
+         newColName = _settings.colName.getStringValue();
          newColIdx = colIdx;
       }
 
@@ -75,22 +75,22 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
 
       DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
-      if (_settings.replaceColumn)
-      {
-         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
-         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
-      }
-      else
+      if (_settings.appendColumn.getBooleanValue())
       {
          validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
          invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns() + 1];
+      }
+      else
+      {
+         validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
+         invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
       }
 
       for (int i = 0; i < inputTableSpec.getNumColumns(); i++)
       {
          DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
 
-         if (_settings.replaceColumn && i == newColIdx)
+         if (!_settings.appendColumn.getBooleanValue() && i == newColIdx)
          {
             validOutputColumnSpecs[i] = validOutputColumnSpec;
             invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
@@ -102,7 +102,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
          }
       }
 
-      if (!_settings.replaceColumn)
+      if (_settings.appendColumn.getBooleanValue())
       {
          validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
          invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
@@ -119,7 +119,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec = inData[IndigoLoaderSettings.INPUT_PORT].getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
       BufferedDataContainer validOutputContainer = exec
@@ -128,15 +128,15 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
             .createDataContainer(outputSpecs[1]);
 
       int newColIdx = inputTableSpec.getNumColumns();
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      if (_settings.replaceColumn)
+      if (!_settings.appendColumn.getBooleanValue())
          newColIdx = colIdx;
 
-      CloseableRowIterator it = inData[0].iterator();
+      CloseableRowIterator it = inData[IndigoLoaderSettings.INPUT_PORT].iterator();
       int rowNumber = 1;
 
       Indigo indigo = IndigoPlugin.getIndigo();
@@ -145,7 +145,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
       {
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.replaceColumn ? 0 : 1)];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.appendColumn.getBooleanValue() ? 1 : 0)];
 
          DataCell molcell = inputRow.getCell(colIdx);
          DataCell newcell = null;
@@ -154,8 +154,8 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
          try
          {
             IndigoPlugin.lock();
-            indigo.setOption("ignore-stereochemistry-errors", _settings.ignoreStereochemistryErrors);
-            indigo.setOption("treat-x-as-pseudoatom", _settings.treatXAsPseudoatom);
+            indigo.setOption("ignore-stereochemistry-errors", _settings.ignoreStereochemistryErrors.getBooleanValue());
+            indigo.setOption("treat-x-as-pseudoatom", _settings.treatXAsPseudoatom.getBooleanValue());
 
             newcell = createDataCell(indigo, molcell);
          }
@@ -172,9 +172,9 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
          {
             for (int i = 0; i < inputRow.getNumCells(); i++)
             {
-               cells[i] = (_settings.replaceColumn && i == newColIdx) ? newcell : inputRow.getCell(i);
+               cells[i] = (!_settings.appendColumn.getBooleanValue() && i == newColIdx) ? newcell : inputRow.getCell(i);
             }
-            if (!_settings.replaceColumn)
+            if (_settings.appendColumn.getBooleanValue())
             {
                cells[newColIdx] = newcell;
             }
@@ -185,18 +185,18 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
          {
             for (int i = 0; i < inputRow.getNumCells(); i++)
             {
-               if (_settings.replaceColumn && i == newColIdx)
+               if (!_settings.appendColumn.getBooleanValue() && i == newColIdx)
                   cells[i] = new StringCell(message);
                else
                   cells[i] = inputRow.getCell(i);
             }
-            if (!_settings.replaceColumn)
+            if (_settings.appendColumn.getBooleanValue())
                cells[newColIdx] = new StringCell(message);
             invalidOutputContainer.addRowToTable(new DefaultRow(key, cells));
          }
          
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) inData[IndigoLoaderSettings.INPUT_PORT].getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
@@ -223,7 +223,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-   	if (_settings.colName == null) {
+   	if (_settings.colName.getStringValue() == null || _settings.colName.getStringValue().length() < 1) {
    		// Try to deduce column name automatically
          List<String> compatible_columns = new ArrayList<String>();
          // Collect them in the order of classes
@@ -240,10 +240,10 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
             throw new InvalidSettingsException("There is no compatible colums in the source table");
          else
          {
-         	_settings.colName = compatible_columns.get(0);
-         	_settings.newColName = _settings.colName + " (Indigo)";
+         	_settings.colName.setSelection(compatible_columns.get(0), false);
+         	_settings.newColName.setStringValue(_settings.colName.getStringValue() + " (Indigo)");
          	if (compatible_columns.size() > 1)
-	            setWarningMessage("Column \"" + _settings.colName + "\" was used by default.");
+	            setWarningMessage("Column \"" + _settings.colName.getStringValue() + "\" was used by default.");
          }
    	}
       DataTableSpec inputTableSpec = inSpecs[0];
@@ -256,7 +256,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -266,7 +266,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -277,9 +277,9 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
          throws InvalidSettingsException
    {
       IndigoLoaderSettings s = new IndigoLoaderSettings();
-      s.loadSettings(settings);
-      if (!s.replaceColumn)
-         if (s.newColName == null || s.newColName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.appendColumn.getBooleanValue())
+         if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("No name for new column given");
    }
 
