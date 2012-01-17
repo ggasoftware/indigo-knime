@@ -1,8 +1,5 @@
 package com.ggasoftware.indigo.knime.areplacer;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -13,8 +10,6 @@ import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -38,6 +33,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
 public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
@@ -55,7 +51,7 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
    private final JCheckBox _replaceHighlighted = new JCheckBox("Replace only highlighted atoms");
    private final JCheckBox _replaceSpecificAtoms = new JCheckBox("Replace specific atoms");
    private final JComboBox _specificAtomGroup = new JComboBox();
-   private final JTextField _specificAtoms = new JTextField(30);
+   private final JTextField _specificAtoms = new JTextField(20);
    private final Map<String, String> _specificAtomGroupsMap = new HashMap<String, String>();
    private final String _customTitle = "Custom ...";
    private final JCheckBox _replaceAttachmentPoints = new JCheckBox("Replace attachment points");
@@ -137,60 +133,39 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       super();
       
       _registerDialogComponents();
-
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridx = 0;
-      c.gridy = 0;
-      p.add(new JLabel("Indigo column   "), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("New atom label:"), c);
-      c.gridx = 1;
-      p.add(_newAtomLabel, c);
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_replaceHighlighted, c);
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_replaceSpecificAtoms, c);
-      c.gridx = 1;
-      p.add(_specificAtomGroup, c);
-      c.gridy++;
-      p.add(_specificAtoms, c);
-      
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_replaceAttachmentPoints, c);
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Indigo column", _molColumn);
+      dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItemsPanel("Atom Settings");
+      dialogPanel.addItem("New atom label:", _newAtomLabel);
+      dialogPanel.addItem(_replaceHighlighted);
+      dialogPanel.addItem(_replaceSpecificAtoms);
+      dialogPanel.addItem(_specificAtomGroup, _specificAtoms);
+      dialogPanel.addItem(_replaceAttachmentPoints);
       
       loadAtomGroups();
+      /*
+       * Set fonts
+       */
+      IndigoDialogPanel.setDefaultFont(_appendColumn);
+      IndigoDialogPanel.setDefaultFont(_replaceHighlighted);
+      IndigoDialogPanel.setDefaultFont(_replaceSpecificAtoms);
+      IndigoDialogPanel.setDefaultFont(_replaceAttachmentPoints);
       
       _appendColumn.addChangeListener(_changeListener);
       _replaceSpecificAtoms.addChangeListener(_changeListener);
       _specificAtoms.getDocument().addDocumentListener(_documentListener);
       _specificAtomGroup.addActionListener(_actionListener);
      
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
    
    private void _registerDialogComponents() {
       
-      _settings.registerDialogComponent(_molColumn, 0, _settings.colName);
+      _settings.registerDialogComponent(_molColumn, IndigoAtomReplacerSettings.INPUT_PORT, _settings.colName);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_newAtomLabel, _settings.newAtomLabel);

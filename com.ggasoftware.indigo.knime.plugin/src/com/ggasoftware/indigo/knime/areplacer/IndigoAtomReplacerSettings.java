@@ -8,6 +8,8 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
 public class IndigoAtomReplacerSettings extends IndigoNodeSettings
 {
+   public static final int INPUT_PORT = 0;
+   
    public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("replaceColumn", true);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
