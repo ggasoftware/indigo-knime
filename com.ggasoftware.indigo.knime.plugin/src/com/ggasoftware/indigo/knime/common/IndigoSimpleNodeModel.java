@@ -83,17 +83,17 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
 
          DataType type = IndigoMolCell.TYPE;
 
-         if (settings.replaceColumn)
+         if (settings.appendColumn.getBooleanValue())
          {
             m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  settings.colName, type).createSpec() };
+                  DataTableSpec
+                  .getUniqueColumnName(inSpec, settings.newColName.getStringValue()),
+                  type).createSpec() };
          }
          else
          {
             m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  DataTableSpec
-                        .getUniqueColumnName(inSpec, settings.newColName),
-                  type).createSpec() };
+                  settings.colName.getStringValue(), type).createSpec() };
          }
       }
 
@@ -152,27 +152,27 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       DataType type = IndigoMolCell.TYPE;
 
       DataColumnSpec cs;
-      if (_settings.replaceColumn)
+      if (_settings.appendColumn.getBooleanValue())
       {
-         cs = new DataColumnSpecCreator(_settings.colName, type).createSpec();
+         String name = DataTableSpec.getUniqueColumnName(inSpec,
+               _settings.newColName.getStringValue());
+         cs = new DataColumnSpecCreator(name, type).createSpec();
       }
       else
       {
-         String name = DataTableSpec.getUniqueColumnName(inSpec,
-               _settings.newColName);
-         cs = new DataColumnSpecCreator(name, type).createSpec();
+         cs = new DataColumnSpecCreator(_settings.colName.getStringValue(), type).createSpec();
       }
 
       Converter conv = new Converter(inSpec, cs, _settings,
-            inSpec.findColumnIndex(_settings.colName));
+            inSpec.findColumnIndex(_settings.colName.getStringValue()));
 
-      if (_settings.replaceColumn)
+      if (_settings.appendColumn.getBooleanValue())
       {
-         crea.replace(conv, _settings.colName);
+         crea.append(conv);
       }
       else
       {
-         crea.append(conv);
+         crea.replace(conv, _settings.colName.getStringValue());
       }
 
       return crea;
@@ -185,7 +185,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
    }
 
@@ -195,7 +195,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -205,7 +205,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -216,10 +216,10 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoSimpleSettings s = new IndigoSimpleSettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
-      if (!s.replaceColumn && ((s.newColName == null) || (s.newColName.length() < 1)))
+      if (s.appendColumn.getBooleanValue() && ((s.newColName.getStringValue() == null) || (s.newColName.getStringValue().length() < 1)))
          throw new InvalidSettingsException("No name for new column given");
    }
 

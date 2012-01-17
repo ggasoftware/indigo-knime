@@ -40,10 +40,32 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    private final JTextField _newColName = new JTextField(20);
    private final IndigoSimpleSettings _settings = new IndigoSimpleSettings();
    private final String _desc;
+   
+   ChangeListener _changeListener = new ChangeListener()
+   {
+      public void stateChanged (final ChangeEvent e)
+      {
+         if (_appendColumn.isSelected())
+         {
+            _newColName.setEnabled(true);
+            if ("".equals(_newColName.getText()))
+            {
+               _newColName.setText(_molColumn.getSelectedColumn() + " ("
+                     + _desc + ")");
+            }
+         }
+         else
+         {
+            _newColName.setEnabled(false);
+         }
+      }
+   };
 
    public IndigoSimpleNodeDialog (String desc)
    {
       super();
+      
+      _registerDialogComponents();
 
       _desc = desc;
 
@@ -65,28 +87,15 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
       c.gridx = 1;
       p.add(_newColName, c);
 
-      _appendColumn.addChangeListener(new ChangeListener()
-      {
-         public void stateChanged (final ChangeEvent e)
-         {
-            if (_appendColumn.isSelected())
-            {
-               _newColName.setEnabled(true);
-               if ("".equals(_newColName.getText()))
-               {
-                  _newColName.setText(_molColumn.getSelectedColumn() + " ("
-                        + _desc + ")");
-               }
-            }
-            else
-            {
-               _newColName.setEnabled(false);
-            }
-         }
-      });
-      _newColName.setEnabled(_appendColumn.isSelected());
+      _appendColumn.addChangeListener(_changeListener);
 
       addTab("Standard settings", p);
+   }
+
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_molColumn, 0, _settings.colName);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
    }
 
    /**
@@ -96,12 +105,15 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-
-      _molColumn.update(specs[0], _settings.colName);
-      _appendColumn.setSelected(!_settings.replaceColumn);
-      _newColName.setEnabled(!_settings.replaceColumn);
-      _newColName.setText(_settings.newColName);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         
+         _changeListener.stateChanged(null);
+         
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    /**
@@ -111,9 +123,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.replaceColumn = !_appendColumn.isSelected();
-      _settings.newColName = _newColName.getText();
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 }
