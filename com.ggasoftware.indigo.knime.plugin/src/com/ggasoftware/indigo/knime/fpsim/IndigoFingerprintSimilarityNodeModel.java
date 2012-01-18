@@ -31,6 +31,7 @@ import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Me
 public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
 {
    IndigoFingerprintSimilaritySettings _settings = new IndigoFingerprintSimilaritySettings();
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoFingerprintSimilarityNodeModel.class);
 
    /**
     * Constructor for the node model.
@@ -131,7 +132,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
             if (cell.isMissing())
             {
                if (!missingPrinted)
-                  setWarningMessage("Missing values were skipped");
+                  LOGGER.warn("Missing values were skipped");
                missingPrinted = true;
                continue;
             }
@@ -151,7 +152,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          if (cell.isMissing())
          {
             if (!missingPrinted)
-               setWarningMessage("Missing values were skipped");
+               LOGGER.warn("Missing values were skipped");
             missingPrinted = true;
             continue;
          }
