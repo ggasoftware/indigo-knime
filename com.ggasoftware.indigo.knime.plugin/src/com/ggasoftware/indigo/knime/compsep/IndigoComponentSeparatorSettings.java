@@ -9,8 +9,8 @@ public class IndigoComponentSeparatorSettings extends IndigoNodeSettings
 {
    public static final int INPUT_PORT = 0;
    
-   public SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
-   public SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "Component #");
+   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "Component #");
    
    public IndigoComponentSeparatorSettings() {
       addSettingsParameter(colName);

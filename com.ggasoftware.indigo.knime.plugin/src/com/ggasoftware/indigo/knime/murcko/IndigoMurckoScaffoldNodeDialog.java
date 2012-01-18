@@ -17,19 +17,36 @@ import javax.swing.event.ChangeListener;
 
 public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
 {
+   private final IndigoMurckoScaffoldSettings _settings = new IndigoMurckoScaffoldSettings();
+   
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
    private final JCheckBox _appendColumn = new JCheckBox("Append Column");
    private final JTextField _newColName = new JTextField(20);
-   private final IndigoMurckoScaffoldSettings _settings = new IndigoMurckoScaffoldSettings();
+   
    private final JCheckBox _removeTerminalRings3 = new JCheckBox("Remove terminal 3-rings");
    private final JCheckBox _removeTerminalRings4 = new JCheckBox("Remove terminal 4-rings");
+
+   private ChangeListener _changeListener = new ChangeListener() {
+      public void stateChanged(final ChangeEvent e) {
+         if (_appendColumn.isSelected()) {
+            _newColName.setEnabled(true);
+            if ("".equals(_newColName.getText())) {
+               _newColName.setText(_molColumn.getSelectedColumn() + " (murcko)");
+            }
+         } else {
+            _newColName.setEnabled(false);
+         }
+      }
+   };
    
    public IndigoMurckoScaffoldNodeDialog ()
    {
       super();
+      
+      _registerDialogComponents();
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -56,27 +73,18 @@ public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(_removeTerminalRings4, c);
       
-      _appendColumn.addChangeListener(new ChangeListener()
-      {
-         public void stateChanged (final ChangeEvent e)
-         {
-            if (_appendColumn.isSelected())
-            {
-               _newColName.setEnabled(true);
-               if ("".equals(_newColName.getText()))
-               {
-                  _newColName.setText(_molColumn.getSelectedColumn() + " (murcko)");
-               }
-            }
-            else
-            {
-               _newColName.setEnabled(false);
-            }
-         }
-      });
-      _newColName.setEnabled(_appendColumn.isSelected());
+      _appendColumn.addChangeListener(_changeListener );
 
       addTab("Standard settings", p);
+   }
+   
+
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_molColumn, IndigoMurckoScaffoldSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_removeTerminalRings3, _settings.removeTerminalRings3);
+      _settings.registerDialogComponent(_removeTerminalRings4, _settings.removeTerminalRings4);
    }
 
    /**
@@ -86,14 +94,14 @@ public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-
-      _molColumn.update(specs[0], _settings.colName);
-      _appendColumn.setSelected(_settings.appendColumn);
-      _newColName.setEnabled(_settings.appendColumn);
-      _newColName.setText(_settings.newColName);
-      _removeTerminalRings3.setSelected(_settings.removeTerminalRings3);
-      _removeTerminalRings4.setSelected(_settings.removeTerminalRings4);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         
+         _changeListener.stateChanged(null);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    /**
@@ -103,12 +111,7 @@ public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.appendColumn = _appendColumn.isSelected();
-      _settings.newColName = _newColName.getText();
-      _settings.removeTerminalRings3 = _removeTerminalRings3.isSelected();
-      _settings.removeTerminalRings4 = _removeTerminalRings4.isSelected();
-      
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 }

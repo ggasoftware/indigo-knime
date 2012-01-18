@@ -1,42 +1,27 @@
 package com.ggasoftware.indigo.knime.murcko;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoMurckoScaffoldSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoMurckoScaffoldSettings extends IndigoNodeSettings
 {
-   public String colName = null;
-   public boolean appendColumn = false;
-   public String newColName;
-   public boolean removeTerminalRings3 = false;
-   public boolean removeTerminalRings4 = false;
+   public static final int INPUT_PORT = 0;
+   
+   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", null);
+   public final SettingsModelBoolean removeTerminalRings3 = new SettingsModelBoolean("removeTerminalRings3", false);
+   public final SettingsModelBoolean removeTerminalRings4 = new SettingsModelBoolean("removeTerminalRings4", false);
+   
+   public IndigoMurckoScaffoldSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(newColName);
+      addSettingsParameter(removeTerminalRings3);
+      addSettingsParameter(removeTerminalRings4);
+   }
 
-   public void loadSettings(final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      appendColumn = settings.getBoolean("appendColumn");
-      newColName = settings.getString("newColName");
-      removeTerminalRings3 = settings.getBoolean("removeTerminalRings3");
-      removeTerminalRings4 = settings.getBoolean("removeTerminalRings4");
-   }
-   
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      appendColumn = settings.getBoolean("appendColumn", false);
-      newColName = settings.getString("newColName", null);
-      removeTerminalRings3 = settings.getBoolean("removeTerminalRings3", false);
-      removeTerminalRings4 = settings.getBoolean("removeTerminalRings4", false);
-   }
-   
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      settings.addBoolean("appendColumn", appendColumn);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      settings.addBoolean("removeTerminalRings3", removeTerminalRings3);
-      settings.addBoolean("removeTerminalRings4", removeTerminalRings4);
-   }
 }
