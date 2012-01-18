@@ -14,13 +14,7 @@
 
 package com.ggasoftware.indigo.knime.rgdecomp;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
@@ -28,6 +22,7 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 
@@ -54,42 +49,20 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       super();
       
       _registerDialogComponents();
-
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridy = 0;
-      c.gridx = 0;
-      p.add(new JLabel("Molecule column"), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Query molecule column"), c);
-      c.gridx = 1;
-      p.add(_scafColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("R-Group column prefix"), c);
-      c.gridx = 1;
-      p.add(_newColPrefix, c);
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Scaffold column name"), c);
-      c.gridx = 1;
-      p.add(_newScafColName, c);
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_aromatize, c);
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Molecule column", _molColumn);
+      dialogPanel.addItem("Scaffold query column", _scafColumn);
+      dialogPanel.addItemsPanel("R-Group Decomposer Settings");
+      dialogPanel.addItem("R-Group column prefix", _newColPrefix);
+      dialogPanel.addItem("Scaffold column name", _newScafColName);
+      dialogPanel.addItem(_aromatize);
       
-      addTab("Standard settings", p);
+      IndigoDialogPanel.setDefaultFont(_aromatize);
+      
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    private void _registerDialogComponents() {
