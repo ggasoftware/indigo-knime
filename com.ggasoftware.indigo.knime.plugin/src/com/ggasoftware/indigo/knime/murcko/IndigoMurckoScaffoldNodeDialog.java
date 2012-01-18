@@ -1,13 +1,10 @@
 package com.ggasoftware.indigo.knime.murcko;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
 import javax.swing.*;
@@ -47,35 +44,23 @@ public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
       super();
       
       _registerDialogComponents();
-
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridx = 0;
-      c.gridy = 0;
-      p.add(new JLabel("Indigo column   "), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_removeTerminalRings3, c);
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_removeTerminalRings4, c);
       
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Molecule column", _molColumn);
+      dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItemsPanel("Murcko Scaffold Settings");
+      dialogPanel.addItem(_removeTerminalRings3);
+      dialogPanel.addItem(_removeTerminalRings4);
+      
+      IndigoDialogPanel.setDefaultFont(_appendColumn);
+      IndigoDialogPanel.setDefaultFont(_removeTerminalRings3);
+      IndigoDialogPanel.setDefaultFont(_removeTerminalRings4);
+
       _appendColumn.addChangeListener(_changeListener );
 
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
    
 
