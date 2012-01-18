@@ -14,10 +14,6 @@
 
 package com.ggasoftware.indigo.knime.scaffold;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -27,6 +23,7 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
 public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane {
@@ -55,46 +52,24 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane {
       super();
 
       _registerDialogComponents();
+      
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Molecule column", _molColumn);
+      dialogPanel.addItem("New column with scaffolds", _newColName);
+      dialogPanel.addItemsPanel("Scaffold Finder Settings");
+      dialogPanel.addItem(_tryExact);
+      dialogPanel.addItem("Maximum number of iterations for exact method (0 to no limit)", _exactIterations);
+      dialogPanel.addItem("Number of iterations for approximate method", _approxIterations);
+      
 
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridy = 0;
-      c.gridx = 0;
-      p.add(new JLabel("Molecule column"), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("New column with scaffolds"), c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_tryExact, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Maximum number of iterations for exact method (0 to no limit)"), c);
-      c.gridx = 1;
       ((JSpinner.DefaultEditor) _exactIterations.getEditor()).getTextField().setColumns(8);
-      p.add(_exactIterations, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Number of iterations for approximate method"), c);
-      c.gridx = 1;
       ((JSpinner.DefaultEditor) _approxIterations.getEditor()).getTextField().setColumns(8);
-      p.add(_approxIterations, c);
-
+      
       _tryExact.addChangeListener(_changeListener);
 
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    private void _registerDialogComponents() {

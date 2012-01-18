@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.knime.core.data.*;
-import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
 
@@ -50,7 +49,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      DataTableSpec inputTableSpec = inData[IndigoScaffoldFinderSettings.INPUT_PORT].getDataTableSpec();
       DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoQueryMolCell.TYPE).createSpec();
       DataTableSpec outputSpec = new DataTableSpec(spec);
       
@@ -70,11 +69,13 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
 
          IndigoObject arr = indigo.createArray();
          
-         CloseableRowIterator it = inData[0].iterator();
-         while (it.hasNext())
+         for (DataRow inputRow : inData[IndigoScaffoldFinderSettings.INPUT_PORT])
          {
-            DataRow inputRow = it.next();
-
+            if(inputRow.getCell(colIdx).isMissing()) {
+               LOGGER.warn("Molecule table contains missing cells: ignoring");
+               continue;
+            }
+               
             IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(colIdx);
             arr.arrayAdd(molcell.getIndigoObject());
          }
@@ -134,7 +135,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
    {
       if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
          _settings.newColName .setStringValue("Scaffold");
-      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[IndigoScaffoldFinderSettings.INPUT_PORT], _settings.colName.getStringValue(), IndigoMolValue.class));
       DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoQueryMolCell.TYPE).createSpec();
       return new DataTableSpec[] { new DataTableSpec(spec) };
    }
