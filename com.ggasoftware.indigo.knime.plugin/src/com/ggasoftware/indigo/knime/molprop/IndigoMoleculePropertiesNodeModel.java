@@ -411,18 +411,18 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 
    protected DataTableSpec getDataTableSpec (DataTableSpec inSpec) throws InvalidSettingsException
    {
-      if (_settings.selectedProps == null)
+      if (_settings.selectedProps.getStringArrayValue() == null)
          throw new InvalidSettingsException("properties not selected");
       
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns()
-            + _settings.selectedProps.length];
+            + _settings.selectedProps.getStringArrayValue().length];
 
       int i;
 
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      for (String key : _settings.selectedProps)
+      for (String key : _settings.selectedProps.getStringArrayValue())
          specs[i++] = colSpecs.get(key);
 
       return new DataTableSpec(specs);
@@ -439,7 +439,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName);
+      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -452,7 +452,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells()
-               + _settings.selectedProps.length];
+               + _settings.selectedProps.getStringArrayValue().length];
          IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
                .getIndigoObject();
          int i;
@@ -463,7 +463,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          try
          {
             IndigoPlugin.lock();
-            for (String prop : _settings.selectedProps)
+            for (String prop : _settings.selectedProps.getStringArrayValue())
             {
                DataCell cell = null;
                try 
@@ -511,7 +511,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -521,7 +521,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -531,7 +531,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -542,8 +542,8 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoMoleculePropertiesSettings s = new IndigoMoleculePropertiesSettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
    }
    

@@ -18,17 +18,21 @@ import java.awt.*;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
 public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
 {
 
-   private final ColumnSelectionPanel _selPanel;
+   @SuppressWarnings("unchecked")
+   private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
+         (Border) null, IndigoMolValue.class);
    private final ColumnFilterPanel _filterPanel;
    
    private final IndigoMoleculePropertiesSettings _settings = new IndigoMoleculePropertiesSettings();
@@ -37,15 +41,20 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
     * New pane for configuring IndigoBasicProperties node dialog. This is just a
     * suggestion to demonstrate possible default dialog components.
     */
-   @SuppressWarnings("unchecked")
    protected IndigoMoleculePropertiesNodeDialog()
    {
       super();
 
-      _selPanel = new ColumnSelectionPanel(IndigoMolValue.class);
+      _settings.registerDialogComponent(_indigoColumn, 0, _settings.colName);
+      
+      
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      dialogPanel.addItemsPanel("Column settings");
+      dialogPanel.addItem("Indigo column", _indigoColumn);
+      
       _filterPanel = new ColumnFilterPanel(false);
       JPanel panel = new JPanel(new BorderLayout(5, 5));
-      panel.add(_selPanel, BorderLayout.NORTH);
+      panel.add(dialogPanel.getPanel(), BorderLayout.NORTH);
       panel.add(_filterPanel, BorderLayout.CENTER);
 
       DataTableSpec dummySpec = new DataTableSpec(IndigoMoleculePropertiesNodeModel.colSpecsArray);
@@ -59,9 +68,10 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _selPanel.getSelectedColumn();
-      _settings.selectedProps = _filterPanel.getIncludedColumnSet().toArray(new String[0]);
-      _settings.saveSettings(settings);
+      _settings.selectedProps.setStringArrayValue(_filterPanel.getIncludedColumnSet().toArray(new String[0]));
+      
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -71,11 +81,15 @@ public class IndigoMoleculePropertiesNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         DataTableSpec dummySpec = new DataTableSpec(IndigoMoleculePropertiesNodeModel.colSpecsArray);
+         
+         _filterPanel.update(dummySpec, false, _settings.selectedProps.getStringArrayValue());
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
       
-      DataTableSpec dummySpec = new DataTableSpec(IndigoMoleculePropertiesNodeModel.colSpecsArray);
-      
-      _filterPanel.update(dummySpec, false, _settings.selectedProps);
-      _selPanel.update(specs[0], _settings.colName);
    }
 }
