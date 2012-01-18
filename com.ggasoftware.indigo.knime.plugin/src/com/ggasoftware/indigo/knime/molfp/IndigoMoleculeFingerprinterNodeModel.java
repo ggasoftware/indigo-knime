@@ -59,7 +59,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = spec.findColumnIndex(_settings.colName);
+      int colIdx = spec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -80,7 +80,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
          {
             IndigoPlugin.lock();
 
-            IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords);
+            IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords.getIntValue());
             IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
             IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
             IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
@@ -124,7 +124,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    {
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
 
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No new column name specified");
       
       int i;
@@ -132,7 +132,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      specs[i] = new DataColumnSpecCreator(_settings.newColName, SparseBitVectorCell.TYPE).createSpec(); 
+      specs[i] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), SparseBitVectorCell.TYPE).createSpec(); 
          
       return new DataTableSpec(specs);
    }
@@ -144,9 +144,9 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       if (_settings.newColName == null)
-         _settings.newColName = _settings.colName + " (fingerprint)";
+         _settings.newColName.setStringValue(_settings.colName.getStringValue() + " (fingerprint)");
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -156,7 +156,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -166,7 +166,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -177,13 +177,14 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoMoleculeFingerprinterSettings s = new IndigoMoleculeFingerprinterSettings();
-      s.loadSettings(settings);
+      s.loadSettingsFrom(settings);
+      s.validateSettings(settings);
       
-      if (s.fpSizeQWords < 1)
+      if (s.fpSizeQWords.getIntValue() < 1)
          throw new InvalidSettingsException("fingerprint size must be a positive integer");
-      if (s.colName == null || s.colName.equals(""))
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().equals(""))
          throw new InvalidSettingsException("No column name given");
-      if (s.newColName == null || s.newColName.equals(""))
+      if (s.newColName.getStringValue() == null || s.newColName.getStringValue().equals(""))
          throw new InvalidSettingsException("No name for new column given");
    }
 

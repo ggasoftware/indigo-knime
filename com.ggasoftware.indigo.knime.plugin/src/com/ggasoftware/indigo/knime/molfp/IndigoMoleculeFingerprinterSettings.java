@@ -14,54 +14,26 @@
 
 package com.ggasoftware.indigo.knime.molfp;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoMoleculeFingerprinterSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoMoleculeFingerprinterSettings extends IndigoNodeSettings
 {
-   public int fpSizeQWords = 8;
-   public String colName;
-   public String newColName;
-
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    * @throws InvalidSettingsException
-    *            if some settings are missing
-    */
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      fpSizeQWords = settings.getInt("fpSizeQWords");
-      colName = settings.getString("colName");
-      newColName = settings.getString("newColName");
-   }
-
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    * @throws InvalidSettingsException
-    */
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      fpSizeQWords = settings.getInt("fpSizeQWords", 8);
-      colName = settings.getString("colName", null);
-      newColName = settings.getString("newColName", null);
-   }
-
-   /**
-    * Saves the settings to the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    */
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      settings.addInt("fpSizeQWords", fpSizeQWords);
-      settings.addString("colName", colName);
-      settings.addString("newColName", newColName);
+   public static final int INPUT_PORT = 0;
+   public static final int FP_DEFAULT = 8;
+   public static final int FP_MIN = 1;
+   public static final int FP_MAX = 1000000;
+   
+   public SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public SettingsModelString newColName = new SettingsModelString("newColName", null);
+   public SettingsModelIntegerBounded fpSizeQWords = new SettingsModelIntegerBounded("fpSizeQWords", FP_DEFAULT, FP_MIN, FP_MAX);
+   
+   public IndigoMoleculeFingerprinterSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(newColName);
+      addSettingsParameter(fpSizeQWords);
    }
 }
