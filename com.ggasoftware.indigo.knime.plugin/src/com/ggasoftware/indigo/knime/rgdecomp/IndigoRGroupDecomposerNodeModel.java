@@ -71,22 +71,26 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.molColumn.getStringValue());
-      if (colIdx == -1)
+      int molColIdx = inData[IndigoRGroupDecomposerSettings.MOL_PORT].getDataTableSpec().findColumnIndex(_settings.molColumn.getStringValue());
+      if (molColIdx == -1)
          throw new Exception("column not found");
 
-      int colIdx2 = inData[1].getDataTableSpec().findColumnIndex(_settings.scaffoldColumn.getStringValue());
-      if (colIdx2 == -1)
+      int scafColIdx = inData[IndigoRGroupDecomposerSettings.SCAF_PORT].getDataTableSpec().findColumnIndex(_settings.scaffoldColumn.getStringValue());
+      if (scafColIdx == -1)
          throw new Exception("scaffold column not found");
       
       IndigoObject query;
       
       {
-         CloseableRowIterator it = inData[1].iterator();
+         CloseableRowIterator it = inData[IndigoRGroupDecomposerSettings.SCAF_PORT].iterator();
          if (!it.hasNext())
             throw new Exception("no query molecule found in the data source");
          DataRow row = it.next();
-         query = ((IndigoQueryMolValue)row.getCell(colIdx2)).getIndigoObject();
+         
+         if(row.getCell(scafColIdx).isMissing())
+            throw new Exception("no query molecule found in the data source");
+         
+         query = ((IndigoQueryMolValue)row.getCell(scafColIdx)).getIndigoObject();
          if (it.hasNext())
             LOGGER.warn("second data source contains more than one row; ignoring all others");
       }
@@ -101,12 +105,13 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          Indigo indigo = IndigoPlugin.getIndigo();
          IndigoObject arr = indigo.createArray();
          
-         CloseableRowIterator it = inData[0].iterator();
-         while (it.hasNext())
+         for (DataRow inputRow : inData[IndigoRGroupDecomposerSettings.MOL_PORT])
          {
-            DataRow inputRow = it.next();
-
-            IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(colIdx);
+            if(inputRow.getCell(molColIdx).isMissing()) {
+               LOGGER.warn("Molecule table contains missing cells: ignoring");
+               continue;
+            }
+            IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(molColIdx);
             arr.arrayAdd(molcell.getIndigoObject());
          }
          
@@ -118,7 +123,7 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          IndigoPlugin.unlock();
       }
       
-      DataTableSpec spec = calcDataTableSpec(inData[0].getDataTableSpec(), rsites);
+      DataTableSpec spec = calcDataTableSpec(inData[IndigoRGroupDecomposerSettings.MOL_PORT].getDataTableSpec(), rsites);
       DataTableSpec spec2 = calcDataTableSpec2();
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
@@ -126,10 +131,8 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
 
       IndigoObject deco_iter = deco.iterateDecomposedMolecules();
       
-      CloseableRowIterator it = inData[0].iterator();
-      while (it.hasNext())
+      for (DataRow inputRow : inData[IndigoRGroupDecomposerSettings.MOL_PORT])
       {
-         DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells() + rsites + 1];
          int i;
@@ -141,35 +144,32 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          
          for (i = 1; i <= rsites; i++)
             cells[inputRow.getNumCells() + i] =  DataType.getMissingCell();
-         
-         try
-         {
-            IndigoPlugin.lock();
-            if (!deco_iter.hasNext())
-            {
-               LOGGER.error("deco iterator ended unexpectedly");
-               break;
-            }
-            
-            IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
-            
-            for (IndigoObject rg : deco_mol.iterateRGroups())
-            {
-               IndigoObject frag_iter = rg.iterateRGroupFragments();
-               if (frag_iter.hasNext())
-               {
-                  IndigoObject frag = frag_iter.next();
-                  cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag.clone());
-                  frag.remove();
+         /*
+          * Skip missing cells
+          */
+         if (!inputRow.getCell(molColIdx).isMissing())
+            try {
+               IndigoPlugin.lock();
+               if (!deco_iter.hasNext()) {
+                  LOGGER.error("deco iterator ended unexpectedly");
+                  break;
                }
+
+               IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
+
+               for (IndigoObject rg : deco_mol.iterateRGroups()) {
+                  IndigoObject frag_iter = rg.iterateRGroupFragments();
+                  if (frag_iter.hasNext()) {
+                     IndigoObject frag = frag_iter.next();
+                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag.clone());
+                     frag.remove();
+                  }
+               }
+
+               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
+            } finally {
+               IndigoPlugin.unlock();
             }
-            
-            cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
          
          outputContainer.addRowToTable(new DefaultRow(key, cells));
       }
@@ -199,8 +199,8 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.molColumn.setStringValue(searchIndigoColumn(inSpecs[0], _settings.molColumn.getStringValue(), IndigoMolValue.class));
-      _settings.scaffoldColumn.setStringValue(searchIndigoColumn(inSpecs[1], _settings.scaffoldColumn.getStringValue(), IndigoQueryMolValue.class));
+      _settings.molColumn.setStringValue(searchIndigoColumn(inSpecs[IndigoRGroupDecomposerSettings.MOL_PORT], _settings.molColumn.getStringValue(), IndigoMolValue.class));
+      _settings.scaffoldColumn.setStringValue(searchIndigoColumn(inSpecs[IndigoRGroupDecomposerSettings.SCAF_PORT], _settings.scaffoldColumn.getStringValue(), IndigoQueryMolValue.class));
       return new DataTableSpec[2];
    }
 
