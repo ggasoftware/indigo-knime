@@ -71,8 +71,6 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
       dialogPanel.addItem("Indigo column", _indigoColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
 
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-
       _appendColumn.addChangeListener(_changeListener);
 
       addTab("Standard settings", dialogPanel.getPanel());

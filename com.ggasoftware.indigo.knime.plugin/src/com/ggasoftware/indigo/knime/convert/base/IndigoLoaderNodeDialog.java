@@ -73,12 +73,6 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
       dialogPanel.addItem(_ignoreStereochemistryErrors);
 
       _appendColumn.addChangeListener(_changeListener );
-      /*
-       * Set fonts
-       */
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_treatXAsPseudoatom);
-      IndigoDialogPanel.setDefaultFont(_ignoreStereochemistryErrors);
       
       addTab("Standard settings", dialogPanel.getPanel());
    }

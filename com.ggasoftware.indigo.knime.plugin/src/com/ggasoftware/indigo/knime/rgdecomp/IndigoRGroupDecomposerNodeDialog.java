@@ -60,8 +60,6 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       dialogPanel.addItem("Scaffold column name", _newScafColName);
       dialogPanel.addItem(_aromatize);
       
-      IndigoDialogPanel.setDefaultFont(_aromatize);
-      
       addTab("Standard settings", dialogPanel.getPanel());
    }
 

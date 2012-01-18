@@ -147,13 +147,6 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       dialogPanel.addItem(_replaceAttachmentPoints);
       
       loadAtomGroups();
-      /*
-       * Set fonts
-       */
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_replaceHighlighted);
-      IndigoDialogPanel.setDefaultFont(_replaceSpecificAtoms);
-      IndigoDialogPanel.setDefaultFont(_replaceAttachmentPoints);
       
       _appendColumn.addChangeListener(_changeListener);
       _replaceSpecificAtoms.addChangeListener(_changeListener);

@@ -134,8 +134,6 @@ public class IndigoSubstructureMatchCounterNodeDialog extends NodeDialogPane {
       _appendColumn.setEnabled(false);
       _appendColumnName.setEnabled(false);
       
-      IndigoDialogPanel.setDefaultFont(_highlight);
-      
       addTab("Standard settings", dialogPanel.getPanel());
    }
 

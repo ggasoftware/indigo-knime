@@ -90,8 +90,6 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
       dialogPanel.addItem("Destination format", _destFormat);
       dialogPanel.addItem(_generateCoords);
 
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_generateCoords);
       _destFormat.addItemListener(_formatListener );
       _appendColumn.addChangeListener(_changeListener );
 

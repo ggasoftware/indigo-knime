@@ -53,11 +53,6 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       dialogPanel.addItem(_ignoreRadicals);
       dialogPanel.addItem(_ignoreValence);
       
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_ignoreCharges);
-      IndigoDialogPanel.setDefaultFont(_ignoreIsotopes);
-      IndigoDialogPanel.setDefaultFont(_ignoreRadicals);
-      IndigoDialogPanel.setDefaultFont(_ignoreValence);
       IndigoDialogPanel.addColumnChangeListener(_appendColumn, _colName, _newColName, " (mapped)");
 
       addTab("Standard settings", dialogPanel.getPanel());

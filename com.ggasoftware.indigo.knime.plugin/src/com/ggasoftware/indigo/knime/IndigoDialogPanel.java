@@ -68,16 +68,13 @@ public class IndigoDialogPanel {
       
       if(name != null) {
          TitledBorder border = BorderFactory.createTitledBorder(name);
-         Font titleFont = border.getTitleFont();
-         border.setTitleFont(new Font(titleFont.getFontName(), Font.BOLD, titleFont.getSize()));
-         
+         setDefaultBorderFont(border);
          _currentPanel.setBorder(border);
       }
    }
    
    public void addItem(String itemLabel, JComponent itemComponent) {
       JLabel label = new JLabel(itemLabel);
-      setDefaultFont(label);
       addItem(label, itemComponent);
    }
 
@@ -101,6 +98,7 @@ public class IndigoDialogPanel {
        */
       JPanel leftPanel = new JPanel(new BorderLayout());
       leftPanel.add(leftComponent, BorderLayout.WEST);
+      setDefaultComponentFont(leftComponent);
       _currentPanel.add(leftPanel);
       
       /*
@@ -108,6 +106,7 @@ public class IndigoDialogPanel {
        */
       JPanel rightPanel = new JPanel(new BorderLayout());
       rightPanel.add(rightComponent, BorderLayout.EAST);
+      setDefaultComponentFont(rightComponent);
       _currentPanel.add(rightPanel);
       
    }
@@ -191,9 +190,14 @@ public class IndigoDialogPanel {
       newColName.setEnabled(appendColumn.isSelected());
    }
 
-   public static void setDefaultFont(JComponent button) {
-//      Font font = button.getFont();
-//      button.setFont(new Font(font.getFontName(), Font.PLAIN, font.getSize()));
+   public static void setDefaultComponentFont(JComponent button) {
+      /*
+       * Not used at the moment
+       */
+   }
+   private static void setDefaultBorderFont(TitledBorder border) {
+      Font titleFont = border.getTitleFont();
+      border.setTitleFont(new Font(titleFont.getFontName(), Font.BOLD, titleFont.getSize()));
    }
    
 }

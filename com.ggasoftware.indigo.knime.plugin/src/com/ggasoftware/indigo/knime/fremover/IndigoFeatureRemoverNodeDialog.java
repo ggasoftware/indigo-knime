@@ -55,11 +55,9 @@ public class IndigoFeatureRemoverNodeDialog extends NodeDialogPane
       for (String key : IndigoFeatureRemoverNodeModel.names) {
          JCheckBox cb = new JCheckBox(key);
          _features.put(key, cb);
-         IndigoDialogPanel.setDefaultFont(cb);
          dialogPanel.addItem(cb);
       }
       
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
       _appendColumn.addChangeListener(_changeListener);
       
       addTab("Standard settings", dialogPanel.getPanel());

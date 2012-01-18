@@ -54,10 +54,6 @@ public class IndigoMurckoScaffoldNodeDialog extends NodeDialogPane
       dialogPanel.addItem(_removeTerminalRings3);
       dialogPanel.addItem(_removeTerminalRings4);
       
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_removeTerminalRings3);
-      IndigoDialogPanel.setDefaultFont(_removeTerminalRings4);
-
       _appendColumn.addChangeListener(_changeListener );
 
       addTab("Standard settings", dialogPanel.getPanel());

@@ -170,7 +170,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       c2.gridx = 0;
       
       JLabel matchLabel = new JLabel("Match");
-      IndigoDialogPanel.setDefaultFont(matchLabel);
+      IndigoDialogPanel.setDefaultComponentFont(matchLabel);
       p2.add(matchLabel, c2);
       c2.gridx++;
       p2.add(_matchAnyAtLeastSelected, c2);
@@ -178,7 +178,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       p2.add(_matchAnyAtLeast, c2);
       c2.gridx++;
       JLabel queriesLabel = new JLabel(" queries");
-      IndigoDialogPanel.setDefaultFont(queriesLabel);
+      IndigoDialogPanel.setDefaultComponentFont(queriesLabel);
       p2.add(queriesLabel, c2);
      
       c2.gridy++;
@@ -214,18 +214,6 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
        */
       _targetColumn.addItemListener(_columnChangeListener);
       _queryColumn.addItemListener(_columnChangeListener);
-      /*
-       * Set fonts
-       */
-      IndigoDialogPanel.setDefaultFont(_align);
-      IndigoDialogPanel.setDefaultFont(_alignByQuery);
-      IndigoDialogPanel.setDefaultFont(_appendColumn);
-      IndigoDialogPanel.setDefaultFont(_appendQueryKeyColumn);
-      IndigoDialogPanel.setDefaultFont(_appendQueryMatchCountKeyColumn);
-      IndigoDialogPanel.setDefaultFont(_matchAllExceptSelected);
-      IndigoDialogPanel.setDefaultFont(_matchAnyAtLeastSelected);
-      IndigoDialogPanel.setDefaultFont(_exact);
-      IndigoDialogPanel.setDefaultFont(_highlight);
       
       _align.setSelected(false);
       _highlight.setSelected(false);
