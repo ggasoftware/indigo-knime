@@ -14,7 +14,6 @@
 
 package com.ggasoftware.indigo.knime.convert.base;
 
-import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -26,6 +25,7 @@ import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
@@ -78,44 +78,24 @@ public class IndigoSaverNodeDialog extends NodeDialogPane
    protected IndigoSaverNodeDialog (Object[] formats)
    {
       
+      _destFormat = new JComboBox(formats);
       _registerDialogComponents();
       
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridx = 0;
-      c.gridy = 0;
-      p.add(new JLabel("Indigo column   "), c);
-      c.gridx = 1;
-      p.add(_indigoColumn, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_appendColumn, c);
-      c.gridx = 1;
-      p.add(_newColName, c);
-
-      c.gridy++;
-      c.gridx = 0;
-      p.add(new JLabel("Destination format   "), c);
-      c.gridx = 1;
-
-      _destFormat = new JComboBox(formats);
-      p.add(_destFormat, c);
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      c.gridy++;
-      c.gridx = 0;
-      p.add(_generateCoords, c);
-      _generateCoords.setSelected(true);
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Indigo column", _indigoColumn);
+      dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItemsPanel("Saver Settings");
+      dialogPanel.addItem("Destination format", _destFormat);
+      dialogPanel.addItem(_generateCoords);
 
+      IndigoDialogPanel.setDefaultFont(_appendColumn);
+      IndigoDialogPanel.setDefaultFont(_generateCoords);
       _destFormat.addItemListener(_formatListener );
-      
       _appendColumn.addChangeListener(_changeListener );
 
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    private void _registerDialogComponents() {
