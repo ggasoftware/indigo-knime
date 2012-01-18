@@ -40,13 +40,13 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected DataTableSpec[] getDataTableSpecs (DataTableSpec inputTableSpec)
          throws InvalidSettingsException
    {
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
       DataColumnSpec invalidOutputColumnSpec = new DataColumnSpecCreator(
-            _settings.colName, StringCell.TYPE).createSpec();
+            _settings.colName.getStringValue(), StringCell.TYPE).createSpec();
       DataColumnSpec[] invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec
             .getNumColumns()];
 
@@ -80,7 +80,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
       BufferedDataContainer invalidOutputContainer = exec
             .createDataContainer(outputSpecs[1]);
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -96,18 +96,14 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
 
          cells = new DataCell[inputRow.getNumCells()];
 
-         String str;
-
-         try
-         {
-            IndigoPlugin.lock();
-            str = ((IndigoMolCell) (inputRow.getCell(colIdx)))
-                  .getIndigoObject().checkBadValence();
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
+         String str = null;
+         if (!inputRow.getCell(colIdx).isMissing())
+            try {
+               IndigoPlugin.lock();
+               str = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject().checkBadValence();
+            } finally {
+               IndigoPlugin.unlock();
+            }
 
          if (str != null && !str.equals(""))
          {
@@ -161,7 +157,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -171,7 +167,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**

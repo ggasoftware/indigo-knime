@@ -16,10 +16,10 @@
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="42"/>
-<entry key="1" type="xint" value="87"/>
-<entry key="2" type="xint" value="112"/>
-<entry key="3" type="xint" value="126"/>
+<entry key="0" type="xint" value="133"/>
+<entry key="1" type="xint" value="136"/>
+<entry key="2" type="xint" value="-1"/>
+<entry key="3" type="xint" value="-1"/>
 </config>
 </config>
 </config>
@@ -31,40 +31,25 @@
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="222"/>
-<entry key="1" type="xint" value="87"/>
-<entry key="2" type="xint" value="150"/>
-<entry key="3" type="xint" value="126"/>
+<entry key="0" type="xint" value="292"/>
+<entry key="1" type="xint" value="139"/>
+<entry key="2" type="xint" value="-1"/>
+<entry key="3" type="xint" value="-1"/>
 </config>
 </config>
 </config>
 <config key="node_3">
 <entry key="id" type="xint" value="3"/>
-<entry key="node_settings_file" type="xstring" value="Molecule Properties (#3)/settings.xml"/>
+<entry key="node_settings_file" type="xstring" value="Valence Checker (#3)/settings.xml"/>
 <entry key="node_is_meta" type="xboolean" value="false"/>
 <entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="529"/>
-<entry key="1" type="xint" value="77"/>
-<entry key="2" type="xint" value="162"/>
-<entry key="3" type="xint" value="126"/>
-</config>
-</config>
-</config>
-<config key="node_4">
-<entry key="id" type="xint" value="4"/>
-<entry key="node_settings_file" type="xstring" value="Disturber Node (#4)/settings.xml"/>
-<entry key="node_is_meta" type="xboolean" value="false"/>
-<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
-<config key="ui_settings">
-<config key="extrainfo.node.bounds">
-<entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="364"/>
-<entry key="1" type="xint" value="96"/>
-<entry key="2" type="xint" value="126"/>
-<entry key="3" type="xint" value="126"/>
+<entry key="0" type="xint" value="484"/>
+<entry key="1" type="xint" value="148"/>
+<entry key="2" type="xint" value="-1"/>
+<entry key="3" type="xint" value="-1"/>
 </config>
 </config>
 </config>
@@ -78,14 +63,8 @@
 </config>
 <config key="connection_1">
 <entry key="sourceID" type="xint" value="2"/>
-<entry key="destID" type="xint" value="4"/>
-<entry key="sourcePort" type="xint" value="1"/>
-<entry key="destPort" type="xint" value="1"/>
-</config>
-<config key="connection_2">
-<entry key="sourceID" type="xint" value="4"/>
 <entry key="destID" type="xint" value="3"/>
-<entry key="sourcePort" type="xint" value="3"/>
+<entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 </config>

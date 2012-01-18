@@ -14,13 +14,11 @@
 
 package com.ggasoftware.indigo.knime.valence;
 
-import java.awt.*;
-import javax.swing.*;
-
 import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
+import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
 import javax.swing.border.*;
@@ -28,7 +26,7 @@ import javax.swing.border.*;
 public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
 {
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
 
    IndigoValenceCheckerSettings _settings = new IndigoValenceCheckerSettings();
@@ -36,20 +34,14 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
    protected IndigoValenceCheckerNodeDialog()
    {
       super();
+      
+      _settings.registerDialogComponent(_indigoColumn, 0, _settings.colName);
+      
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Indigo column", _indigoColumn);
 
-      JPanel p = new JPanel(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints();
-
-      c.anchor = GridBagConstraints.WEST;
-      c.insets = new Insets(2, 2, 2, 2);
-      c.gridx = 0;
-      c.gridy = 0;
-      p.add(new JLabel("Indigo column   "), c);
-      c.gridx = 1;
-      p.add(_molColumn, c);
-
-      addTab("Standard settings", p);
+      addTab("Standard settings", dialogPanel.getPanel());
    }
 
    /**
@@ -59,9 +51,12 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-
-      _molColumn.update(specs[0], _settings.colName);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    /**
@@ -71,7 +66,7 @@ public class IndigoValenceCheckerNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 }
