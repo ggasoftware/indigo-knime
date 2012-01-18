@@ -118,7 +118,10 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
          }
          else
          {
-            validOutputContainer.addRowToTable(inputRow);
+            if(inputRow.getCell(colIdx).isMissing())
+               invalidOutputContainer.addRowToTable(inputRow);
+            else
+               validOutputContainer.addRowToTable(inputRow);
          }
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
