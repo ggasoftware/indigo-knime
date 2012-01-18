@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -16,6 +17,7 @@ import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
@@ -31,6 +33,8 @@ import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 public class IndigoNodeSettings {
    
 
+
+   
 
    private interface DialogMap {
       abstract void load(final DataTableSpec[] specs) throws NotConfigurableException;
@@ -137,6 +141,23 @@ public class IndigoNodeSettings {
       public void save() {
          _mapParam.setStringValue(_dialogComp.getSelectedColumn());
       }
+   }
+   
+   private class DoubleDialogMap implements DialogMap {
+
+      private final JFormattedTextField _dialogComp;
+      private final SettingsModelDouble _mapParam;
+
+      public DoubleDialogMap(JFormattedTextField dialogComp, SettingsModelDouble mapParam) {
+         this._dialogComp = dialogComp;
+         this._mapParam = mapParam;
+      }
+      public void load(DataTableSpec[] specs) throws NotConfigurableException {
+         _dialogComp.setValue(_mapParam.getDoubleValue());
+      }
+      public void save() {
+         _mapParam.setDoubleValue(((Number)_dialogComp.getValue()).doubleValue());
+      }
 
    }
    
@@ -201,6 +222,11 @@ public class IndigoNodeSettings {
    
    public void registerDialogComponent(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelColumnName mapParam) {
       _allDialogSettings.add(new ColumnDialogMap(dialogComp, specPort, mapParam));
+   }
+   
+   public void registerDialogComponent(JFormattedTextField dialogComp, SettingsModelDouble mapParam) {
+      _allDialogSettings.add(new DoubleDialogMap(dialogComp, mapParam));
+      
    }
    
    public void loadDialogSettings(final DataTableSpec[] specs) throws NotConfigurableException {

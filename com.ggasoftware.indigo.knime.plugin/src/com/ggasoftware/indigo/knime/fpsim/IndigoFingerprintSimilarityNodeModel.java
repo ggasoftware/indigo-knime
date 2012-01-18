@@ -44,7 +44,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    {
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
 
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
+      if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No new column name specified");
       
       int i;
@@ -52,7 +52,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      specs[i] = new DataColumnSpecCreator(_settings.newColName,
+      specs[i] = new DataColumnSpecCreator(_settings.newColName.getStringValue(),
             DoubleCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
@@ -85,13 +85,13 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
       
       if (c == 0)
          return 0;
-      else if (_settings.metric == Metric.Tanimoto)
+      else if (_settings.metric.getIntValue() == Metric.Tanimoto.ordinal())
          return (float)c / (a + b - c);
-      else if (_settings.metric == Metric.EuclidSub)
+      else if (_settings.metric.getIntValue() == Metric.EuclidSub.ordinal())
          return (float)c / a;
       else
-         return (float)c / (_settings.tverskyAlpha * (a - c) +
-                            _settings.tverskyBeta  * (b - c) + c); 
+         return (float)c / (float)(_settings.tverskyAlpha.getDoubleValue() * (a - c) +
+                            _settings.tverskyBeta.getDoubleValue()  * (b - c) + c); 
    }
    
    /**
@@ -106,11 +106,11 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = spec.findColumnIndex(_settings.colName);
+      int colIdx = spec.findColumnIndex(_settings.targetColumn.getStringValue());
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      int colIdx2 = spec2.findColumnIndex(_settings.colName2);
+      int colIdx2 = spec2.findColumnIndex(_settings.queryColumn.getStringValue());
       if (colIdx2 == -1)
          throw new Exception("second column not found");
 
@@ -161,30 +161,28 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          float result = 0;
          int count = 0;
          
-         if (_settings.aggregation == Aggregation.Minimum)
+         if (_settings.aggregation.getIntValue() == Aggregation.Minimum.ordinal())
             result = 1000000;
          
          for (BitVectorValue template : templates)
          {
             float sim = _calcSimilarity(bitvector, template);
-            
-            switch (_settings.aggregation)
-            {
-               case Minimum:
-                  if (sim < result)
-                     result = sim;
-                  break;
-               case Maximum:
-                  if (sim > result)
-                     result = sim;
-                  break;
-               case Average:
-                  result += sim;
+
+            if (_settings.aggregation.getIntValue() == Aggregation.Minimum.ordinal()) {
+               if (sim < result)
+                  result = sim;
+            }
+            if (_settings.aggregation.getIntValue() == Aggregation.Maximum.ordinal()) {
+               if (sim > result)
+                  result = sim;
+            }
+            if (_settings.aggregation.getIntValue() == Aggregation.Average.ordinal()) {
+               result += sim;
             }
             count++;
          }
 
-         if (_settings.aggregation == Aggregation.Average)
+         if (_settings.aggregation.getIntValue() == Aggregation.Average.ordinal())
             result /= count;
          
          int i;
@@ -220,8 +218,8 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, BitVectorValue.class);
-      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, BitVectorValue.class);
+      _settings.targetColumn.setStringValue(searchIndigoColumn(inSpecs[0], _settings.targetColumn.getStringValue(), BitVectorValue.class));
+      _settings.queryColumn.setStringValue(searchIndigoColumn(inSpecs[1], _settings.queryColumn.getStringValue(), BitVectorValue.class));
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -231,7 +229,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -241,7 +239,7 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettingsForDialog(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -252,12 +250,13 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoFingerprintSimilaritySettings s = new IndigoFingerprintSimilaritySettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      s.validateSettings(settings);
+      if (s.targetColumn.getStringValue() == null || s.targetColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.colName2 == null || s.colName2.length() < 1)
+      if (s.queryColumn.getStringValue() == null || s.queryColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("template column name must be specified");
-      if (s.newColName == null || s.newColName.length() < 1)
+      if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("new column name must be specified");
    }
 

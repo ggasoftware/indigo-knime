@@ -14,10 +14,18 @@
 
 package com.ggasoftware.indigo.knime.fpsim;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
+import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoFingerprintSimilaritySettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
 {
+   public static final int TARGET_PORT = 0;
+   public static final int QUERY_PORT = 1;
+   
    enum Metric
    {
       Tanimoto, EuclidSub, Tversky
@@ -28,52 +36,24 @@ public class IndigoFingerprintSimilaritySettings
       Minimum, Maximum, Average
    }
    
-   public String colName;
-   public String colName2;
-   public String newColName = "similarity";
-   public Metric metric = Metric.Tanimoto;
-   public float tverskyAlpha = 0.5f;
-   public float tverskyBeta = 0.5f;
-   public Aggregation aggregation = Aggregation.Average;
+   public SettingsModelColumnName targetColumn = new SettingsModelColumnName("targetColumn", null);
+   public SettingsModelColumnName queryColumn = new SettingsModelColumnName("queryColumn", null);
+   public SettingsModelString newColName = new SettingsModelString("newColName", "similarity");
+   public SettingsModelInteger metric = new SettingsModelInteger("metric", Metric.Tanimoto.ordinal());
+   public SettingsModelDouble tverskyAlpha = new SettingsModelDouble("tverskyAlpha", 0.5f);
+   public SettingsModelDouble tverskyBeta = new SettingsModelDouble("tverskyBeta", 0.5f);
+   public SettingsModelInteger aggregation = new SettingsModelInteger("aggregation", Aggregation.Average.ordinal());
 
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      colName2 = settings.getString("colName2");
-      newColName = settings.getString("newColName");
-      metric = Metric.valueOf(settings.getString("metric"));
-      aggregation = Aggregation.valueOf(settings.getString("aggregation"));
-      tverskyAlpha = settings.getFloat("tverskyAlpha");
-      tverskyBeta = settings.getFloat("tverskyBeta");
+   
+   public IndigoFingerprintSimilaritySettings() {
+      addSettingsParameter(targetColumn);
+      addSettingsParameter(queryColumn);
+      addSettingsParameter(newColName);
+      addSettingsParameter(metric);
+      addSettingsParameter(aggregation);
+      addSettingsParameter(tverskyAlpha);
+      addSettingsParameter(tverskyBeta);
    }
 
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      colName2 = settings.getString("colName2", null);
-      newColName = settings.getString("newColName", "similarity");
-      metric = Metric.valueOf(settings.getString("metric",
-            Metric.Tanimoto.name()));
-      aggregation = Aggregation.valueOf(settings.getString("aggregation",
-            Aggregation.Average.name()));
-      tverskyAlpha = settings.getFloat("tverskyAlpha", 0.5f);
-      tverskyBeta = settings.getFloat("tverskyBeta", 0.5f);
-   }
 
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (colName2 != null)
-         settings.addString("colName2", colName2);
-      if (metric != null)
-         settings.addString("metric", metric.name());
-      if (aggregation != null)
-         settings.addString("aggregation", aggregation.name());
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      settings.addFloat("tverskyAlpha", tverskyAlpha);
-      settings.addFloat("tverskyBeta", tverskyBeta);
-   }
 }

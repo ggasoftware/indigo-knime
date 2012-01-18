@@ -32,16 +32,19 @@ import com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilaritySettings.Me
 public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
 {
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _fpColumn = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _targetColumn = new ColumnSelectionComboxBox(
          (Border) null, BitVectorValue.class);
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _fpColumn2 = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _queryColumn = new ColumnSelectionComboxBox(
          (Border) null, BitVectorValue.class);
+   
    private final JTextField _newColumn = new JTextField(20);
-   private final JComboBox _metrics = new JComboBox(new Object[] {
-         Metric.Tanimoto, Metric.EuclidSub, Metric.Tversky });
-   private final JComboBox _aggregation = new JComboBox(new Object[] {
-         Aggregation.Average, Aggregation.Minimum, Aggregation.Maximum});
+   private final JComboBox _metrics = new JComboBox(new String[] {
+         Metric.Tanimoto.toString(), Metric.EuclidSub.toString(), Metric.Tversky.toString() });
+   
+   private final JComboBox _aggregation = new JComboBox(new String[] {
+         Aggregation.Average.toString(), Aggregation.Minimum.toString(), Aggregation.Maximum.toString()});
+   
    JLabel _alphaLabel = new JLabel("alpha:");
    JLabel _betaLabel = new JLabel("beta:");
    JFormattedTextField _alpha = new JFormattedTextField(
@@ -51,9 +54,34 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    JPanel _metricsPanel = new JPanel();
 
    private final IndigoFingerprintSimilaritySettings _settings = new IndigoFingerprintSimilaritySettings();
+   private ActionListener _metricsListener = new ActionListener()
+   {
+      @Override
+      public void actionPerformed (ActionEvent arg0)
+      {
+         if (_metrics.getSelectedItem() == Metric.Tversky)
+         {
+            _alpha.setVisible(true);
+            _beta.setVisible(true);
+            _alphaLabel.setVisible(true);
+            _betaLabel.setVisible(true);
+         }
+         else
+         {
+            _alpha.setVisible(false);
+            _beta.setVisible(false);
+            _alphaLabel.setVisible(false);
+            _betaLabel.setVisible(false);
+         }
+      }
+   };
 
    protected IndigoFingerprintSimilarityNodeDialog()
    {
+      super();
+      
+      _registerDialogComponents();
+      
       JPanel p = new JPanel(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
@@ -65,13 +93,13 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(new JLabel("Column with fingerprints"), c);
       c.gridx = 1;
-      p.add(_fpColumn, c);
+      p.add(_targetColumn, c);
 
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Column with reference fingerprint(s)"), c);
       c.gridx = 1;
-      p.add(_fpColumn2, c);
+      p.add(_queryColumn, c);
      
       c.gridy++;
       c.gridx = 0;
@@ -105,27 +133,17 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
 
       addTab("Standard settings", p);
 
-      _metrics.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed (ActionEvent arg0)
-         {
-            if (_metrics.getSelectedItem() == Metric.Tversky)
-            {
-               _alpha.setVisible(true);
-               _beta.setVisible(true);
-               _alphaLabel.setVisible(true);
-               _betaLabel.setVisible(true);
-            }
-            else
-            {
-               _alpha.setVisible(false);
-               _beta.setVisible(false);
-               _alphaLabel.setVisible(false);
-               _betaLabel.setVisible(false);
-            }
-         }
-      });
+      _metrics.addActionListener(_metricsListener );
+   }
+
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_targetColumn, IndigoFingerprintSimilaritySettings.TARGET_PORT, _settings.targetColumn);
+      _settings.registerDialogComponent(_queryColumn, IndigoFingerprintSimilaritySettings.QUERY_PORT, _settings.queryColumn);
+      _settings.registerDialogComponent(_metrics, _settings.metric);
+      _settings.registerDialogComponent(_aggregation, _settings.aggregation);
+      _settings.registerDialogComponent(_newColumn, _settings.newColName);
+      _settings.registerDialogComponent(_alpha, _settings.tverskyAlpha);
+      _settings.registerDialogComponent(_beta, _settings.tverskyBeta);
    }
 
    /**
@@ -135,14 +153,14 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-      _metrics.setSelectedItem(_settings.metric);
-      _aggregation.setSelectedItem(_settings.aggregation);
-      _newColumn.setText(_settings.newColName);
-      _fpColumn.update(specs[0], _settings.colName);
-      _fpColumn2.update(specs[1], _settings.colName2);
-      _alpha.setValue(_settings.tverskyAlpha);
-      _beta.setValue(_settings.tverskyBeta);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         
+         _metricsListener.actionPerformed(null);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 
    /**
@@ -152,14 +170,7 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.metric = (Metric) _metrics.getSelectedItem();
-      _settings.aggregation = (Aggregation) _aggregation.getSelectedItem();
-      _settings.newColName = _newColumn.getText();
-      _settings.colName = _fpColumn.getSelectedColumn();
-      _settings.colName2 = _fpColumn2.getSelectedColumn();
-      _settings.tverskyAlpha = ((Number)_alpha.getValue()).floatValue();
-      _settings.tverskyBeta = ((Number)_beta.getValue()).floatValue();
-
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }
 }
