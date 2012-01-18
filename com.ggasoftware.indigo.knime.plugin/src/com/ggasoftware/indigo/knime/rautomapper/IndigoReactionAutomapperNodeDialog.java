@@ -30,10 +30,10 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
    private final JComboBox _mode = new JComboBox(new String[] { AAMode.Discard.toString(), AAMode.Keep.toString(), AAMode.Alter.toString(),
          AAMode.Clear.toString() });
    
-   private final JCheckBox _ignoreCharges = new JCheckBox("Ignore Charges");
-   private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore Isotopes");
-   private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore Radicals");
-   private final JCheckBox _ignoreValence = new JCheckBox("Ignore Valence");
+   private final JCheckBox _ignoreCharges = new JCheckBox("Ignore charges");
+   private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore isotopes");
+   private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore radicals");
+   private final JCheckBox _ignoreValence = new JCheckBox("Ignore valence");
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
@@ -59,17 +59,17 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
    }
 
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_colName, IndigoReactionAutomapperNodeModel.INPUT_PORT, _settings.m_column);
-      _settings.registerDialogComponent(_newColName, _settings.m_newColumn);
-      _settings.registerDialogComponent(_appendColumn, _settings.m_appendColumn);
-      _settings.registerDialogComponent(_mode, _settings.m_mode);
+      _settings.registerDialogComponent(_colName, IndigoReactionAutomapperNodeModel.INPUT_PORT, _settings.reactionColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColumn);
+      _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
+      _settings.registerDialogComponent(_mode, _settings.mode);
       /*
        * Ignore flags
        */
-      _settings.registerDialogComponent(_ignoreCharges, _settings.m_ignoreCharges);
-      _settings.registerDialogComponent(_ignoreIsotopes, _settings.m_ignoreIsotopes);
-      _settings.registerDialogComponent(_ignoreRadicals, _settings.m_ignoreRadicals);
-      _settings.registerDialogComponent(_ignoreValence, _settings.m_ignoreValence);
+      _settings.registerDialogComponent(_ignoreCharges, _settings.ignoreCharges);
+      _settings.registerDialogComponent(_ignoreIsotopes, _settings.ignoreIsotopes);
+      _settings.registerDialogComponent(_ignoreRadicals, _settings.ignoreRadicals);
+      _settings.registerDialogComponent(_ignoreValence, _settings.ignoreValence);
       
       
    }

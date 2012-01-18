@@ -62,13 +62,13 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
       
       int colIdx = _settings.getColumnIdx(inputTableSpec);
 
-      int newColIdx = _settings.m_appendColumn.getBooleanValue() ? inputTableSpec.getNumColumns() : colIdx;
+      int newColIdx = _settings.appendColumn.getBooleanValue() ? inputTableSpec.getNumColumns() : colIdx;
       
       String aamParameters = _settings.getAAMParameters();
       
       int rowNumber = 1;
       for (DataRow inputRow : inData[INPUT_PORT]) {
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.m_appendColumn.getBooleanValue() ? 1 : 0)];
+         DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.appendColumn.getBooleanValue() ? 1 : 0)];
 
          DataCell newcell = null;
          String message = null;
@@ -94,17 +94,17 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
 
          if (newcell != null) {
             for (int i = 0; i < inputRow.getNumCells(); i++) {
-               cells[i] = (!_settings.m_appendColumn.getBooleanValue() && i == newColIdx) ? newcell : inputRow.getCell(i);
+               cells[i] = (!_settings.appendColumn.getBooleanValue() && i == newColIdx) ? newcell : inputRow.getCell(i);
             }
-            if (_settings.m_appendColumn.getBooleanValue()) {
+            if (_settings.appendColumn.getBooleanValue()) {
                cells[newColIdx] = newcell;
             }
             validOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
          } else {
             for (int i = 0; i < inputRow.getNumCells(); i++) {
-               cells[i] = (!_settings.m_appendColumn.getBooleanValue() && i == newColIdx) ? new StringCell(message) : inputRow.getCell(i);
+               cells[i] = (!_settings.appendColumn.getBooleanValue() && i == newColIdx) ? new StringCell(message) : inputRow.getCell(i);
             }
-            if (_settings.m_appendColumn.getBooleanValue()) {
+            if (_settings.appendColumn.getBooleanValue()) {
                cells[newColIdx] = new StringCell(message);
             }
             invalidOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
@@ -129,21 +129,21 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
    }
 
    protected DataTableSpec[] getDataTableSpecs(DataTableSpec inputTableSpec) throws InvalidSettingsException {
-      if (_settings.m_column.getStringValue() == null || _settings.m_column.getStringValue().length() < 1)
+      if (_settings.reactionColumn.getStringValue() == null || _settings.reactionColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("Column name not specified");
 
-      if (_settings.m_appendColumn.getBooleanValue())
-         if (_settings.m_newColumn.getStringValue() == null || _settings.m_newColumn.getStringValue().length() < 1)
+      if (_settings.appendColumn.getBooleanValue())
+         if (_settings.newColumn.getStringValue() == null || _settings.newColumn.getStringValue().length() < 1)
             throw new InvalidSettingsException("No new column name specified");
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.m_column.getStringValue());
+      int colIdx = inputTableSpec.findColumnIndex(_settings.reactionColumn.getStringValue());
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
-      String newColName = _settings.m_newColumn.getStringValue();
+      String newColName = _settings.newColumn.getStringValue();
       int newColIdx = inputTableSpec.getNumColumns();
-      if (!_settings.m_appendColumn.getBooleanValue()) {
-         newColName = _settings.m_column.getStringValue();
+      if (!_settings.appendColumn.getBooleanValue()) {
+         newColName = _settings.reactionColumn.getStringValue();
          newColIdx = colIdx;
       }
 
@@ -154,7 +154,7 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
 
       DataColumnSpec[] validOutputColumnSpecs, invalidOutputColumnSpecs;
 
-      if (!_settings.m_appendColumn.getBooleanValue()) {
+      if (!_settings.appendColumn.getBooleanValue()) {
          validOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
          invalidOutputColumnSpecs = new DataColumnSpec[inputTableSpec.getNumColumns()];
       } else {
@@ -165,7 +165,7 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
       for (int i = 0; i < inputTableSpec.getNumColumns(); i++) {
          DataColumnSpec columnSpec = inputTableSpec.getColumnSpec(i);
 
-         if (!_settings.m_appendColumn.getBooleanValue() && i == newColIdx) {
+         if (!_settings.appendColumn.getBooleanValue() && i == newColIdx) {
             validOutputColumnSpecs[i] = validOutputColumnSpec;
             invalidOutputColumnSpecs[i] = invalidOutputColumnSpec;
          } else {
@@ -174,7 +174,7 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
          }
       }
 
-      if (_settings.m_appendColumn.getBooleanValue()) {
+      if (_settings.appendColumn.getBooleanValue()) {
          validOutputColumnSpecs[newColIdx] = validOutputColumnSpec;
          invalidOutputColumnSpecs[newColIdx] = invalidOutputColumnSpec;
       }
@@ -188,7 +188,7 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
    @Override
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
       
-      searchMixedIndigoColumn(inSpecs[INPUT_PORT], _settings.m_column, IndigoReactionValue.class, IndigoQueryReactionValue.class);
+      searchMixedIndigoColumn(inSpecs[INPUT_PORT], _settings.reactionColumn, IndigoReactionValue.class, IndigoQueryReactionValue.class);
       
       return getDataTableSpecs(inSpecs[INPUT_PORT]);
    }

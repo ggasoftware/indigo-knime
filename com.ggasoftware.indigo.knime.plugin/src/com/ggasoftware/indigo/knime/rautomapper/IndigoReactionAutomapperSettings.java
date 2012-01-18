@@ -14,48 +14,38 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public static enum AAMode {
       Discard, Keep, Alter, Clear
    }
-
-   static final String CFGKEY_COLUMN = "column";
-   static final String CFGKEY_REPLACE = "replaceColumn";
-   static final String CFGKEY_NEWCOLUMN = "newColumn";
-   static final String CFGKEY_MODE = "mode";
    
    static final String CFGKEY_IGNORE_CHARGES = "ignore_charges";
    static final String CFGKEY_IGNORE_ISOTOPES = "ignore_isotopes";
    static final String CFGKEY_IGNORE_RADICALS = "ignore_radicals";
    static final String CFGKEY_IGNORE_VALENCE = "ignore_valence";
 
-   static final String DEFAULT_COLUMN = null;
-   static final boolean DEFAULT_REPLACE = true;
-   static final String DEFAULT_NEWCOLUMN = null;
-   static final int DEFAULT_MODE = AAMode.Discard.ordinal();
-
-   public final SettingsModelColumnName m_column = new SettingsModelColumnName(CFGKEY_COLUMN, DEFAULT_COLUMN);
-   public final SettingsModelBoolean m_appendColumn = new SettingsModelBoolean(CFGKEY_REPLACE, DEFAULT_REPLACE);
-   public final SettingsModelString m_newColumn = new SettingsModelString(CFGKEY_NEWCOLUMN, DEFAULT_NEWCOLUMN);
-   public final SettingsModelInteger m_mode = new SettingsModelInteger(CFGKEY_MODE, DEFAULT_MODE);
+   public final SettingsModelColumnName reactionColumn = new SettingsModelColumnName("column", null);
+   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final SettingsModelString newColumn = new SettingsModelString("newColumn", null);
+   public final SettingsModelInteger mode = new SettingsModelInteger("mode", AAMode.Discard.ordinal());
    
-   public final SettingsModelBoolean m_ignoreCharges = new SettingsModelBoolean(CFGKEY_IGNORE_CHARGES, false);
-   public final SettingsModelBoolean m_ignoreIsotopes = new SettingsModelBoolean(CFGKEY_IGNORE_ISOTOPES, false);
-   public final SettingsModelBoolean m_ignoreRadicals = new SettingsModelBoolean(CFGKEY_IGNORE_RADICALS, false);
-   public final SettingsModelBoolean m_ignoreValence = new SettingsModelBoolean(CFGKEY_IGNORE_VALENCE, false);
+   public final SettingsModelBoolean ignoreCharges = new SettingsModelBoolean(CFGKEY_IGNORE_CHARGES, false);
+   public final SettingsModelBoolean ignoreIsotopes = new SettingsModelBoolean(CFGKEY_IGNORE_ISOTOPES, false);
+   public final SettingsModelBoolean ignoreRadicals = new SettingsModelBoolean(CFGKEY_IGNORE_RADICALS, false);
+   public final SettingsModelBoolean ignoreValence = new SettingsModelBoolean(CFGKEY_IGNORE_VALENCE, false);
    
    private final HashMap<String, SettingsModelBoolean> _ignoreFlags = new HashMap<String, SettingsModelBoolean>();
 
    public IndigoReactionAutomapperSettings() {
-      addSettingsParameter(m_column);
-      addSettingsParameter(m_appendColumn);
-      addSettingsParameter(m_newColumn);
-      addSettingsParameter(m_mode);
-      addSettingsParameter(m_ignoreCharges);
-      addSettingsParameter(m_ignoreIsotopes);
-      addSettingsParameter(m_ignoreRadicals);
-      addSettingsParameter(m_ignoreValence);
+      addSettingsParameter(reactionColumn);
+      addSettingsParameter(appendColumn);
+      addSettingsParameter(newColumn);
+      addSettingsParameter(mode);
+      addSettingsParameter(ignoreCharges);
+      addSettingsParameter(ignoreIsotopes);
+      addSettingsParameter(ignoreRadicals);
+      addSettingsParameter(ignoreValence);
       
-      _ignoreFlags.put(CFGKEY_IGNORE_CHARGES, m_ignoreCharges);
-      _ignoreFlags.put(CFGKEY_IGNORE_ISOTOPES, m_ignoreIsotopes);
-      _ignoreFlags.put(CFGKEY_IGNORE_RADICALS, m_ignoreRadicals);
-      _ignoreFlags.put(CFGKEY_IGNORE_VALENCE, m_ignoreValence);
+      _ignoreFlags.put(CFGKEY_IGNORE_CHARGES, ignoreCharges);
+      _ignoreFlags.put(CFGKEY_IGNORE_ISOTOPES, ignoreIsotopes);
+      _ignoreFlags.put(CFGKEY_IGNORE_RADICALS, ignoreRadicals);
+      _ignoreFlags.put(CFGKEY_IGNORE_VALENCE, ignoreValence);
    }
    
    public String getAAMParameters() {
@@ -63,7 +53,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
       /*
        * Append mode
        */
-      result.append(AAMode.values()[m_mode.getIntValue()].name().toLowerCase());
+      result.append(AAMode.values()[mode.getIntValue()].name().toLowerCase());
       /*
        * Append ignore flags
        */
@@ -79,7 +69,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    }
 
    public int getColumnIdx(DataTableSpec inPortSpec) {
-      return searchColumnIdx(m_column.getStringValue(), "reaction" , inPortSpec);
+      return searchColumnIdx(reactionColumn.getStringValue(), "reaction" , inPortSpec);
    }
 
 }
