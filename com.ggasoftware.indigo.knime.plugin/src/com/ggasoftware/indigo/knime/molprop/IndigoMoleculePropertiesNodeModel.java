@@ -17,7 +17,6 @@ package com.ggasoftware.indigo.knime.molprop;
 import java.io.IOException;
 
 import org.knime.core.data.*;
-import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
 
@@ -435,58 +434,60 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
+      final BufferedDataTable bufferedDataTable = inData[0];
+      
+      DataTableSpec spec = getDataTableSpec(bufferedDataTable.getDataTableSpec());
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
+      int colIdx = bufferedDataTable.getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
+      boolean warningPrinted = false;
 
-      while (it.hasNext())
+      for (DataRow inputRow : bufferedDataTable)
       {
-         DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells()
                + _settings.selectedProps.getStringArrayValue().length];
-         IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx)))
-               .getIndigoObject();
          int i;
 
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
 
-         try
-         {
-            IndigoPlugin.lock();
-            for (String prop : _settings.selectedProps.getStringArrayValue())
-            {
-               DataCell cell = null;
-               try 
-               {
-                  cell = calculators.get(prop).calculate(io);
+         if (!inputRow.getCell(colIdx).isMissing()) {
+            try {
+               IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+
+               IndigoPlugin.lock();
+               for (String prop : _settings.selectedProps.getStringArrayValue()) {
+                  DataCell cell = null;
+                  try {
+                     cell = calculators.get(prop).calculate(io);
+                  } catch (IndigoException ex) {
+                     cell = DataType.getMissingCell();
+                     LOGGER.warn("Cannot calculate " + prop + " for row " + inputRow.getKey() + ": " + ex.getMessage(), ex);
+                  }
+                  cells[i++] = cell;
                }
-               catch (IndigoException ex)
-               {
-                  cell = DataType.getMissingCell();
-                  LOGGER.warn("Cannot calculate " + prop + " for row " + 
-                        inputRow.getKey() + ": " + ex.getMessage(), ex);
-               }
-               cells[i++] = cell;
+            } finally {
+               IndigoPlugin.unlock();
             }
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
+         } else {
+            if(!warningPrinted)
+               LOGGER.warn("Input table contains missing cells");
+            warningPrinted = true;
+            
+            for (i = inputRow.getNumCells(); i < cells.length; i++)
+               cells[i] = DataType.getMissingCell();
          }
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
