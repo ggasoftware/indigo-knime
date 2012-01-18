@@ -39,8 +39,9 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
    private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoMolValue.class);
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn2 = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _scafColumn = new ColumnSelectionComboxBox(
          (Border) null, IndigoQueryMolValue.class);
+   
    private final JTextField _newColPrefix = new JTextField(10);
    private final JTextField _newScafColName = new JTextField(10);
    private final JCheckBox _aromatize = new JCheckBox("Aromatize");
@@ -51,6 +52,8 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
    protected IndigoRGroupDecomposerNodeDialog()
    {
       super();
+      
+      _registerDialogComponents();
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -68,7 +71,7 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       c.gridx = 0;
       p.add(new JLabel("Query molecule column"), c);
       c.gridx = 1;
-      p.add(_molColumn2, c);
+      p.add(_scafColumn, c);
 
       c.gridy++;
       c.gridx = 0;
@@ -88,30 +91,34 @@ public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
       
       addTab("Standard settings", p);
    }
+
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_molColumn, IndigoRGroupDecomposerSettings.MOL_PORT, _settings.molColumn);
+      _settings.registerDialogComponent(_scafColumn, IndigoRGroupDecomposerSettings.SCAF_PORT, _settings.scaffoldColumn);
+      _settings.registerDialogComponent(_newColPrefix, _settings.newColPrefix);
+      _settings.registerDialogComponent(_newScafColName, _settings.newScafColName);
+      _settings.registerDialogComponent(_aromatize, _settings.aromatize);
+   }
    
    @Override
    protected void loadSettingsFrom (final NodeSettingsRO settings,
          final DataTableSpec[] specs) throws NotConfigurableException
    {
-      _settings.loadSettingsForDialog(settings);
-
-      _molColumn.update(specs[0], _settings.colName);
-      _molColumn2.update(specs[1], _settings.colName2);
-      _newColPrefix.setText(_settings.newColPrefix);
-      _newScafColName.setText(_settings.newScafColName);
-      _aromatize.setSelected(_settings.aromatize);
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+         
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
+      
    }
 
    @Override
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.colName2 = _molColumn2.getSelectedColumn();
-      _settings.newColPrefix = _newColPrefix.getText();
-      _settings.newScafColName = _newScafColName.getText();
-      _settings.aromatize = _aromatize.isSelected();
-      
-      _settings.saveSettings(settings);
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
    }   
 }

@@ -14,47 +14,28 @@
 
 package com.ggasoftware.indigo.knime.rgdecomp;
 
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoRGroupDecomposerSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoRGroupDecomposerSettings extends IndigoNodeSettings
 {
-   public String colName;
-   public String colName2 ;
-   public String newColPrefix = "R-Group #";
-   public String newScafColName = "Scaffold";
-   public boolean aromatize = true;
-
-   public void loadSettings (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      colName2 = settings.getString("colName2");
-      newColPrefix = settings.getString("newColPrefix", "R-Group #");
-      newScafColName = settings.getString("newScafColName", "Scaffold");
-      aromatize = settings.getBoolean("aromatize");
-   }
-
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      colName2 = settings.getString("colName2", null);
-      newColPrefix = settings.getString("newColPrefix", "R-Group #");
-      newScafColName = settings.getString("newScafColName", "Scaffold");
-      aromatize = settings.getBoolean("aromatize", true);
-   }
-
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (colName2 != null)
-         settings.addString("colName2", colName2);
-      if (newColPrefix != null)
-         settings.addString("newColPrefix", newColPrefix);
-      if (newScafColName != null)
-    	  settings.addString("newScafColName", newScafColName);
-      settings.addBoolean("aromatize", aromatize);
+   public static final int MOL_PORT = 0;
+   public static final int SCAF_PORT = 1;
+   
+   public final SettingsModelColumnName molColumn = new SettingsModelColumnName("molColumn", null);
+   public final SettingsModelColumnName scaffoldColumn = new SettingsModelColumnName("molColumn", null);
+   public final SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "R-Group #");
+   public final SettingsModelString newScafColName = new SettingsModelString("newScafColName", "Scaffold");
+   public final SettingsModelBoolean aromatize = new SettingsModelBoolean("aromatize", true);
+   
+   public IndigoRGroupDecomposerSettings() {
+      addSettingsParameter(molColumn);
+      addSettingsParameter(scaffoldColumn);
+      addSettingsParameter(newColPrefix);
+      addSettingsParameter(newScafColName);
+      addSettingsParameter(aromatize);
    }
 }

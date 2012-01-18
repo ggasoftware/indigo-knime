@@ -50,11 +50,11 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
       for (i = 0; i < inSpec.getNumColumns(); i++)
          specs[i] = inSpec.getColumnSpec(i);
 
-      specs[inSpec.getNumColumns()] = new DataColumnSpecCreator(_settings.newScafColName, IndigoMolCell.TYPE).createSpec();
+      specs[inSpec.getNumColumns()] = new DataColumnSpecCreator(_settings.newScafColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
       
       for (i = 1; i <= rsites; i++)
          specs[inSpec.getNumColumns() + i] =
-            new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoMolCell.TYPE).createSpec();
+            new DataColumnSpecCreator(_settings.newColPrefix.getStringValue() + i, IndigoMolCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
    }
@@ -71,11 +71,11 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName);
+      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.molColumn.getStringValue());
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      int colIdx2 = inData[1].getDataTableSpec().findColumnIndex(_settings.colName2);
+      int colIdx2 = inData[1].getDataTableSpec().findColumnIndex(_settings.scaffoldColumn.getStringValue());
       if (colIdx2 == -1)
          throw new Exception("scaffold column not found");
       
@@ -199,8 +199,8 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
-      _settings.colName2 = searchIndigoColumn(inSpecs[1], _settings.colName2, IndigoQueryMolValue.class);
+      _settings.molColumn.setStringValue(searchIndigoColumn(inSpecs[0], _settings.molColumn.getStringValue(), IndigoMolValue.class));
+      _settings.scaffoldColumn.setStringValue(searchIndigoColumn(inSpecs[1], _settings.scaffoldColumn.getStringValue(), IndigoQueryMolValue.class));
       return new DataTableSpec[2];
    }
 
@@ -210,7 +210,7 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -220,7 +220,7 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -231,15 +231,15 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoRGroupDecomposerSettings s = new IndigoRGroupDecomposerSettings();
-      s.loadSettings(settings);
+      s.loadSettingsFrom(settings);
       
-      if (s.colName == null || s.colName.length() < 1)
+      if (s.molColumn.getStringValue() == null || s.molColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.colName2 == null || s.colName2.length() < 1)
+      if (s.scaffoldColumn.getStringValue() == null || s.scaffoldColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("query column name must be specified");
-      if (s.newColPrefix == null || s.newColPrefix.length() < 1)
+      if (s.newColPrefix.getStringValue() == null || s.newColPrefix.getStringValue().length() < 1)
          throw new InvalidSettingsException("prefix must be specified");
-      if (s.newScafColName == null || s.newScafColName.length() < 1)
+      if (s.newScafColName.getStringValue() == null || s.newScafColName.getStringValue().length() < 1)
     	  throw new InvalidSettingsException("scaffold column name must be specified");
    }
 
