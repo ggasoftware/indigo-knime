@@ -1,32 +1,19 @@
 package com.ggasoftware.indigo.knime.compsep;
 
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoComponentSeparatorSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoComponentSeparatorSettings extends IndigoNodeSettings
 {
-   public String colName;
-   public String newColPrefix = "Component #";
-
-   public void loadSettings(final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      newColPrefix = settings.getString("newColPrefix");
-   }
-
-   public void loadSettingsForDialog(final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      newColPrefix = settings.getString("newColPrefix", "Component #");
-   }
-
-   public void saveSettings(final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (newColPrefix != null)
-         settings.addString("newColPrefix", newColPrefix);
+   public static final int INPUT_PORT = 0;
+   
+   public SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "Component #");
+   
+   public IndigoComponentSeparatorSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(newColPrefix);
    }
 }

@@ -37,7 +37,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
 
       for (i = 1; i <= ncolumns; i++)
          specs[inSpec.getNumColumns() + i - 1] =
-            new DataColumnSpecCreator(_settings.newColPrefix + i, IndigoMolCell.TYPE).createSpec();
+            new DataColumnSpecCreator(_settings.newColPrefix.getStringValue() + i, IndigoMolCell.TYPE).createSpec();
 
       return new DataTableSpec(specs);
    }
@@ -49,7 +49,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName);
+      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
       if (colIdx == -1)
          throw new Exception("column not found");
 
@@ -148,7 +148,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
       return new DataTableSpec[1];
    }
 
@@ -158,7 +158,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo(final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -168,7 +168,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -179,11 +179,11 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoComponentSeparatorSettings s = new IndigoComponentSeparatorSettings();
-      s.loadSettings(settings);
+      s.loadSettingsFrom(settings);
 
-      if (s.colName == null || s.colName.length() < 1)
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.newColPrefix == null || s.newColPrefix.length() < 1)
+      if (s.newColPrefix.getStringValue() == null || s.newColPrefix.getStringValue().length() < 1)
          throw new InvalidSettingsException("prefix must be specified");
    }
 
