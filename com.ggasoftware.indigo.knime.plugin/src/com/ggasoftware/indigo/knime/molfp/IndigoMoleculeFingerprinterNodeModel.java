@@ -22,8 +22,8 @@ import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.data.DataType;
 import org.knime.core.data.RowKey;
-import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.data.vector.bitvector.SparseBitVectorCell;
 import org.knime.core.data.vector.bitvector.SparseBitVectorCellFactory;
@@ -55,7 +55,9 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
+      BufferedDataTable bufferedDataTable = inData[IndigoMoleculeFingerprinterSettings.INPUT_PORT];
+      
+      DataTableSpec spec = getDataTableSpec(bufferedDataTable.getDataTableSpec());
 
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
@@ -64,45 +66,44 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      while (it.hasNext())
+      for (DataRow inputRow : bufferedDataTable)
       {
-         DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells() + 1];
-         IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
-         int i;
-         String fp;
-
-         try
-         {
-            IndigoPlugin.lock();
-
-            IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords.getIntValue());
-            IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
-            IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
-            IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
-            io = io.clone();
-            io.aromatize();
          
-            fp = io.fingerprint("sim").toString();
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
-         String fpsub = fp.substring(6);
-
-         for (i = 0; i < inputRow.getNumCells(); i++)
-            cells[i] = inputRow.getCell(i);
+         int cellIdx;
+         String fp = null;
          
-         cells[i++] = new SparseBitVectorCellFactory(fpsub).createDataCell();
+         if (!inputRow.getCell(colIdx).isMissing())
+            try {
+               IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+               IndigoPlugin.lock();
 
+               IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords.getIntValue());
+               IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
+               IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
+               IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
+               io = io.clone();
+               io.aromatize();
+
+               fp = io.fingerprint("sim").toString();
+            } finally {
+               IndigoPlugin.unlock();
+            }
+
+         for (cellIdx = 0; cellIdx < inputRow.getNumCells(); cellIdx++)
+            cells[cellIdx] = inputRow.getCell(cellIdx);
+         
+         if(fp != null)
+            cells[cellIdx] = new SparseBitVectorCellFactory(fp.substring(6)).createDataCell();
+         else
+            cells[cellIdx] = DataType.getMissingCell();
+         
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
@@ -144,10 +145,10 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[IndigoMoleculeFingerprinterSettings.INPUT_PORT], _settings.colName.getStringValue(), IndigoMolValue.class));
       if (_settings.newColName == null)
          _settings.newColName.setStringValue(_settings.colName.getStringValue() + " (fingerprint)");
-      return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
+      return new DataTableSpec[] { getDataTableSpec(inSpecs[IndigoMoleculeFingerprinterSettings.INPUT_PORT]) };
    }
 
    /**
