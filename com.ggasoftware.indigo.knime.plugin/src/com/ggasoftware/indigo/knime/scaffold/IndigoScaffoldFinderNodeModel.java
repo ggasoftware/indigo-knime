@@ -33,6 +33,7 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
 {
    IndigoScaffoldFinderSettings _settings = new IndigoScaffoldFinderSettings();
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoScaffoldFinderNodeModel.class);
 
    /**
     * Constructor for the node model.
@@ -50,12 +51,12 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
       DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
-      DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName, IndigoQueryMolCell.TYPE).createSpec();
+      DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoQueryMolCell.TYPE).createSpec();
       DataTableSpec outputSpec = new DataTableSpec(spec);
       
       BufferedDataContainer outputContainer = exec.createDataContainer(outputSpec);
 
-      int colIdx = inputTableSpec.findColumnIndex(_settings.colName);
+      int colIdx = inputTableSpec.findColumnIndex(_settings.colName.getStringValue());
 
       if (colIdx == -1)
          throw new Exception("column not found");
@@ -79,19 +80,20 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          }
          IndigoObject extracted = null;
          
-         if (_settings.tryExactMethod)
+         if (_settings.tryExactMethod.getBooleanValue())
          {
             try
             {
-               extracted = indigo.extractCommonScaffold(arr, "exact " + _settings.maxIterExact);
+               extracted = indigo.extractCommonScaffold(arr, "exact " + _settings.maxIterExact.getIntValue());
             }
             catch (IndigoException e)
             {
+               LOGGER.warn("exact method has reached iteration limit: trying to search approximate");
             }
          }
          
          if (extracted == null)
-            extracted = indigo.extractCommonScaffold(arr, "approx " + _settings.maxIterApprox);
+            extracted = indigo.extractCommonScaffold(arr, "approx " + _settings.maxIterApprox.getIntValue());
          
          scaffolds = extracted.allScaffolds();
       }
@@ -130,10 +132,10 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      if (_settings.newColName == null || _settings.newColName.length() < 1)
-         _settings.newColName = "Scaffold";
-      _settings.colName = searchIndigoColumn(inSpecs[0], _settings.colName, IndigoMolValue.class);
-      DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName, IndigoQueryMolCell.TYPE).createSpec();
+      if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
+         _settings.newColName .setStringValue("Scaffold");
+      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
+      DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoQueryMolCell.TYPE).createSpec();
       return new DataTableSpec[] { new DataTableSpec(spec) };
    }
 
@@ -143,7 +145,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
    @Override
    protected void saveSettingsTo (final NodeSettingsWO settings)
    {
-      _settings.saveSettings(settings);
+      _settings.saveSettingsTo(settings);
    }
 
    /**
@@ -153,7 +155,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
    protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      _settings.loadSettings(settings);
+      _settings.loadSettingsFrom(settings);
    }
 
    /**
@@ -164,10 +166,10 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       IndigoScaffoldFinderSettings s = new IndigoScaffoldFinderSettings();
-      s.loadSettings(settings);
-      if (s.colName == null || s.colName.length() < 1)
+      s.loadSettingsFrom(settings);
+      if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
-      if (s.newColName == null || s.newColName.length() < 1)
+      if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("new column name must be specified");
    }
 

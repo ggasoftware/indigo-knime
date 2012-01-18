@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -66,7 +67,11 @@ public class IndigoDialogPanel {
       _settingsPanels.add(_currentPanel);
       
       if(name != null) {
-         _currentPanel.setBorder(BorderFactory.createTitledBorder(name));
+         TitledBorder border = BorderFactory.createTitledBorder(name);
+         Font titleFont = border.getTitleFont();
+         border.setTitleFont(new Font(titleFont.getFontName(), Font.BOLD, titleFont.getSize()));
+         
+         _currentPanel.setBorder(border);
       }
    }
    
@@ -187,7 +192,8 @@ public class IndigoDialogPanel {
    }
 
    public static void setDefaultFont(JComponent button) {
-      button.setFont(new Font("Serif", Font.PLAIN, 12));
+//      Font font = button.getFont();
+//      button.setFont(new Font(font.getFontName(), Font.PLAIN, font.getSize()));
    }
    
 }

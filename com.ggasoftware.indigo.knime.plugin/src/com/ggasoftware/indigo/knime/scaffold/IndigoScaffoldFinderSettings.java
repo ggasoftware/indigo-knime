@@ -14,65 +14,29 @@
 
 package com.ggasoftware.indigo.knime.scaffold;
 
-import org.knime.core.node.*;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-public class IndigoScaffoldFinderSettings
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+
+public class IndigoScaffoldFinderSettings extends IndigoNodeSettings
 {
-   public String colName;
-   public String newColName = "Scaffold";
-   public boolean tryExactMethod = true;
-   public int maxIterExact = -1;
-   public int maxIterApprox = -1;
-
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    * @throws InvalidSettingsException
-    *            if some settings are missing
-    */
-   public void loadSettings (final NodeSettingsRO settings) throws InvalidSettingsException
-   {
-      colName = settings.getString("colName");
-      newColName = settings.getString("newColName");
-      tryExactMethod = settings.getBoolean("tryExactMethod");
-      maxIterExact = settings.getInt("maxIterExact");
-      maxIterApprox = settings.getInt("maxIterApprox");
-   }
-
-   /**
-    * Loads the settings from the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    */
-   public void loadSettingsForDialog (final NodeSettingsRO settings)
-   {
-      colName = settings.getString("colName", null);
-      newColName = settings.getString("newColName", "Scaffold");
-      tryExactMethod = settings.getBoolean("tryExactMethod", true);
-      maxIterExact = settings.getInt("maxIterExact", 50000);
-      maxIterApprox = settings.getInt("maxIterApprox", 10000);
-   }
-
-   /**
-    * Saves the settings to the given node settings object.
-    * 
-    * @param settings
-    *           node settings
-    */
-   public void saveSettings (final NodeSettingsWO settings)
-   {
-      if (colName != null)
-         settings.addString("colName", colName);
-      if (newColName != null)
-         settings.addString("newColName", newColName);
-      settings.addBoolean("tryExactMethod", tryExactMethod);
-      if (maxIterExact >= 0)
-         settings.addInt("maxIterExact", maxIterExact);
-      if (maxIterApprox >= 0)
-         settings.addInt("maxIterApprox", maxIterApprox);
+   public static final int INPUT_PORT = 0;
+   
+   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString newColName = new SettingsModelString("newColName", "Scaffold");
+   public final SettingsModelBoolean tryExactMethod = new SettingsModelBoolean("tryExactMethod", true);
+   public final SettingsModelInteger maxIterExact = new SettingsModelInteger("maxIterExact", 50000);
+   public final SettingsModelInteger maxIterApprox = new SettingsModelInteger("maxIterApprox", 10000);
+   
+   public IndigoScaffoldFinderSettings() {
+      addSettingsParameter(colName);
+      addSettingsParameter(newColName);
+      addSettingsParameter(tryExactMethod);
+      addSettingsParameter(maxIterExact);
+      addSettingsParameter(maxIterApprox);
    }
 }
 

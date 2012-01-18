@@ -29,26 +29,32 @@ import org.knime.core.node.util.ColumnSelectionComboxBox;
 
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 
-public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
-{
+public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane {
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
+   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox((Border) null, IndigoMolValue.class);
 
    private final JCheckBox _tryExact = new JCheckBox("Try exact method");
    private final JSpinner _exactIterations = new JSpinner();
    private final JSpinner _approxIterations = new JSpinner();
-   
+
    private final JTextField _newColName = new JTextField(20);
 
    private final IndigoScaffoldFinderSettings _settings = new IndigoScaffoldFinderSettings();
 
+   private ChangeListener _changeListener = new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent arg0) {
+         _exactIterations.setEnabled(_tryExact.isSelected());
+      }
+   };
+
    /**
     * New pane for configuring the IndigoScaffoldFinder node.
     */
-   protected IndigoScaffoldFinderNodeDialog ()
-   {
+   protected IndigoScaffoldFinderNodeDialog() {
       super();
+
+      _registerDialogComponents();
 
       JPanel p = new JPanel(new GridBagLayout());
 
@@ -67,61 +73,53 @@ public class IndigoScaffoldFinderNodeDialog extends NodeDialogPane
       p.add(new JLabel("New column with scaffolds"), c);
       c.gridx = 1;
       p.add(_newColName, c);
-      
+
       c.gridy++;
       c.gridx = 0;
       p.add(_tryExact, c);
-      
+
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Maximum number of iterations for exact method (0 to no limit)"), c);
       c.gridx = 1;
-      ((JSpinner.DefaultEditor)_exactIterations.getEditor()).getTextField().setColumns(8);
+      ((JSpinner.DefaultEditor) _exactIterations.getEditor()).getTextField().setColumns(8);
       p.add(_exactIterations, c);
-      
+
       c.gridy++;
       c.gridx = 0;
       p.add(new JLabel("Number of iterations for approximate method"), c);
       c.gridx = 1;
-      ((JSpinner.DefaultEditor)_approxIterations.getEditor()).getTextField().setColumns(8);
+      ((JSpinner.DefaultEditor) _approxIterations.getEditor()).getTextField().setColumns(8);
       p.add(_approxIterations, c);
-      
-      _tryExact.addChangeListener(new ChangeListener() {
-         @Override
-         public void stateChanged (ChangeEvent arg0)
-         {
-            _exactIterations.setEnabled(_tryExact.isSelected());
-         }
-      });
-      
+
+      _tryExact.addChangeListener(_changeListener);
+
       addTab("Standard settings", p);
    }
 
-   @Override
-   protected void saveSettingsTo (NodeSettingsWO settings)
-         throws InvalidSettingsException
-   {
-      _settings.colName = _molColumn.getSelectedColumn();
-      _settings.newColName = _newColName.getText();
-      _settings.tryExactMethod = _tryExact.isSelected();
-      _settings.maxIterApprox = ((Number)_approxIterations.getValue()).intValue();
-      _settings.maxIterExact = ((Number)_exactIterations.getValue()).intValue();
-
-      _settings.saveSettings(settings);
+   private void _registerDialogComponents() {
+      _settings.registerDialogComponent(_molColumn, IndigoScaffoldFinderSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
+      _settings.registerDialogComponent(_tryExact, _settings.tryExactMethod);
+      _settings.registerDialogComponent(_exactIterations, _settings.maxIterExact);
+      _settings.registerDialogComponent(_approxIterations, _settings.maxIterApprox);
    }
-   
-   @Override
-   protected void loadSettingsFrom (final NodeSettingsRO settings,
-         final DataTableSpec[] specs) throws NotConfigurableException
-   {
-      _settings.loadSettingsForDialog(settings);
 
-      _molColumn.update(specs[0], _settings.colName);
-      _newColName.setText(_settings.newColName);
-      _tryExact.setSelected(_settings.tryExactMethod);
-      _exactIterations.setValue(_settings.maxIterExact);
-      _approxIterations.setValue(_settings.maxIterApprox);
-      
-      _exactIterations.setEnabled(_tryExact.isSelected());
+   @Override
+   protected void saveSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
+      _settings.saveDialogSettings();
+      _settings.saveSettingsTo(settings);
+   }
+
+   @Override
+   protected void loadSettingsFrom(final NodeSettingsRO settings, final DataTableSpec[] specs) throws NotConfigurableException {
+      try {
+         _settings.loadSettingsFrom(settings);
+         _settings.loadDialogSettings(specs);
+
+         _changeListener.stateChanged(null);
+      } catch (InvalidSettingsException e) {
+         throw new NotConfigurableException(e.getMessage());
+      }
    }
 }
