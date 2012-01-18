@@ -3,19 +3,16 @@
 <entry key="name" type="xstring" value="Table Creator"/>
 <config key="model">
 <config key="rowIndices">
-<entry key="array-size" type="xint" value="2"/>
+<entry key="array-size" type="xint" value="1"/>
 <entry key="0" type="xint" value="0"/>
-<entry key="1" type="xint" value="0"/>
 </config>
 <config key="columnIndices">
-<entry key="array-size" type="xint" value="2"/>
+<entry key="array-size" type="xint" value="1"/>
 <entry key="0" type="xint" value="0"/>
-<entry key="1" type="xint" value="1"/>
 </config>
 <config key="values">
-<entry key="array-size" type="xint" value="2"/>
-<entry key="0" type="xstring" value="C1CCC(CC1)C1CCCCC1&gt;&gt;C1CCCC1"/>
-<entry key="1" type="xstring" value="C1CCC2CCCCC2C1"/>
+<entry key="array-size" type="xint" value="1"/>
+<entry key="0" type="xstring" value="C1=CC2=C(C=C1)C=CC=C2"/>
 </config>
 <entry key="rowIdPrefix" type="xstring" value="Row"/>
 <entry key="rowIdSuffix" type="xstring" value=""/>
@@ -28,17 +25,6 @@
 <entry key="ReadPossValsFromFile" type="xboolean" value="false"/>
 <entry key="SkipThisColumn" type="xboolean" value="false"/>
 <entry key="ColumnName" type="xstring" value="column1"/>
-<config key="ColumnClass">
-<entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
-<entry key="is_null" type="xboolean" value="false"/>
-</config>
-</config>
-<config key="1">
-<entry key="UserSetValues" type="xboolean" value="false"/>
-<entry key="MissValuePattern" type="xstring" value=""/>
-<entry key="ReadPossValsFromFile" type="xboolean" value="false"/>
-<entry key="SkipThisColumn" type="xboolean" value="false"/>
-<entry key="ColumnName" type="xstring" value="column2"/>
 <config key="ColumnClass">
 <entry key="cell_class" type="xstring" value="org.knime.core.data.def.StringCell"/>
 <entry key="is_null" type="xboolean" value="false"/>
