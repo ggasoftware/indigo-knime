@@ -8,14 +8,14 @@
     </shortDescription>
     
     <fullDescription>
-        <intro><p>This node adds explicit hydrogens to Indigo molecules to fulfill the valencies.</p>
+        <intro><p>Supports molecules and reactions. This node adds explicit hydrogens to Indigo structures to fulfill the valencies.</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
-        <option name="Molecule Column">The column that contains the molecules.</option>
-        <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+        <option name="Structure Column">The column that contains the structures.</option>
+        <option name="Append Column">Appends a new structure column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Molecules with hydrogens">The same as input, but with explicit hydrogens</outPort>
+        <inPort index="0" name="Input structures">Table containing Indigo structures</inPort>
+        <outPort index="0" name="Structures with hydrogens">The same as input, but with explicit hydrogens</outPort>
     </ports>    
 </knimeNode>

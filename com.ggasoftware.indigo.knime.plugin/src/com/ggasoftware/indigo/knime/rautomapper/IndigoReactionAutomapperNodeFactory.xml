@@ -23,6 +23,10 @@
 			<li>clear   : removes the mapping from the reaction</li>
 			</ul>
         </option>
+        <option name="Ignore charges">Skips atom charges from input structures</option>
+        <option name="Ignore isotopes">Skips atom isotopes from input structures</option>
+        <option name="Ignore radicals">Skips atom radicals from input structures</option>
+        <option name="Ignore valence">Skips atom valence from input structures</option>
     </fullDescription>
     
     <ports>

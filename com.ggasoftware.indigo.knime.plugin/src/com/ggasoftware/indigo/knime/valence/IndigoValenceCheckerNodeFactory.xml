@@ -9,16 +9,16 @@
     
     <fullDescription>
         <intro>
-        <p>This node accepts a table with Indigo molecules and divides it into two sets, one with molecules that have correct valencies on atoms, and the other with valence errors.</p>
+        <p>This node accepts a table with Indigo structures (supports reactions and molecules) and divides it into two sets, one with structures that have correct valencies on atoms, and the other with valence errors.</p>
 		<p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p>        
         </intro>
         
-        <option name="Molecule Column">The column that contains the molecules.</option>
+        <option name="Structure Column">The column that contains the structures.</option>
     </fullDescription>
     
     <ports>
         <inPort index="0" name="Input">Input data</inPort>
-        <outPort index="0" name="Valid molecules">Valid molecules are copied as is</outPort>
-        <outPort index="1" name="Invalid molecules">Invalid molecules are supplied with an error message</outPort>
+        <outPort index="0" name="Valid structures">Valid structures are copied as is</outPort>
+        <outPort index="1" name="Invalid structures">Invalid structures are supplied with an error message</outPort>
     </ports>    
 </knimeNode>

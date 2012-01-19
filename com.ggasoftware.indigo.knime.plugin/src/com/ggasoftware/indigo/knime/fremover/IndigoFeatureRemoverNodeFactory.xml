@@ -5,15 +5,15 @@
     <shortDescription>
     </shortDescription>    
     <fullDescription>
-        <intro><p>This nodes removes selected features from the given molecules</p>
+        <intro><p>Supports molecules and reactions. This nodes removes selected features from the given structures</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
-        <option name="Molecule Column">The column that contains the molecules.</option>
-        <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+        <option name="Structure Column">The column that contains the structures.</option>
+        <option name="Append Column">Appends a new structure column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
         
         <option name="Isotopes">Discard the isotopes in the structure</option>
         <option name="Chirality">Remove information about chiral centers</option>
         <option name="Cis-trans">Remove information about cis-trans double bonds</option>
-        <option name="Highlighting">Reset the highlighting on the molecule's atoms and bonds</option>
+        <option name="Highlighting">Reset the highlighting on the structure's atoms and bonds</option>
         <option name="Pseudoatoms">Remove the pseudoatoms, placing implicit hydrogens instead</option>
         <option name="R-sites">Remove the R-sites, placing implicit hydrogens instead</option>
         <option name="Attachment points">Remove the R-group fragment's attachment points, placing implicit hydrogens instead</option>
@@ -23,7 +23,7 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Output molecules">The same as input, but with selected features removed</outPort>
+        <inPort index="0" name="Input structures">Table containing Indigo structures</inPort>
+        <outPort index="0" name="Output structures">The same as input, but with selected features removed</outPort>
     </ports>    
 </knimeNode>

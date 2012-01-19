@@ -8,19 +8,19 @@
     
     <fullDescription>
         <intro>
-        <p>This node accepts a table with Indigo molecules, a table with a single query molecule, and divides the first table
-           into two sets, one with all rows that contain the specified query molecule as a substructure, the other with all
-           molecules that do not contain it.</p>
+        <p>This node accepts a table with Indigo structures (supports reactions and molecules), a table with a single query structure, and divides the first table
+           into two sets, one with all rows that contain the specified query structure as a substructure, the other with all
+           structures that do not contain it.</p>
 		<p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p>        
         </intro>
-        <option name="Molecules column">The column that contains Indigo molecules</option>
-        <option name="Query molecules column">The column that contains the query molecule</option>
+        <option name="Structures column">The column that contains Indigo structures</option>
+        <option name="Query structures column">The column that contains the query structure</option>
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input data">Table containing Indigo molecules</inPort>
-        <inPort index="1" name="Input data">Table containing the query molecule</inPort>
-        <outPort index="0" name="Matched">Rows with matched molecules</outPort>
-        <outPort index="1" name="Unmatched">Rows with unmatched molecules</outPort>
+        <inPort index="0" name="Input data">Table containing Indigo structures</inPort>
+        <inPort index="1" name="Input data">Table containing the query structure</inPort>
+        <outPort index="0" name="Matched">Rows with matched structures</outPort>
+        <outPort index="1" name="Unmatched">Rows with unmatched structures</outPort>
     </ports>    
 </knimeNode>

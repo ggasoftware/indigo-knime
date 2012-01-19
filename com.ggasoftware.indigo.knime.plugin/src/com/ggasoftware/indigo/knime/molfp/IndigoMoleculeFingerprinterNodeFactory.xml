@@ -9,17 +9,17 @@
     
     <fullDescription>
         <intro>
-        <p>This node calculates Indigo structural fingerprints for molecules.</p>
+        <p>Supports molecules and reactions. This node calculates Indigo structural fingerprints for structures.</p>
         <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p>
         </intro>
         
-        <option name="Indigo column">The column that contains the molecules.</option>
+        <option name="Indigo column">The column that contains the structures.</option>
         <option name="New column name">Name of the fingerprint column in the output table.</option>
         <option name="Fingerprint length in qwords">Desired length of the fingerprint (1 qword = 8 bytes).</option>
 	    </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input molecules">Table containing Indigo molecules</inPort>
-        <outPort index="0" name="Molecules with fingerprints">The same as input, plus the fingerprints</outPort>
+        <inPort index="0" name="Input structures">Table containing Indigo structures</inPort>
+        <outPort index="0" name="Structures with fingerprints">The same as input, plus the fingerprints</outPort>
     </ports>    
 </knimeNode>
