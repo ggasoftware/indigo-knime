@@ -20,6 +20,8 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
 public class IndigoValenceCheckerSettings extends IndigoNodeSettings
 {
+   public static final int INPUT_PORT = 0;
+   
    public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
 
    public IndigoValenceCheckerSettings() {

@@ -18,14 +18,18 @@ import java.io.File;
 import java.io.IOException;
 
 import org.knime.core.data.*;
-import org.knime.core.data.container.*;
 import org.knime.core.data.def.*;
 import org.knime.core.node.*;
 
-import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
+import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
-public class IndigoValenceCheckerNodeModel extends NodeModel
+public class IndigoValenceCheckerNodeModel extends IndigoNodeModel
 {
    private final IndigoValenceCheckerSettings _settings = new IndigoValenceCheckerSettings();
 
@@ -72,7 +76,9 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
          final ExecutionContext exec) throws Exception
    {
 
-      DataTableSpec inputTableSpec = inData[0].getDataTableSpec();
+      BufferedDataTable bufferedDataTable = inData[IndigoValenceCheckerSettings.INPUT_PORT];
+      
+      DataTableSpec inputTableSpec = bufferedDataTable.getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
       BufferedDataContainer validOutputContainer = exec
@@ -85,12 +91,10 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
-      while (it.hasNext())
+      for (DataRow inputRow : bufferedDataTable)
       {
-         DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells;
 
@@ -100,7 +104,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
          if (!inputRow.getCell(colIdx).isMissing())
             try {
                IndigoPlugin.lock();
-               str = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject().checkBadValence();
+               str = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject().checkBadValence();
             } finally {
                IndigoPlugin.unlock();
             }
@@ -124,7 +128,7 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
                validOutputContainer.addRowToTable(inputRow);
          }
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
@@ -143,6 +147,11 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected void reset ()
    {
    }
+   
+   private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      return stype;
+   }
 
    /**
     * {@inheritDoc}
@@ -151,6 +160,15 @@ public class IndigoValenceCheckerNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
+      DataTableSpec inSpec = inSpecs[IndigoValenceCheckerSettings.INPUT_PORT];
+
+      searchMixedIndigoColumn(inSpec, _settings.colName, IndigoMolValue.class, IndigoReactionValue.class);
+
+      STRUCTURE_TYPE stype = _defineStructureType(inSpec);
+
+      if (stype.equals(STRUCTURE_TYPE.Unknown))
+         throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+
       return getDataTableSpecs(inSpecs[0]);
    }
 
