@@ -4,6 +4,7 @@ import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataTableSpec;
+import org.knime.core.data.DataType;
 import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
@@ -101,6 +102,9 @@ public abstract class IndigoNodeModel extends NodeModel
    
    protected DataCell _createNewDataCell(IndigoObject target, STRUCTURE_TYPE structureType) {
       DataCell result = null;
+      if(target == null)
+         return DataType.getMissingCell();
+      
       switch (structureType) {
       case Molecule:
          result = new IndigoMolCell(target);

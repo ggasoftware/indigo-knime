@@ -25,8 +25,9 @@
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <config key="selectedFeatures">
-<entry key="array-size" type="xint" value="1"/>
+<entry key="array-size" type="xint" value="2"/>
 <entry key="0" type="xstring" value="Isotopes"/>
+<entry key="1" type="xstring" value="Minor components"/>
 </config>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>

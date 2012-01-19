@@ -14,8 +14,6 @@
 
 package com.ggasoftware.indigo.knime.hremover;
 
-import java.util.List;
-
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
@@ -28,14 +26,6 @@ public class IndigoHydrogenRemoverNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
 {
 
-   static int[] toIntArray (List<Integer> list)
-   {
-      int[] arr = new int[list.size()];
-      for (int i = 0; i < list.size(); i++)
-         arr[i] = list.get(i).intValue();
-      return arr;
-   }
-   
    /**
     * {@inheritDoc}
     */

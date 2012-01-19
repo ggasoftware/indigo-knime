@@ -16,6 +16,11 @@ public class IndigoFeatureRemoverSettings extends IndigoNodeSettings
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelStringArray selectedFeatures = new SettingsModelStringArray("selectedFeatures", null);
    
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
+   
    public IndigoFeatureRemoverSettings() {
       addSettingsParameter(colName);
       addSettingsParameter(appendColumn);
