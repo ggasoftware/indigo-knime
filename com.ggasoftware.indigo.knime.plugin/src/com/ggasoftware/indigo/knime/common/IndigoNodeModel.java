@@ -1,11 +1,18 @@
 package com.ggasoftware.indigo.knime.common;
 
+import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
+import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+
+import com.ggasoftware.indigo.IndigoObject;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 
 public abstract class IndigoNodeModel extends NodeModel
 {
@@ -75,5 +82,35 @@ public abstract class IndigoNodeModel extends NodeModel
          if (! (spec.getColumnSpec(colName).getType().isCompatible(class1) || spec.getColumnSpec(colName).getType().isCompatible(class2)))
             throw new InvalidSettingsException("Column '" + colName + "' is not a " + class1.getName() + " or " + class2.getName());
       }
+   }
+   
+   protected DataColumnSpec _createNewColumnSpec(String colName, STRUCTURE_TYPE structureType) {
+      DataColumnSpec result = null;
+      switch(structureType){
+         case Molecule:
+            result = new DataColumnSpecCreator(colName, IndigoMolCell.TYPE).createSpec();
+            break;
+         case Reaction:
+            result = new DataColumnSpecCreator(colName, IndigoReactionCell.TYPE).createSpec();
+            break;
+         case Unknown:
+            throw new RuntimeException("Structure type is not defined");
+      }
+      return result;
+   }
+   
+   protected DataCell _createNewDataCell(IndigoObject target, STRUCTURE_TYPE structureType) {
+      DataCell result = null;
+      switch (structureType) {
+      case Molecule:
+         result = new IndigoMolCell(target);
+         break;
+      case Reaction:
+         result = new IndigoReactionCell(target);
+         break;
+      case Unknown:
+         throw new RuntimeException("Structure type is not defined");
+      }
+      return result;
    }
 }

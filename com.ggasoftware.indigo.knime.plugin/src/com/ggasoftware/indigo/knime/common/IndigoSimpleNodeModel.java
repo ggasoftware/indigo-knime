@@ -22,8 +22,11 @@ import org.knime.core.data.container.*;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
-import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 public class IndigoSimpleNodeModel extends IndigoNodeModel
@@ -31,7 +34,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
 
    public static abstract class Transformer
    {
-      public abstract void transform (IndigoObject io);
+      public abstract void transform (IndigoObject io, boolean reaction);
    }
 
    // the logger instance
@@ -57,10 +60,13 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
 
-      ColumnRearranger crea = createRearranger(inData[0].getDataTableSpec());
+      BufferedDataTable bufferedDataTable = inData[IndigoSimpleSettings.INPUT_PORT];
+      _defineStructureType(bufferedDataTable.getDataTableSpec());
+      
+      ColumnRearranger crea = createRearranger(bufferedDataTable.getDataTableSpec());
 
       return new BufferedDataTable[] { exec.createColumnRearrangeTable(
-            inData[0], crea, exec) };
+            bufferedDataTable, crea, exec) };
    }
 
    /**
@@ -76,24 +82,14 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       int _colIndex;
       private final DataColumnSpec[] m_colSpec;
 
-      Converter(final DataTableSpec inSpec, final DataColumnSpec cs,
-            final IndigoSimpleSettings settings, final int colIndex)
-      {
+      Converter(final DataTableSpec inSpec, final DataColumnSpec cs, final IndigoSimpleSettings settings, final int colIndex) {
          _colIndex = colIndex;
 
-         DataType type = IndigoMolCell.TYPE;
-
-         if (settings.appendColumn.getBooleanValue())
-         {
-            m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  DataTableSpec
-                  .getUniqueColumnName(inSpec, settings.newColName.getStringValue()),
-                  type).createSpec() };
-         }
-         else
-         {
-            m_colSpec = new DataColumnSpec[] { new DataColumnSpecCreator(
-                  settings.colName.getStringValue(), type).createSpec() };
+         if (settings.appendColumn.getBooleanValue()) {
+            m_colSpec = new DataColumnSpec[] { _createNewColumnSpec(DataTableSpec.getUniqueColumnName(inSpec, settings.newColName.getStringValue()),
+                  settings.structureType) };
+         } else {
+            m_colSpec = new DataColumnSpec[] { _createNewColumnSpec(settings.colName.getStringValue(), settings.structureType) };
          }
       }
 
@@ -107,10 +103,15 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
             try
             {
                IndigoPlugin.lock();
-               IndigoMolValue iv = (IndigoMolValue) cell;
+               
+               IndigoDataValue iv = (IndigoDataValue) cell;
                IndigoObject io = iv.getIndigoObject().clone();
-               _transformer.transform(io);
-               return new IndigoMolCell(io);
+               /*
+                * Transform object
+                */
+               _transformer.transform(io, _settings.structureType.equals(STRUCTURE_TYPE.Reaction));
+               
+               return _createNewDataCell(io, _settings.structureType);
             }
             catch (IndigoException ex)
             {
@@ -149,18 +150,16 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    {
       ColumnRearranger crea = new ColumnRearranger(inSpec);
 
-      DataType type = IndigoMolCell.TYPE;
-
       DataColumnSpec cs;
       if (_settings.appendColumn.getBooleanValue())
       {
          String name = DataTableSpec.getUniqueColumnName(inSpec,
                _settings.newColName.getStringValue());
-         cs = new DataColumnSpecCreator(name, type).createSpec();
+         cs = _createNewColumnSpec(name, _settings.structureType);
       }
       else
       {
-         cs = new DataColumnSpecCreator(_settings.colName.getStringValue(), type).createSpec();
+         cs = _createNewColumnSpec(_settings.colName.getStringValue(), _settings.structureType);
       }
 
       Converter conv = new Converter(inSpec, cs, _settings,
@@ -177,6 +176,12 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
 
       return crea;
    }
+   
+   private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      _settings.structureType = stype;
+      return stype;
+   }
 
    /**
     * {@inheritDoc}
@@ -185,8 +190,16 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
-      return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
+      DataTableSpec inSpec = inSpecs[IndigoSimpleSettings.INPUT_PORT];
+      
+      searchMixedIndigoColumn(inSpec, _settings.colName, IndigoMolValue.class, IndigoReactionValue.class);
+      
+      STRUCTURE_TYPE stype = _defineStructureType(inSpec);
+      
+      if(stype.equals(STRUCTURE_TYPE.Unknown)) 
+         throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      
+      return new DataTableSpec[] { createRearranger(inSpec).createSpec() };
    }
 
    /**
@@ -219,6 +232,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       s.loadSettingsFrom(settings);
       if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
+      
       if (s.appendColumn.getBooleanValue() && ((s.newColName.getStringValue() == null) || (s.newColName.getStringValue().length() < 1)))
          throw new InvalidSettingsException("No name for new column given");
    }

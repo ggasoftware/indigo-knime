@@ -36,7 +36,7 @@ public class IndigoHydrogenAdderNodeFactory extends
             new IndigoSimpleNodeModel.Transformer()
             {
                @Override
-               public void transform (IndigoObject io)
+               public void transform (IndigoObject io, boolean reaction)
                {
                   io.unfoldHydrogens();
                }

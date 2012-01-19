@@ -2,6 +2,7 @@
 2. Reaction AAM ignore flags support was added.
 3. New filters for all the indigo nodes were added.
 4. Reaction support was added for the Substructure Matcher Node
+5. Cosmetic in all nodes dialogs
 
 >****************************************************************************************************************8
 Changes in the version 1.0.0.0001075 from the nightly build:

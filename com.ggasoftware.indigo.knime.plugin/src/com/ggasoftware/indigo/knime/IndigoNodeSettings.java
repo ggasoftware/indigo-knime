@@ -289,4 +289,17 @@ public class IndigoNodeSettings {
       
       return colIdx;
    }
+
+   public static STRUCTURE_TYPE getStructureType(DataTableSpec tSpec, String tName) {
+      STRUCTURE_TYPE result = STRUCTURE_TYPE.Unknown;
+
+      if (tSpec != null) {
+         if (tSpec.containsName(tName))
+            if (tSpec.getColumnSpec(tName).getType().isCompatible(IndigoReactionValue.class))
+               result = STRUCTURE_TYPE.Reaction;
+            else if (tSpec.getColumnSpec(tName).getType().isCompatible(IndigoMolValue.class))
+               result = STRUCTURE_TYPE.Molecule;
+      }
+      return result;
+   }
 }

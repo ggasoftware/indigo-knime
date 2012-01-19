@@ -27,6 +27,11 @@ public class IndigoSimpleSettings extends IndigoNodeSettings
    public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
+   
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
 
    public IndigoSimpleSettings() {
       addSettingsParameter(colName);
