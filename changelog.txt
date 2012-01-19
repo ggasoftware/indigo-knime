@@ -7,7 +7,7 @@
 7. Reaction support was added for the Hydrogen Remover node
 8. Reaction support was added for the Aromatizer node
 9. Reaction support was added for the Dearomatizer node
-
+10. Reaction support was added for the Feature remover node
 >****************************************************************************************************************8
 Changes in the version 1.0.0.0001075 from the nightly build:
 
