@@ -8,14 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.knime.core.data.*;
-import org.knime.core.data.container.CloseableRowIterator;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
@@ -35,7 +37,10 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      DataTableSpec spec = getDataTableSpec(inData[0].getDataTableSpec());
+      BufferedDataTable bufferedDataTable = inData[IndigoAtomReplacerSettings.INPUT_PORT];
+      _defineStructureType(bufferedDataTable.getDataTableSpec());
+      
+      DataTableSpec spec = getDataTableSpec(bufferedDataTable.getDataTableSpec());
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
       int colIdx = spec.findColumnIndex(_settings.colName.getStringValue());
@@ -43,7 +48,6 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      CloseableRowIterator it = inData[0].iterator();
       int rowNumber = 1;
 
       // Split atoms to replace into a set
@@ -54,9 +58,8 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          atomToReplace.addAll(Arrays.asList(atoms));
       }
      
-      while (it.hasNext())
+      for (DataRow inputRow : bufferedDataTable)
       {
-         DataRow inputRow = it.next();
          RowKey key = inputRow.getKey();
          DataCell[] cells;
          int i;
@@ -76,76 +79,39 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          }
          else
          {
-            IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+            IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
    
             try
             {
                IndigoPlugin.lock();
-               IndigoObject mol = io.clone();
-   
-               List<Integer> atoms = new ArrayList<Integer>(); 
                
+               io = io.clone();
+   
                boolean replaceAllAtoms = !_settings.replaceHighlighted.getBooleanValue() && !_settings.replaceSpecificAtom.getBooleanValue();
 
                if (!_settings.replaceAttachmentPoints.getBooleanValue() || !replaceAllAtoms)
                {
-                  for (IndigoObject atom : mol.iterateAtoms())
-                  {
-                     if (_settings.replaceHighlighted.getBooleanValue() && !atom.isHighlighted())
-                        continue;
-                     if (_settings.replaceSpecificAtom.getBooleanValue() && !atomToReplace.contains(atom.symbol()))
-                        continue;
-                     atoms.add(atom.index());
-                  }
-                  
-                  for (int idx : atoms)
-                  {
-                     IndigoObject atom = mol.getAtom(idx);
-                     if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
-                        atom.setRSite(_settings.newAtomLabel.getStringValue());
-                     else
-                        atom.resetAtom(_settings.newAtomLabel.getStringValue());
-                  }
+                  if(_settings.structureType.equals(STRUCTURE_TYPE.Reaction))
+                     for(IndigoObject mol : io.iterateMolecules())
+                        _replaceSpecificAtoms(atomToReplace, mol);
+                  else
+                     _replaceSpecificAtoms(atomToReplace, io);
                }
                
                if (_settings.replaceAttachmentPoints.getBooleanValue())
                {
-                  List<Integer> atomsWithAttach = new ArrayList<Integer>();
-                  int maxOrder = mol.countAttachmentPoints();
-                  
-                  for (int order = 1; order <= maxOrder; order++)
-                     for (IndigoObject atomWithAttachment: mol.iterateAttachmentPoints(order))
-                        atomsWithAttach.add(atomWithAttachment.index());
-                  mol.clearAttachmentPoints();
-                  List<Integer> newAtoms = new ArrayList<Integer>();
-                  for (int idx : atomsWithAttach)
-                  {
-                     IndigoObject atom = mol.getAtom(idx);
-                     IndigoObject newAtom;
-                     if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
-                        newAtom = mol.addRSite(_settings.newAtomLabel.getStringValue());
-                     else
-                        newAtom = mol.addAtom(_settings.newAtomLabel.getStringValue());
-                     atom.addBond(newAtom, 1);
-                     newAtoms.add(newAtom.index());
-                  }
-                  
-                  // Layout added atoms if coordinates are present
-                  try
-                  {
-                     if (mol.hasCoord())
-                        mol.getSubmolecule(newAtoms).layout();
-                  }
-                  catch (IndigoException ex)
-                  {
-                     LOGGER.warn("Layout exception: " + ex.getMessage());
-                  }
+                  if(_settings.structureType.equals(STRUCTURE_TYPE.Reaction))
+                     for(IndigoObject mol : io.iterateMolecules())
+                        _replaceAttachmentPoints(mol);
+                  else
+                     _replaceAttachmentPoints(io);
+                     
                }
                
                if (_settings.appendColumn.getBooleanValue())
-                  cells[i] = new IndigoMolCell(mol);
+                  cells[i] = _createNewDataCell(io, _settings.structureType);
                else
-                  cells[colIdx] = new IndigoMolCell(mol);
+                  cells[colIdx] = _createNewDataCell(io, _settings.structureType);
             }
             finally
             {
@@ -155,7 +121,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
 
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[0].getRowCount(),
+         exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(),
                "Adding row " + rowNumber);
 
          rowNumber++;
@@ -163,6 +129,60 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
 
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
+   }
+
+   private void _replaceAttachmentPoints(IndigoObject molStructure) {
+      List<Integer> atomsWithAttach = new ArrayList<Integer>();
+      int maxOrder = molStructure.countAttachmentPoints();
+      
+      for (int order = 1; order <= maxOrder; order++)
+         for (IndigoObject atomWithAttachment: molStructure.iterateAttachmentPoints(order))
+            atomsWithAttach.add(atomWithAttachment.index());
+      
+      molStructure.clearAttachmentPoints();
+      List<Integer> newAtoms = new ArrayList<Integer>();
+      for (int idx : atomsWithAttach)
+      {
+         IndigoObject atom = molStructure.getAtom(idx);
+         IndigoObject newAtom;
+         if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
+            newAtom = molStructure.addRSite(_settings.newAtomLabel.getStringValue());
+         else
+            newAtom = molStructure.addAtom(_settings.newAtomLabel.getStringValue());
+         atom.addBond(newAtom, 1);
+         newAtoms.add(newAtom.index());
+      }
+      
+      // Layout added atoms if coordinates are present
+      try
+      {
+         if (molStructure.hasCoord())
+            molStructure.getSubmolecule(newAtoms).layout();
+      }
+      catch (IndigoException ex)
+      {
+         LOGGER.warn("Layout exception: " + ex.getMessage());
+      }
+   }
+
+   private void _replaceSpecificAtoms(HashSet<String> atomToReplace, IndigoObject molStructure) {
+      List<Integer> atoms = new ArrayList<Integer>();
+      
+      for (IndigoObject atom : molStructure.iterateAtoms()) {
+         if (_settings.replaceHighlighted.getBooleanValue() && !atom.isHighlighted())
+            continue;
+         if (_settings.replaceSpecificAtom.getBooleanValue() && !atomToReplace.contains(atom.symbol()))
+            continue;
+         atoms.add(atom.index());
+      }
+
+      for (int idx : atoms) {
+         IndigoObject atom = molStructure.getAtom(idx);
+         if (_settings.newAtomLabel.getStringValue().matches("R\\d*"))
+            atom.setRSite(_settings.newAtomLabel.getStringValue());
+         else
+            atom.resetAtom(_settings.newAtomLabel.getStringValue());
+      }
    }
 
    /**
@@ -191,9 +211,15 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          specs[i] = inSpec.getColumnSpec(i);
 
       if (_settings.appendColumn.getBooleanValue())
-         specs[i] = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoMolCell.TYPE).createSpec();
+         specs[i] = _createNewColumnSpec(_settings.newColName.getStringValue(), _settings.structureType);
 
       return new DataTableSpec(specs);
+   }
+   
+   private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      _settings.structureType = stype;
+      return stype;
    }
    
    /**
@@ -203,8 +229,14 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
-      return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
+      DataTableSpec inSpec = inSpecs[IndigoAtomReplacerSettings.INPUT_PORT];
+      searchMixedIndigoColumn(inSpec, _settings.colName, IndigoMolValue.class, IndigoReactionValue.class);
+      
+      STRUCTURE_TYPE stype = _defineStructureType(inSpec);
+      
+      if(stype.equals(STRUCTURE_TYPE.Unknown)) 
+         throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      return new DataTableSpec[] { getDataTableSpec(inSpec) };
    }
 
    /**

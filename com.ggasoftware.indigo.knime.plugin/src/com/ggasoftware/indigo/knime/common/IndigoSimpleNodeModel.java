@@ -230,6 +230,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    {
       IndigoSimpleSettings s = new IndigoSimpleSettings();
       s.loadSettingsFrom(settings);
+      s.validateSettings(settings);
       if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
       

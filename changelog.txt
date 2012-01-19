@@ -3,6 +3,10 @@
 3. New filters for all the indigo nodes were added.
 4. Reaction support was added for the Substructure Matcher Node
 5. Cosmetic in all nodes dialogs
+6. Reaction support was added for the Hydrogen Adder node
+7. Reaction support was added for the Hydrogen Remover node
+8. Reaction support was added for the Aromatizer node
+9. Reaction support was added for the Dearomatizer node
 
 >****************************************************************************************************************8
 Changes in the version 1.0.0.0001075 from the nightly build:

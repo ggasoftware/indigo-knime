@@ -19,6 +19,11 @@ public class IndigoAtomReplacerSettings extends IndigoNodeSettings
    public final SettingsModelBoolean replaceAttachmentPoints = new SettingsModelBoolean("replaceAttachmentPoints", false);
    public final SettingsModelString specificAtom = new SettingsModelString("specificAtom", null);
    
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
+   
    public IndigoAtomReplacerSettings() {
       addSettingsParameter(colName);
       addSettingsParameter(appendColumn);
