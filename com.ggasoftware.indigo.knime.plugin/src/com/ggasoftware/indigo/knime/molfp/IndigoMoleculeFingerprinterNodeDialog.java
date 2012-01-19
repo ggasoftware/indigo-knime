@@ -24,25 +24,48 @@ import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
 import com.ggasoftware.indigo.knime.IndigoDialogPanel;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 
 public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
 {
    @SuppressWarnings("unchecked")
-   private final ColumnSelectionComboxBox _molColumn = new ColumnSelectionComboxBox(
-         (Border) null, IndigoMolValue.class);
+   private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
+         (Border) null, IndigoMolValue.class, IndigoReactionValue.class);
    private final JTextField _newColName = new JTextField(16);
 
    private final JSpinner _size = new JSpinner(new SpinnerNumberModel(IndigoMoleculeFingerprinterSettings.FP_DEFAULT, 
          IndigoMoleculeFingerprinterSettings.FP_MIN, 
          IndigoMoleculeFingerprinterSettings.FP_MAX, 1));
    
+   private final JLabel _structureType = new JLabel();
+   private DataTableSpec _indigoSpec;
+   
    private final IndigoMoleculeFingerprinterSettings _settings = new IndigoMoleculeFingerprinterSettings();
    private ItemListener _changeListener = new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent arg0) {
          if ("".equals(_newColName.getText()))
-            _newColName.setText(_molColumn.getSelectedColumn() + " (fingerprint)");
+            _newColName.setText(_indigoColumn.getSelectedColumn() + " (fingerprint)");
+      }
+   };
+   private final ItemListener _columnChangeListener = new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+         STRUCTURE_TYPE stype = _getStructureType();
+         switch(stype) {
+            case Unknown:
+               _structureType.setText("Unknown");
+               break;
+            case Reaction:
+               _structureType.setText("Reaction");
+               break;
+            case Molecule:
+               _structureType.setText("Molecule");
+               break;
+         }
       }
    };
 
@@ -58,28 +81,42 @@ public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Indigo column", _molColumn);
+      dialogPanel.addItem("Structure type", _structureType);
+      dialogPanel.addItem("Indigo column", _indigoColumn);
       dialogPanel.addItem("New column name", _newColName);
       dialogPanel.addItemsPanel("Fingerprint Settings");
       dialogPanel.addItem("Fingerprint size in qwords:", _size);
       
       ((JSpinner.DefaultEditor)_size.getEditor()).getTextField().setColumns(2);
 
-      _molColumn.addItemListener(_changeListener);      
+      _indigoColumn.addItemListener(_changeListener);
+      _indigoColumn.addItemListener(_columnChangeListener);
       
       addTab("Standard settings", dialogPanel.getPanel());
    }
    
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_molColumn, IndigoMoleculeFingerprinterSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_indigoColumn, IndigoMoleculeFingerprinterSettings.INPUT_PORT, _settings.colName);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_size, _settings.fpSizeQWords);
+   }
+   
+   /*
+    * Returns current column selection state
+    */
+   private STRUCTURE_TYPE _getStructureType() {
+      return IndigoNodeSettings.getStructureType(_indigoSpec, _indigoColumn.getSelectedColumn());
    }
 
    @Override
    protected void saveSettingsTo (NodeSettingsWO settings)
          throws InvalidSettingsException
    {
+      STRUCTURE_TYPE stype = _getStructureType();
+
+      if (stype.equals(STRUCTURE_TYPE.Unknown))
+         throw new InvalidSettingsException("can not define the indigo column type");
+      
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
    }
@@ -96,6 +133,8 @@ public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
          _settings.loadDialogSettings(specs);
          
          _changeListener.itemStateChanged(null);
+         _indigoSpec = specs[IndigoMoleculeFingerprinterSettings.INPUT_PORT];
+         _columnChangeListener.itemStateChanged(null);
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());

@@ -164,6 +164,7 @@ public class IndigoAtomReplacerNodeDialog extends NodeDialogPane
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Structure type", _structureType);
       dialogPanel.addItem("Indigo column", _indigoColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
       dialogPanel.addItemsPanel("Atom Settings");

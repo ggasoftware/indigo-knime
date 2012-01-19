@@ -23,6 +23,7 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 public class IndigoMoleculeFingerprinterSettings extends IndigoNodeSettings
 {
    public static final int INPUT_PORT = 0;
+   
    public static final int FP_DEFAULT = 8;
    public static final int FP_MIN = 1;
    public static final int FP_MAX = 1000000;
@@ -30,6 +31,11 @@ public class IndigoMoleculeFingerprinterSettings extends IndigoNodeSettings
    public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelIntegerBounded fpSizeQWords = new SettingsModelIntegerBounded("fpSizeQWords", FP_DEFAULT, FP_MIN, FP_MAX);
+   
+   /*
+    * Parameter is not saved
+    */
+   public STRUCTURE_TYPE structureType;
    
    public IndigoMoleculeFingerprinterSettings() {
       addSettingsParameter(colName);

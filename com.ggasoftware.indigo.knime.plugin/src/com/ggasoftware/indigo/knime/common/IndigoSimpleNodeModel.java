@@ -41,7 +41,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    private static final NodeLogger logger = NodeLogger
          .getLogger(IndigoSimpleNodeModel.class);
 
-   IndigoSimpleSettings _settings = new IndigoSimpleSettings();
+   private final IndigoSimpleSettings _settings = new IndigoSimpleSettings();
    Transformer _transformer;
    String _message;
 

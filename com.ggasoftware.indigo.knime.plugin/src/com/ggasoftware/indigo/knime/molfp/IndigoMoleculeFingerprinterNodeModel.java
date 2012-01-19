@@ -30,8 +30,11 @@ import org.knime.core.data.vector.bitvector.SparseBitVectorCellFactory;
 import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
-import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
+import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
@@ -56,6 +59,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
       BufferedDataTable bufferedDataTable = inData[IndigoMoleculeFingerprinterSettings.INPUT_PORT];
+      _defineStructureType(bufferedDataTable.getDataTableSpec());
       
       DataTableSpec spec = getDataTableSpec(bufferedDataTable.getDataTableSpec());
 
@@ -78,7 +82,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
          
          if (!inputRow.getCell(colIdx).isMissing())
             try {
-               IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
+               IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
                IndigoPlugin.lock();
 
                IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords.getIntValue());
@@ -86,6 +90,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
                IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
                IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
                io = io.clone();
+               
                io.aromatize();
 
                fp = io.fingerprint("sim").toString();
@@ -138,6 +143,12 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
       return new DataTableSpec(specs);
    }
    
+   private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      _settings.structureType = stype;
+      return stype;
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -145,10 +156,19 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      _settings.colName.setStringValue(searchIndigoColumn(inSpecs[IndigoMoleculeFingerprinterSettings.INPUT_PORT], _settings.colName.getStringValue(), IndigoMolValue.class));
-      if (_settings.newColName == null)
+      DataTableSpec inSpec = inSpecs[IndigoMoleculeFingerprinterSettings.INPUT_PORT];
+
+      searchMixedIndigoColumn(inSpec, _settings.colName, IndigoMolValue.class, IndigoReactionValue.class);
+
+      STRUCTURE_TYPE stype = _defineStructureType(inSpec);
+
+      if (stype.equals(STRUCTURE_TYPE.Unknown))
+         throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      
+      if (_settings.newColName.getStringValue() == null)
          _settings.newColName.setStringValue(_settings.colName.getStringValue() + " (fingerprint)");
-      return new DataTableSpec[] { getDataTableSpec(inSpecs[IndigoMoleculeFingerprinterSettings.INPUT_PORT]) };
+      
+      return new DataTableSpec[] { getDataTableSpec(inSpec) };
    }
 
    /**
