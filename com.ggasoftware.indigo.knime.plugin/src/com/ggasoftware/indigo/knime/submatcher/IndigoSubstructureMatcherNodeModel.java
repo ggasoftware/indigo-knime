@@ -269,6 +269,15 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
           */
          if (hasMatch) {
             target = ((IndigoDataCell) inputCell).getIndigoObject();
+            /*
+             * Clone target
+             */
+            try {
+               IndigoPlugin.lock();
+               target = target.clone();
+            } finally {
+               IndigoPlugin.unlock();
+            }
             matchCount = _getMatchCount(target, queries, inputRow.getKey().getString(), queriesRowKey);
 
             /*
@@ -328,28 +337,24 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    private int _getMatchCount(IndigoObject target, QueryWithData[] queries, String inputRowKey, StringBuilder queriesRowKey) {
       int matchCount = 0;
       
-      try {
-         IndigoPlugin.lock();
-         target = target.clone();
-         
-         for (QueryWithData query : queries) {
-            if (query.query == null) 
-               continue;
-            
-            try {
-               if (_matchTarget(query, target)) {
-                  matchCount++;
-                  if (queriesRowKey.length() > 0)
-                     queriesRowKey.append(", ");
-                  queriesRowKey.append(query.rowKey);
-               }
-            } catch (IndigoException e) {
-               LOGGER.warn("indigo error while matching: target key='" + inputRowKey + "' query key='" + query.rowKey + "': "
-                     + e.getMessage());
+      for (QueryWithData query : queries) {
+         if (query.query == null)
+            continue;
+
+         try {
+            IndigoPlugin.lock();
+            if (_matchTarget(query, target)) {
+               matchCount++;
+               if (queriesRowKey.length() > 0)
+                  queriesRowKey.append(", ");
+               
+               queriesRowKey.append(query.rowKey);
             }
+         } catch (IndigoException e) {
+            LOGGER.warn("indigo error while matching: target key='" + inputRowKey + "' query key='" + query.rowKey + "': " + e.getMessage());
+         } finally {
+            IndigoPlugin.unlock();
          }
-      } finally {
-         IndigoPlugin.unlock();
       }
       return matchCount;
    }
