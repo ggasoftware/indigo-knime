@@ -1,3 +1,9 @@
+Bug with highlighting was fixed
+Load from smarts parameter was added for query reactions and molecules
+
+>****************************************************************************************************************
+1.1.0.201201191806 nightly build:
+
 1. Bug with QueryReactionCell was fixed. Thanks to Simon http://tech.knime.org/forum/indigo/reaction-automapper-errors
 2. Reaction AAM ignore flags support was added.
 3. New filters for all the indigo nodes were added.
@@ -11,7 +17,8 @@
 11. Reaction support was added for the Indigo Fingerprint node
 12.  Reaction support was added for the Valence Checker node
 
->****************************************************************************************************************8
+
+>****************************************************************************************************************
 Changes in the version 1.0.0.0001075 from the nightly build:
 
 1. New translators nodes for converting RxnCell into Indigo cell and vice versa (query reactions are also supported).
