@@ -49,13 +49,17 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      int colIdx = inData[0].getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
+      BufferedDataTable bufferedDataTable = inData[IndigoComponentSeparatorSettings.INPUT_PORT];
+      
+      int colIdx = bufferedDataTable.getDataTableSpec().findColumnIndex(_settings.colName.getStringValue());
       if (colIdx == -1)
          throw new Exception("column not found");
 
       int maxcomp = 0;
-      
-      for (DataRow inputRow : inData[0])
+      /*
+       * Count maximum component number
+       */
+      for (DataRow inputRow : bufferedDataTable)
       {
          DataCell cell = inputRow.getCell(colIdx);
          
@@ -76,13 +80,19 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
                IndigoPlugin.unlock();
             }
          }
-         
+      }
+      /*
+       * Check for limit
+       */
+      if(_settings.limitComponentNumber.getBooleanValue()) {
+         if(maxcomp > _settings.componentNumber.getIntValue())
+            maxcomp = _settings.componentNumber.getIntValue();
       }
       
-      DataTableSpec spec = calcDataTableSpec(inData[0].getDataTableSpec(), maxcomp);
+      DataTableSpec spec = calcDataTableSpec(bufferedDataTable.getDataTableSpec(), maxcomp);
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
 
-      for (DataRow inputRow : inData[0])
+      for (DataRow inputRow : bufferedDataTable)
       {
          RowKey key = inputRow.getKey();
          DataCell[] cells = new DataCell[inputRow.getNumCells() + maxcomp];
@@ -116,8 +126,19 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
                       return io2.countAtoms() - io1.countAtoms();
                   }
                });
+               int collectionSize = collection.size();
                
-               for (i = 0; i < collection.size(); i++)
+               /*
+                * Check for limit
+                */
+               if(_settings.limitComponentNumber.getBooleanValue()) {
+                  if(collectionSize > _settings.componentNumber.getIntValue())
+                     collectionSize = _settings.componentNumber.getIntValue();
+               }
+               /*
+                * Add cells
+                */
+               for (i = 0; i < collectionSize; i++)
                   cells[inputRow.getNumCells() + i] = new IndigoMolCell(collection.get(i));
             }
             finally

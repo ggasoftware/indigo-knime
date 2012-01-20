@@ -15,6 +15,16 @@
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="newColPrefix" type="xstring" value="Component #"/>
+<config key="limitComponentNumber_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="limitComponentNumber" type="xboolean" value="false"/>
+<config key="componentNumber_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="componentNumber" type="xint" value="1"/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>
