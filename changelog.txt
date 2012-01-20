@@ -1,5 +1,6 @@
 Bug with highlighting was fixed
 Load from smarts parameter was added for query reactions and molecules
+Limit component number parameter was added for the Component Separator node
 
 >****************************************************************************************************************
 1.1.0.201201191806 nightly build:

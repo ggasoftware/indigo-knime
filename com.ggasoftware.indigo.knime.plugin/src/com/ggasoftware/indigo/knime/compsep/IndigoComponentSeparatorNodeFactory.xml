@@ -13,6 +13,7 @@
         
         <option name="Indigo column">The column that contains Indigo molecules.</option>
 		<option name="New column prefix">Each of the new columns will be named with this prefix + number (1,2,3,..)</option>
+        <option name="Limit component number">Flag for skipping molecule components. The node writes first components (in descending order by the atoms count) where the number of components is less or equal to the limit number parameter</option>
     </fullDescription>
     
     <ports>

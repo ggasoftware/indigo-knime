@@ -17,6 +17,7 @@
         <option name="Treat X as pseudoatom">Treat the "X" atoms in Molfiles as pseudoatoms, not as "any halogen" query atoms</option>
         <option name="Ignore stereochemistry errors">Ignore incorrectly specified stereochemistry on input structures, rather than sending
         the structures with stereochemistry errors to the "invalid molecules" table.</option>
+        <option name="Treat string as SMARTS">Loads input data (accepted from a string) as SMARTS.</option>
     </fullDescription>
     
     <ports>
