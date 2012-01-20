@@ -39,6 +39,8 @@ abstract public class IndigoLoaderNodeFactory<T extends IndigoLoaderNodeModel> e
    abstract protected String getColumnLabel();
    
    abstract protected Class<? extends DataValue>[] getFilterValueClasses();
+   
+   abstract protected boolean isQuery();
 
    /**
     * {@inheritDoc}
@@ -74,7 +76,7 @@ abstract public class IndigoLoaderNodeFactory<T extends IndigoLoaderNodeModel> e
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoLoaderNodeDialog(getColumnLabel(), getFilterValueClasses());
+      return new IndigoLoaderNodeDialog(getColumnLabel(), getFilterValueClasses(), isQuery());
    }
 
 }

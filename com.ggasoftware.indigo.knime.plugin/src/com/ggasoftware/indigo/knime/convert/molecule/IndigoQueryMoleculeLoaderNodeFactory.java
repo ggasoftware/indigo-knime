@@ -43,5 +43,10 @@ public class IndigoQueryMoleculeLoaderNodeFactory extends
 		return new Class[] { SdfValue.class, MolValue.class, 
 				SmilesValue.class, SmartsValue.class, StringValue.class };
 	}
+
+   @Override
+   protected boolean isQuery() {
+      return true;
+   }
 	
 }

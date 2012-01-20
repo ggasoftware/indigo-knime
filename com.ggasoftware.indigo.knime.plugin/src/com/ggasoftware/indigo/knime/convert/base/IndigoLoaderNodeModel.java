@@ -30,7 +30,7 @@ import java.util.List;
 
 public abstract class IndigoLoaderNodeModel extends NodeModel
 {
-   protected final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
+   protected final IndigoLoaderSettings _settings;
 
    protected Class<? extends DataValue>[] _valueFilterClasses = null;
    
@@ -39,9 +39,10 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
 		_valueFilterClasses = valueFilterClasses;
 	}
 
-	protected IndigoLoaderNodeModel()
+	protected IndigoLoaderNodeModel(boolean query)
    {
       super(1, 2);
+      _settings = new IndigoLoaderSettings(query);
    }
    
    abstract protected DataType getDataCellType();
@@ -276,7 +277,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected void validateSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      IndigoLoaderSettings s = new IndigoLoaderSettings();
+      IndigoLoaderSettings s = new IndigoLoaderSettings(false);
       s.loadSettingsFrom(settings);
       if (s.appendColumn.getBooleanValue())
          if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)

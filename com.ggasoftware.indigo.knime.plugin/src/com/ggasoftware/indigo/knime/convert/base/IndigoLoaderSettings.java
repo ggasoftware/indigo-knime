@@ -30,13 +30,17 @@ public class IndigoLoaderSettings extends IndigoNodeSettings
    public final SettingsModelBoolean ignoreStereochemistryErrors = new SettingsModelBoolean("ignoreStereochemistryErrors", true);
    public final SettingsModelBoolean treatStringAsSMARTS = new SettingsModelBoolean("treatStringAsSMARTS", false);
    
-   public IndigoLoaderSettings() {
+   public final boolean query;
+   
+   public IndigoLoaderSettings(boolean query) {
+      this.query = query;
       addSettingsParameter(colName);
       addSettingsParameter(appendColumn);
       addSettingsParameter(newColName);
       addSettingsParameter(treatXAsPseudoatom);
       addSettingsParameter(ignoreStereochemistryErrors);
-      addSettingsParameter(treatStringAsSMARTS);
+      if(query)
+         addSettingsParameter(treatStringAsSMARTS);
    }
 
 }

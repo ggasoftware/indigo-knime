@@ -37,7 +37,7 @@ import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 
 public class IndigoLoaderNodeDialog extends NodeDialogPane
 {
-   private final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
+   private final IndigoLoaderSettings _settings;
    
    private final ColumnSelectionComboxBox _indigoColumn;
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
@@ -83,9 +83,10 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
     * New pane for configuring IndigoMoleculeLoader node dialog. This is just a
     * suggestion to demonstrate possible default dialog components.
     */
-   protected IndigoLoaderNodeDialog(String columnLabel, Class<? extends DataValue>[] filterValueClasses)
+   protected IndigoLoaderNodeDialog(String columnLabel, Class<? extends DataValue>[] filterValueClasses, boolean query)
    {
       super();
+      _settings = new IndigoLoaderSettings(query);
       
       _indigoColumn = new ColumnSelectionComboxBox((Border) null, filterValueClasses);
       _registerDialogComponents();
@@ -98,10 +99,13 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
       dialogPanel.addItemsPanel("Loader Settings");
       dialogPanel.addItem(_treatXAsPseudoatom);
       dialogPanel.addItem(_ignoreStereochemistryErrors);
-      dialogPanel.addItem(_treatStringAsSMARTS);
+      
+      if(query) {
+         dialogPanel.addItem(_treatStringAsSMARTS);
+         _indigoColumn.addItemListener(_smartsItemListener);
+      }
 
       _appendColumn.addChangeListener(_changeListener);
-      _indigoColumn.addItemListener(_smartsItemListener);
       addTab("Standard settings", dialogPanel.getPanel());
    }
 
@@ -111,7 +115,8 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_treatXAsPseudoatom, _settings.treatXAsPseudoatom);
       _settings.registerDialogComponent(_ignoreStereochemistryErrors, _settings.ignoreStereochemistryErrors);
-      _settings.registerDialogComponent(_treatStringAsSMARTS, _settings.treatStringAsSMARTS);
+      if(_settings.query)
+         _settings.registerDialogComponent(_treatStringAsSMARTS, _settings.treatStringAsSMARTS);
    }
 
    /**
@@ -128,7 +133,8 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
          _indigoSpec = specs[IndigoLoaderSettings.INPUT_PORT];
          
          _changeListener.stateChanged(null);
-         _smartsItemListener.itemStateChanged(null);
+         if(_settings.query)
+            _smartsItemListener.itemStateChanged(null);
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());

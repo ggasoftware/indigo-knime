@@ -25,7 +25,11 @@ import com.ggasoftware.indigo.knime.convert.base.IndigoLoaderNodeModel;
 
 public class IndigoQueryMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
-	@Override
+	protected IndigoQueryMoleculeLoaderNodeModel() {
+      super(true);
+   }
+
+   @Override
 	protected DataType getDataCellType() {
 		return IndigoQueryMolCell.TYPE;
 	}

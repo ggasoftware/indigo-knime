@@ -43,5 +43,10 @@ public class IndigoMoleculeLoaderNodeFactory extends
 		return new Class[] { SdfValue.class, MolValue.class,
 				SmilesValue.class, CMLValue.class, StringValue.class };
 	}
+
+   @Override
+   protected boolean isQuery() {
+      return false;
+   }
 	
 }
