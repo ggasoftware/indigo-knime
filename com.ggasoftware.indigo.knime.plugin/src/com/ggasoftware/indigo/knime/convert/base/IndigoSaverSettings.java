@@ -31,7 +31,7 @@ public class IndigoSaverSettings extends IndigoNodeSettings
    public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
-   public final SettingsModelString destFormat = new SettingsModelString("destFormat", Format.Smiles.toString());
+   public final SettingsModelString destFormat = new SettingsModelString("destFormat", Format.Mol.toString());
    public final SettingsModelBoolean generateCoords = new SettingsModelBoolean("generateCoords", true);
    
    public IndigoSaverSettings() {
