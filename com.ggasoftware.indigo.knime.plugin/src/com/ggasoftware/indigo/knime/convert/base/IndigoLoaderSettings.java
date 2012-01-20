@@ -28,6 +28,7 @@ public class IndigoLoaderSettings extends IndigoNodeSettings
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelBoolean treatXAsPseudoatom = new SettingsModelBoolean("treatXAsPseudoatom", true);
    public final SettingsModelBoolean ignoreStereochemistryErrors = new SettingsModelBoolean("ignoreStereochemistryErrors", true);
+   public final SettingsModelBoolean treatStringAsSMARTS = new SettingsModelBoolean("treatStringAsSMARTS", false);
    
    public IndigoLoaderSettings() {
       addSettingsParameter(colName);
@@ -35,6 +36,7 @@ public class IndigoLoaderSettings extends IndigoNodeSettings
       addSettingsParameter(newColName);
       addSettingsParameter(treatXAsPseudoatom);
       addSettingsParameter(ignoreStereochemistryErrors);
+      addSettingsParameter(treatStringAsSMARTS);
    }
 
 }

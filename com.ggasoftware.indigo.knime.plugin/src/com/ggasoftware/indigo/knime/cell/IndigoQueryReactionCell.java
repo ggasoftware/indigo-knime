@@ -116,7 +116,7 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
       Indigo indigo = IndigoPlugin.getIndigo();
       try {
          IndigoPlugin.lock();
-         IndigoQueryReactionCell ret = new IndigoQueryReactionCell(indigo.loadSmarts(smarts));
+         IndigoQueryReactionCell ret = new IndigoQueryReactionCell(indigo.loadReactionSmarts(smarts));
          ret._query = smarts;
          ret._smarts = true;
          return ret;

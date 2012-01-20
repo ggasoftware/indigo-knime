@@ -14,8 +14,10 @@
 
 package com.ggasoftware.indigo.knime.convert.reaction;
 
+import org.knime.chem.types.SmartsCell;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataType;
+import org.knime.core.data.def.StringCell;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
@@ -30,6 +32,17 @@ public class IndigoQueryReactionLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
+	   /*
+       * Define smarts type
+       */
+      if (src.getType().equals(SmartsCell.TYPE))
+         return IndigoQueryReactionCell.fromSmarts(src.toString());
+      
+      if (src.getType().equals(StringCell.TYPE) && _settings.treatStringAsSMARTS.getBooleanValue())
+         return IndigoQueryReactionCell.fromSmarts(src.toString());
+      /*
+       * Load reaction by auto loader
+       */
 		return IndigoQueryReactionCell.fromString(src.toString());
 	}
 

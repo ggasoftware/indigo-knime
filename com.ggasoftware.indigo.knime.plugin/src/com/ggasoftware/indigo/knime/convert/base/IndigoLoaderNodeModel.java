@@ -30,7 +30,7 @@ import java.util.List;
 
 public abstract class IndigoLoaderNodeModel extends NodeModel
 {
-   private final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
+   protected final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
 
    protected Class<? extends DataValue>[] _valueFilterClasses = null;
    

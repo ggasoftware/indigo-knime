@@ -17,6 +17,7 @@ package com.ggasoftware.indigo.knime.convert.molecule;
 import org.knime.chem.types.SmartsCell;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataType;
+import org.knime.core.data.def.StringCell;
 
 import com.ggasoftware.indigo.Indigo;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolCell;
@@ -31,8 +32,17 @@ public class IndigoQueryMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
+	   /*
+	    * Define smarts type
+	    */
 		if (src.getType().equals(SmartsCell.TYPE))
 			return IndigoQueryMolCell.fromSmarts(src.toString());
+		
+		if (src.getType().equals(StringCell.TYPE) && _settings.treatStringAsSMARTS.getBooleanValue())
+		   return IndigoQueryMolCell.fromSmarts(src.toString());
+		/*
+		 * Load molecule by auto loader
+		 */
 		return IndigoQueryMolCell.fromString(src.toString());
 	}
 }

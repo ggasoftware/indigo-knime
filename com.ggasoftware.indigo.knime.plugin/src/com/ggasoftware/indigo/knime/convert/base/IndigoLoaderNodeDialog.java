@@ -14,12 +14,16 @@
 
 package com.ggasoftware.indigo.knime.convert.base;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
@@ -33,12 +37,17 @@ import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 
 public class IndigoLoaderNodeDialog extends NodeDialogPane
 {
+   private final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
+   
    private final ColumnSelectionComboxBox _indigoColumn;
-   private final JCheckBox _treatXAsPseudoatom = new JCheckBox("Treat X as pseudoatom");
-   private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox("Ignore stereochemistry errors");
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
-   private final IndigoLoaderSettings _settings = new IndigoLoaderSettings();
+   
+   private final JCheckBox _treatXAsPseudoatom = new JCheckBox("Treat X as pseudoatom");
+   private final JCheckBox _ignoreStereochemistryErrors = new JCheckBox("Ignore stereochemistry errors");
+   private final JCheckBox _treatStringAsSMARTS = new JCheckBox("Treat string as SMARTS");
+   
+   private DataTableSpec _indigoSpec;
    
    private final ChangeListener _changeListener = new ChangeListener() {
       public void stateChanged(final ChangeEvent e) {
@@ -51,6 +60,24 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
             _newColName.setEnabled(false);
       }
    };
+
+   private ItemListener _smartsItemListener = new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+         _treatStringAsSMARTS.setEnabled(false);
+         if (_indigoSpec != null) {
+            DataColumnSpec colSpec = _indigoSpec.getColumnSpec(_indigoColumn.getSelectedColumn());
+            if (colSpec != null) {
+               if (colSpec.getType().getPreferredValueClass().equals(org.knime.core.data.StringValue.class))
+                  _treatStringAsSMARTS.setEnabled(true);
+               else {
+                  _treatStringAsSMARTS.setEnabled(false);
+                  _treatStringAsSMARTS.setSelected(false);
+               }
+            }
+         }
+      }
+   };;;
 
    /**
     * New pane for configuring IndigoMoleculeLoader node dialog. This is just a
@@ -71,9 +98,10 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
       dialogPanel.addItemsPanel("Loader Settings");
       dialogPanel.addItem(_treatXAsPseudoatom);
       dialogPanel.addItem(_ignoreStereochemistryErrors);
+      dialogPanel.addItem(_treatStringAsSMARTS);
 
-      _appendColumn.addChangeListener(_changeListener );
-      
+      _appendColumn.addChangeListener(_changeListener);
+      _indigoColumn.addItemListener(_smartsItemListener);
       addTab("Standard settings", dialogPanel.getPanel());
    }
 
@@ -83,7 +111,7 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
       _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_treatXAsPseudoatom, _settings.treatXAsPseudoatom);
       _settings.registerDialogComponent(_ignoreStereochemistryErrors, _settings.ignoreStereochemistryErrors);
-      
+      _settings.registerDialogComponent(_treatStringAsSMARTS, _settings.treatStringAsSMARTS);
    }
 
    /**
@@ -97,7 +125,10 @@ public class IndigoLoaderNodeDialog extends NodeDialogPane
          _settings.loadSettingsFrom(settings);
          _settings.loadDialogSettings(specs);
          
+         _indigoSpec = specs[IndigoLoaderSettings.INPUT_PORT];
+         
          _changeListener.stateChanged(null);
+         _smartsItemListener.itemStateChanged(null);
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());
