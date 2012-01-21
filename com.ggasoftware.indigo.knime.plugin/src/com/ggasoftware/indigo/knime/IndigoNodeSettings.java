@@ -198,7 +198,9 @@ public class IndigoNodeSettings {
                // TODO: now to do it better?
                // http://tech.knime.org/forum/knime-developers/how-to-deal-with-settings-when-extending-existing-nodes
                // PS: and why is it printed 3 times?
-               LOGGER.warn(ise.getMessage() + " Probably it is a new option. Using a default value.");
+
+               // Should this be printed? 
+               //LOGGER.warn(ise.getMessage() + " Probably it is a new option. Using a default value.");
             }
             else
                throw ise;
