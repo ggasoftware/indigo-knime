@@ -17,9 +17,11 @@ public class IndigoComponentSeparatorSettings extends IndigoNodeSettings
    public final SettingsModelIntegerBounded componentNumber = new SettingsModelIntegerBounded("componentNumber", 1, 0, Integer.MAX_VALUE);
    
    public IndigoComponentSeparatorSettings() {
+      setLoggerNodeClass(IndigoComponentSeparatorNodeModel.class);
       addSettingsParameter(colName);
       addSettingsParameter(newColPrefix);
-      addSettingsParameter(limitComponentNumber);
-      addSettingsParameter(componentNumber);
+      addSettingsParameter(limitComponentNumber, true);
+      addSettingsParameter(componentNumber, true);
    }
+   
 }

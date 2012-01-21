@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.InvalidSettingsException;
+import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
@@ -32,9 +33,12 @@ import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
  */
 public class IndigoNodeSettings {
    
-
-
+   private NodeLogger LOGGER;
    
+   public void setLoggerNodeClass (final Class<?> nodeClass)
+   {
+      LOGGER = NodeLogger.getLogger(nodeClass);
+   }
 
    private interface DialogMap {
       abstract void load(final DataTableSpec[] specs) throws NotConfigurableException;
@@ -161,31 +165,58 @@ public class IndigoNodeSettings {
 
    }
    
-   private final ArrayList<SettingsModel> _allSettings = new ArrayList<SettingsModel>();
+   class SettingsModelExt {
+      
+      SettingsModelExt (SettingsModel model, boolean optional) {
+         this.model = model; 
+         this.optional = optional;
+      }
+      
+      public SettingsModel model;
+      public boolean optional = false;
+   }
+   
+   private final ArrayList<SettingsModelExt> _allSettings = new ArrayList<SettingsModelExt>();
    private final ArrayList<DialogMap> _allDialogSettings = new ArrayList<DialogMap>();
    
    
    protected void addSettingsParameter(SettingsModel param) {
-      _allSettings.add(param);
+      addSettingsParameter(param, false);
+   }
+   
+   protected void addSettingsParameter(SettingsModel param, boolean optional) {
+      _allSettings.add(new SettingsModelExt(param, optional));
    }
    
    public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-      for (SettingsModel param : _allSettings) {
-         param.loadSettingsFrom(settings);
+      for (SettingsModelExt param : _allSettings) {
+         try {
+            param.model.loadSettingsFrom(settings);
+         } catch (InvalidSettingsException ise) {
+            if (param.optional && LOGGER != null) {
+               // Log a warning about this.
+               // TODO: now to do it better?
+               // http://tech.knime.org/forum/knime-developers/how-to-deal-with-settings-when-extending-existing-nodes
+               // PS: and why is it printed 3 times?
+               LOGGER.warn(ise.getMessage() + " Probably it is a new option. Using a default value.");
+            }
+            else
+               throw ise;
+         }
       }
       loadAdditionalSettings(settings);
    }
 
    public void saveSettingsTo(NodeSettingsWO settings) {
-      for (SettingsModel param : _allSettings) {
-         param.saveSettingsTo(settings);
+      for (SettingsModelExt param : _allSettings) {
+         param.model.saveSettingsTo(settings);
       }
       saveAdditionalSettings(settings);
    }
 
    public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-      for (SettingsModel param : _allSettings) {
-         param.validateSettings(settings);
+      for (SettingsModelExt param : _allSettings) {
+         param.model.validateSettings(settings);
       }
       validateAdditionalSettings(settings);
    }
