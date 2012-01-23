@@ -170,6 +170,9 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
       _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), IndigoMolValue.class));
+      /*
+       * Set loading parameters warning message
+       */
       if(_settings.warningMessage != null) {
          setWarningMessage(_settings.warningMessage);
       }

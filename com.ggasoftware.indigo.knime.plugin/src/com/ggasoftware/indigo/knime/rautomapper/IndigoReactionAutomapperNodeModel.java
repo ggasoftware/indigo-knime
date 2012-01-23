@@ -133,14 +133,14 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
          throw new InvalidSettingsException("Column name not specified");
 
       if (_settings.appendColumn.getBooleanValue())
-         if (_settings.newColumn.getStringValue() == null || _settings.newColumn.getStringValue().length() < 1)
+         if (_settings.newColName.getStringValue() == null || _settings.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("No new column name specified");
 
       int colIdx = inputTableSpec.findColumnIndex(_settings.reactionColumn.getStringValue());
       if (colIdx == -1)
          throw new InvalidSettingsException("column not found");
 
-      String newColName = _settings.newColumn.getStringValue();
+      String newColName = _settings.newColName.getStringValue();
       int newColIdx = inputTableSpec.getNumColumns();
       if (!_settings.appendColumn.getBooleanValue()) {
          newColName = _settings.reactionColumn.getStringValue();
@@ -189,6 +189,12 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs) throws InvalidSettingsException {
       
       searchMixedIndigoColumn(inSpecs[INPUT_PORT], _settings.reactionColumn, IndigoReactionValue.class, IndigoQueryReactionValue.class);
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       
       return getDataTableSpecs(inSpecs[INPUT_PORT]);
    }
@@ -214,7 +220,11 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
     */
    @Override
    protected void validateSettings(final NodeSettingsRO settings) throws InvalidSettingsException {
-      _settings.validateSettings(settings);
+      IndigoReactionAutomapperSettings s = new IndigoReactionAutomapperSettings();
+      s.loadSettingsFrom(settings);
+      
+      if (s.appendColumn.getBooleanValue() && (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1))
+         throw new InvalidSettingsException("new column name must be specified");
    }
 
    /**

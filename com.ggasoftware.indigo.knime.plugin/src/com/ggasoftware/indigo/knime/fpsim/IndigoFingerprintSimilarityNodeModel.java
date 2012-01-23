@@ -221,6 +221,12 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    {
       _settings.targetColumn.setStringValue(searchIndigoColumn(inSpecs[0], _settings.targetColumn.getStringValue(), BitVectorValue.class));
       _settings.queryColumn.setStringValue(searchIndigoColumn(inSpecs[1], _settings.queryColumn.getStringValue(), BitVectorValue.class));
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       return new DataTableSpec[] { getDataTableSpec(inSpecs[0]) };
    }
 
@@ -252,13 +258,13 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
    {
       IndigoFingerprintSimilaritySettings s = new IndigoFingerprintSimilaritySettings();
       s.loadSettingsFrom(settings);
-      s.validateSettings(settings);
       if (s.targetColumn.getStringValue() == null || s.targetColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
       if (s.queryColumn.getStringValue() == null || s.queryColumn.getStringValue().length() < 1)
          throw new InvalidSettingsException("template column name must be specified");
       if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("new column name must be specified");
+      
    }
 
    /**

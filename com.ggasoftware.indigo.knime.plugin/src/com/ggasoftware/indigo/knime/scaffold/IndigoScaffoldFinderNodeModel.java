@@ -137,6 +137,12 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          _settings.newColName .setStringValue("Scaffold");
       _settings.colName.setStringValue(searchIndigoColumn(inSpecs[IndigoScaffoldFinderSettings.INPUT_PORT], _settings.colName.getStringValue(), IndigoMolValue.class));
       DataColumnSpec spec = new DataColumnSpecCreator(_settings.newColName.getStringValue(), IndigoQueryMolCell.TYPE).createSpec();
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       return new DataTableSpec[] { new DataTableSpec(spec) };
    }
 

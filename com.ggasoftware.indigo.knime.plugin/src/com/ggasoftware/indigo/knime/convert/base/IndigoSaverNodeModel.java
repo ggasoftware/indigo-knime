@@ -253,6 +253,12 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
          throws InvalidSettingsException
    {
 	   _settings.colName.setStringValue(searchIndigoColumn(inSpecs[0], _settings.colName.getStringValue(), _dataValueClass));
+	   /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       return new DataTableSpec[] { createRearranger(inSpecs[0]).createSpec() };
    }
 

@@ -168,6 +168,13 @@ public class IndigoValenceCheckerNodeModel extends IndigoNodeModel
 
       if (stype.equals(STRUCTURE_TYPE.Unknown))
          throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
 
       return getDataTableSpecs(inSpecs[0]);
    }

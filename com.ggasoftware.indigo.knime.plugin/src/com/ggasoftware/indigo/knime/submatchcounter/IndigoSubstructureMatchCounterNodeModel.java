@@ -309,6 +309,12 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
       STRUCTURE_TYPE stype = _defineStructureType(inSpecs[TARGET_PORT], inSpecs[QUERY_PORT]);
       if(stype.equals(STRUCTURE_TYPE.Unknown)) 
          throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       // Return null table because table specification depends on the 
       // number of the rows in the query table
       return new DataTableSpec[] {null};
@@ -349,7 +355,6 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
    {
       IndigoSubstructureMatchCounterSettings s = new IndigoSubstructureMatchCounterSettings();
       s.loadSettingsFrom(settings);
-      s.validateSettings(settings);
       if (s.targetColName.getStringValue() == null || s.targetColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");
       if (s.queryColName.getStringValue() == null || s.queryColName.getStringValue().length() < 1)

@@ -517,6 +517,13 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       if(stype.equals(STRUCTURE_TYPE.Unknown)) 
          throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
       
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
+      
       return new DataTableSpec[] { null, null };
    }
 
@@ -555,7 +562,6 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    {
       IndigoSubstructureMatcherSettings s = new IndigoSubstructureMatcherSettings();
       s.loadSettingsFrom(settings);
-      s.validateSettings(settings);
 
       if (s.targetColName.getStringValue() == null || s.targetColName.getStringValue().length() < 1)
          throw new InvalidSettingsException("column name must be specified");

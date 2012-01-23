@@ -201,6 +201,12 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    {
       _settings.molColumn.setStringValue(searchIndigoColumn(inSpecs[IndigoRGroupDecomposerSettings.MOL_PORT], _settings.molColumn.getStringValue(), IndigoMolValue.class));
       _settings.scaffoldColumn.setStringValue(searchIndigoColumn(inSpecs[IndigoRGroupDecomposerSettings.SCAF_PORT], _settings.scaffoldColumn.getStringValue(), IndigoQueryMolValue.class));
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       return new DataTableSpec[2];
    }
 

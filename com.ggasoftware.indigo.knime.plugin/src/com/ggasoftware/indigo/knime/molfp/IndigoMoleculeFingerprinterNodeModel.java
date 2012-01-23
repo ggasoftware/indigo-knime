@@ -168,6 +168,13 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
       if (_settings.newColName.getStringValue() == null)
          _settings.newColName.setStringValue(_settings.colName.getStringValue() + " (fingerprint)");
       
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
+      
       return new DataTableSpec[] { getDataTableSpec(inSpec) };
    }
 
@@ -199,7 +206,6 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    {
       IndigoMoleculeFingerprinterSettings s = new IndigoMoleculeFingerprinterSettings();
       s.loadSettingsFrom(settings);
-      s.validateSettings(settings);
       
       if (s.fpSizeQWords.getIntValue() < 1)
          throw new InvalidSettingsException("fingerprint size must be a positive integer");

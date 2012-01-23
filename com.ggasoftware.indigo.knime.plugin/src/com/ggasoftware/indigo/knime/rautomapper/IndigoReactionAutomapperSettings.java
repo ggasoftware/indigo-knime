@@ -22,7 +22,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
 
    public final SettingsModelColumnName reactionColumn = new SettingsModelColumnName("column", null);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
-   public final SettingsModelString newColumn = new SettingsModelString("newColumn", null);
+   public final SettingsModelString newColName = new SettingsModelString("newColumn", null);
    public final SettingsModelInteger mode = new SettingsModelInteger("mode", AAMode.Discard.ordinal());
    
    public final SettingsModelBoolean ignoreCharges = new SettingsModelBoolean(CFGKEY_IGNORE_CHARGES, false);
@@ -35,7 +35,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public IndigoReactionAutomapperSettings() {
       addSettingsParameter(reactionColumn);
       addSettingsParameter(appendColumn);
-      addSettingsParameter(newColumn);
+      addSettingsParameter(newColName);
       addSettingsParameter(mode);
       addSettingsParameter(ignoreCharges);
       addSettingsParameter(ignoreIsotopes);

@@ -236,6 +236,12 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
       
       if(stype.equals(STRUCTURE_TYPE.Unknown)) 
          throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       return new DataTableSpec[] { getDataTableSpec(inSpec) };
    }
 

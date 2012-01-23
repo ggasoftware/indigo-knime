@@ -60,7 +60,7 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
 
    private void _registerDialogComponents() {
       _settings.registerDialogComponent(_colName, IndigoReactionAutomapperNodeModel.INPUT_PORT, _settings.reactionColumn);
-      _settings.registerDialogComponent(_newColName, _settings.newColumn);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
       _settings.registerDialogComponent(_mode, _settings.mode);
       /*
