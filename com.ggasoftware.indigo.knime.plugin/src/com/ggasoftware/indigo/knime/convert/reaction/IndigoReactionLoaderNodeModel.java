@@ -25,7 +25,6 @@ public class IndigoReactionLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	protected IndigoReactionLoaderNodeModel() {
       super(false);
-      _settings.setLoggerNodeClass(IndigoReactionLoaderNodeModel.class);
    }
 
    @Override

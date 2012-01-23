@@ -40,7 +40,7 @@ public class IndigoLoaderSettings extends IndigoNodeSettings
       addSettingsParameter(treatXAsPseudoatom);
       addSettingsParameter(ignoreStereochemistryErrors);
       if(query)
-         addSettingsParameter(treatStringAsSMARTS, true);
+         addSettingsParameter(treatStringAsSMARTS);
    }
 
 }

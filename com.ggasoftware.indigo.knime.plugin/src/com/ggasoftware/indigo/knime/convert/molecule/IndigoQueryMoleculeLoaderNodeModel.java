@@ -27,7 +27,6 @@ public class IndigoQueryMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	protected IndigoQueryMoleculeLoaderNodeModel() {
       super(true);
-      _settings.setLoggerNodeClass(IndigoQueryMoleculeLoaderNodeModel.class);
    }
 
    @Override
