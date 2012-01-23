@@ -31,7 +31,7 @@ import java.util.List;
 public abstract class IndigoLoaderNodeModel extends NodeModel
 {
    protected final IndigoLoaderSettings _settings;
-
+   
    protected Class<? extends DataValue>[] _valueFilterClasses = null;
    
    public void set_valueFilterClasses(
@@ -247,6 +247,10 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
 	            setWarningMessage("Column \"" + _settings.colName.getStringValue() + "\" was used by default.");
          }
    	}
+   	if(_settings.warningMessage != null) {
+   	   setWarningMessage(_settings.warningMessage);
+   	}
+   	
       DataTableSpec inputTableSpec = inSpecs[0];
       return getDataTableSpecs(inputTableSpec);
    }
@@ -264,9 +268,8 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
     * {@inheritDoc}
     */
    @Override
-   protected void loadValidatedSettingsFrom (final NodeSettingsRO settings)
-         throws InvalidSettingsException
-   {
+   protected void loadValidatedSettingsFrom(final NodeSettingsRO settings)
+         throws InvalidSettingsException {
       _settings.loadSettingsFrom(settings);
    }
 
@@ -277,8 +280,9 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected void validateSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      IndigoLoaderSettings s = new IndigoLoaderSettings(false);
+      IndigoLoaderSettings s = new IndigoLoaderSettings(_settings.query);
       s.loadSettingsFrom(settings);
+      
       if (s.appendColumn.getBooleanValue())
          if (s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
             throw new InvalidSettingsException("No name for new column given");
