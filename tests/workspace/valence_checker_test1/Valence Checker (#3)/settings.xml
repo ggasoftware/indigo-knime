@@ -7,8 +7,4 @@
 <entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
 </config>
 <entry key="state" type="xstring" value="CONFIGURED"/>
-<config key="node_message">
-<entry key="type" type="xstring" value="WARNING"/>
-<entry key="message" type="xstring" value="Error while loading settings: String for key &quot;colName&quot; not found.%%00010"/>
-</config>
 </config>

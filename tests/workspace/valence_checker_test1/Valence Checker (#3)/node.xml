@@ -10,7 +10,6 @@
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>
-<entry key="node_message" type="xstring" value="Error while loading settings: String for key &quot;colName&quot; not found.%%00010"/>
 <config key="ports">
 <config key="port_1">
 <entry key="index" type="xint" value="1"/>

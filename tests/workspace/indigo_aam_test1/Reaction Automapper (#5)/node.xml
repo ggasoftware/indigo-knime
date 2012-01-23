@@ -7,11 +7,11 @@
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="column" type="xstring" value="column1"/>
-<config key="appendColumn_Internals">
+<config key="replaceColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumn" type="xboolean" value="true"/>
+<entry key="replaceColumn" type="xboolean" value="true"/>
 <config key="newColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

@@ -2,16 +2,16 @@
 <config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
 <entry key="name" type="xstring" value="Substructure Matcher"/>
 <config key="model">
-<config key="targetColName_Internals">
+<config key="colName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="targetColName" type="xstring" value="column1"/>
-<config key="queryColName_Internals">
+<entry key="colName" type="xstring" value="column1"/>
+<config key="colName2_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="queryColName" type="xstring" value="column1"/>
+<entry key="colName2" type="xstring" value="column1"/>
 <config key="mode_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -46,7 +46,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newColName" type="xstring" value=""/>
+<entry key="newColName" type="xstring" isnull="true" value=""/>
 <config key="appendQueryKeyColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -56,7 +56,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="queryKeyColumn" type="xstring" value=""/>
+<entry key="queryKeyColumn" type="xstring" isnull="true" value=""/>
 <config key="appendQueryMatchCountKeyColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -66,7 +66,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="queryMatchCountKeyColumn" type="xstring" value=""/>
+<entry key="queryMatchCountKeyColumn" type="xstring" isnull="true" value=""/>
 <config key="matchAllExceptSelected_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

@@ -6,7 +6,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="colName" type="xstring" value="column1 (Indigo)"/>
+<entry key="colName" type="xstring" value="column1"/>
 <config key="newColPrefix_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

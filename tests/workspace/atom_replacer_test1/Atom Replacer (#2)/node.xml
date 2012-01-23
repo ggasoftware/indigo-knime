@@ -7,21 +7,21 @@
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <entry key="colName" type="xstring" value="column1"/>
-<config key="appendColumn_Internals">
+<config key="replaceColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumn" type="xboolean" value="false"/>
+<entry key="replaceColumn" type="xboolean" value="true"/>
 <config key="newColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newColName" type="xstring" isnull="true" value=""/>
+<entry key="newColName" type="xstring" value=""/>
 <config key="newAtomLabel_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newAtomLabel" type="xstring" value="*"/>
+<entry key="newAtomLabel" type="xstring" value="O"/>
 <config key="replaceHighlighted_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -31,12 +31,12 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="replaceSpecificAtom" type="xboolean" value="false"/>
+<entry key="replaceSpecificAtom" type="xboolean" value="true"/>
 <config key="specificAtom_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="specificAtom" type="xstring" isnull="true" value=""/>
+<entry key="specificAtom" type="xstring" value="C"/>
 <config key="replaceAttachmentPoints_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
