@@ -27,13 +27,13 @@ public class IndigoSubstructureMatchCounterSettings extends IndigoNodeSettings
       Atoms, Bonds, None
    }
 
-   public final SettingsModelString targetColName = new SettingsModelString("targetColName", null);
-   public final SettingsModelString queryColName = new SettingsModelString("queryColName", null);
+   public final SettingsModelString targetColName = new SettingsModelString("colName", null);
+   public final SettingsModelString queryColName = new SettingsModelString("colName2", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "Number of matches");
    public final SettingsModelInteger uniqueness = new SettingsModelInteger("uniqueness", Uniqueness.Atoms.ordinal());
    public final SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
-   public final SettingsModelString appendColumnName = new SettingsModelString("appendColumnName", null);
+   public final SettingsModelString appendColumnName = new SettingsModelString("newColName2", null);
    /*
     * Parameter is not saved
     */

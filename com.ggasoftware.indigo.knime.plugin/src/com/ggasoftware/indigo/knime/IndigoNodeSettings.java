@@ -19,6 +19,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
@@ -31,10 +32,6 @@ import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
  */
 public class IndigoNodeSettings {
    
-
-
-   
-
    private interface DialogMap {
       abstract void load(final DataTableSpec[] specs) throws NotConfigurableException;
       abstract void save();
@@ -160,6 +157,36 @@ public class IndigoNodeSettings {
 
    }
    
+   public class DeprecatedSettingsModelBooleanInverse extends SettingsModelBoolean {
+
+      private final String _configName;
+      private final boolean _defaultValue;
+
+      public DeprecatedSettingsModelBooleanInverse(String configName,
+            boolean defaultValue) {
+         super(configName, defaultValue);
+         this._configName = configName;
+         this._defaultValue = defaultValue;
+      }
+      
+      @Override
+      protected void loadSettingsForModel(NodeSettingsRO settings)
+            throws InvalidSettingsException {
+         setBooleanValue(!settings.getBoolean(_configName));
+      }
+      
+      @Override
+      protected void loadSettingsForDialog(NodeSettingsRO settings,
+            PortObjectSpec[] specs) throws NotConfigurableException {
+         setBooleanValue(!settings.getBoolean(_configName, _defaultValue));
+      }
+      
+      @Override
+      protected void saveSettingsForModel(NodeSettingsWO settings) {
+         settings.addBoolean(_configName, !getBooleanValue());
+      }
+   }
+   
    private final ArrayList<SettingsModel> _allSettings = new ArrayList<SettingsModel>();
    private final ArrayList<DialogMap> _allDialogSettings = new ArrayList<DialogMap>();
    public String warningMessage;
@@ -201,12 +228,6 @@ public class IndigoNodeSettings {
       saveAdditionalSettings(settings);
    }
 
-   public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-      for (SettingsModel param : _allSettings) {
-         param.validateSettings(settings);
-      }
-      validateAdditionalSettings(settings);
-   }
    /*
     * Additional settings processing
     */

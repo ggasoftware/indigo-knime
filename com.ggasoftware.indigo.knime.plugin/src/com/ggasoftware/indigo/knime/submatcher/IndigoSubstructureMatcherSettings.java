@@ -30,8 +30,8 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       Standard, DaylightAAM
    }
    
-   public final SettingsModelString targetColName = new SettingsModelString("targetColName", null);
-   public final SettingsModelString queryColName = new SettingsModelString("queryColName", null);
+   public final SettingsModelString targetColName = new SettingsModelString("colName", null);
+   public final SettingsModelString queryColName = new SettingsModelString("colName2", null);
    public final SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
    public final SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
    public final SettingsModelBoolean align = new SettingsModelBoolean("align", false);
