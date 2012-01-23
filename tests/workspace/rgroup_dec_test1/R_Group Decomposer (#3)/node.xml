@@ -10,6 +10,14 @@
 <entry key="useRowID" type="xboolean" value="false"/>
 <entry key="columnName" type="xstring" value="column1"/>
 </config>
+<config key="scaffoldColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<config key="scaffoldColumn">
+<entry key="useRowID" type="xboolean" value="false"/>
+<entry key="columnName" type="xstring" value="column1"/>
+</config>
 <config key="newColPrefix_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
