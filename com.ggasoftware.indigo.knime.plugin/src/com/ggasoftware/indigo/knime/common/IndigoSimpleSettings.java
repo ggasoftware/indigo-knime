@@ -14,7 +14,6 @@
 
 package com.ggasoftware.indigo.knime.common;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
@@ -24,7 +23,7 @@ public class IndigoSimpleSettings extends IndigoNodeSettings
    public static final int INPUT_PORT = 0;
    
    public final SettingsModelString colName = new SettingsModelString("colName", null);
-   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final DeprecatedSettingsModelBooleanInverse appendColumn = new DeprecatedSettingsModelBooleanInverse("replaceColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    
    /*
