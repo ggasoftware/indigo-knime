@@ -10,7 +10,7 @@ public class IndigoAtomReplacerSettings extends IndigoNodeSettings
    public static final int INPUT_PORT = 0;
    
    public final SettingsModelString colName = new SettingsModelString("colName", null);
-   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final DeprecatedSettingsModelBooleanInverse appendColumn = new DeprecatedSettingsModelBooleanInverse("replaceColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelString newAtomLabel = new SettingsModelString("newAtomLabel", "*");
    public final SettingsModelBoolean replaceHighlighted = new SettingsModelBoolean("replaceHighlighted", false);

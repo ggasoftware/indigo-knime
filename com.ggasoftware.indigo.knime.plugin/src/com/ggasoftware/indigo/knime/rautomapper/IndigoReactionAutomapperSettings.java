@@ -20,7 +20,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    static final String CFGKEY_IGNORE_VALENCE = "ignore_valence";
 
    public final SettingsModelString reactionColumn = new SettingsModelString("column", null);
-   public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
+   public final DeprecatedSettingsModelBooleanInverse appendColumn = new DeprecatedSettingsModelBooleanInverse("replaceColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColumn", null);
    public final SettingsModelInteger mode = new SettingsModelInteger("mode", AAMode.Discard.ordinal());
    

@@ -35,8 +35,8 @@ public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
       Minimum, Maximum, Average
    }
    
-   public final SettingsModelString targetColumn = new SettingsModelString("targetColumn", null);
-   public final SettingsModelString queryColumn = new SettingsModelString("queryColumn", null);
+   public final SettingsModelString targetColumn = new SettingsModelString("colName", null);
+   public final SettingsModelString queryColumn = new SettingsModelString("colName2", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "similarity");
    public final SettingsModelInteger metric = new SettingsModelInteger("metric", Metric.Tanimoto.ordinal());
    public final SettingsModelDouble tverskyAlpha = new SettingsModelDouble("tverskyAlpha", 0.5f);
