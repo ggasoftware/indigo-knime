@@ -163,6 +163,7 @@ public class IndigoNodeSettings {
    
    private final ArrayList<SettingsModel> _allSettings = new ArrayList<SettingsModel>();
    private final ArrayList<DialogMap> _allDialogSettings = new ArrayList<DialogMap>();
+   public String warningMessage;
    
    
    protected void addSettingsParameter(SettingsModel param) {
@@ -170,10 +171,28 @@ public class IndigoNodeSettings {
    }
    
    public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
+      loadSettingsFrom(settings, false);
+   }
+   
+   public void loadSettingsFrom(NodeSettingsRO settings, boolean throwError) throws InvalidSettingsException {
+      warningMessage = null;
+      StringBuilder wMessage = new StringBuilder();
+      
       for (SettingsModel param : _allSettings) {
-         param.loadSettingsFrom(settings);
+         try {
+            param.loadSettingsFrom(settings);
+         } catch (InvalidSettingsException e) {
+            wMessage.append(e.getMessage());
+            wMessage.append('\n');
+         }
       }
       loadAdditionalSettings(settings);
+      if(wMessage.length() > 0 ) {
+         wMessage.insert(0, "Error while loading settings: ");
+         warningMessage = wMessage.toString();
+         if(throwError)
+            throw new InvalidSettingsException(warningMessage);
+      }
    }
 
    public void saveSettingsTo(NodeSettingsWO settings) {
