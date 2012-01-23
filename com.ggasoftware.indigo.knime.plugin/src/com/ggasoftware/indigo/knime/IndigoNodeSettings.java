@@ -16,7 +16,6 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.defaultnodesettings.SettingsModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
@@ -128,9 +127,9 @@ public class IndigoNodeSettings {
 
       private final ColumnSelectionComboxBox _dialogComp;
       private final int _specPort;
-      private final SettingsModelColumnName _mapParam;
+      private final SettingsModelString _mapParam;
 
-      public ColumnDialogMap(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelColumnName mapParam) {
+      public ColumnDialogMap(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelString mapParam) {
          this._dialogComp = dialogComp;
          this._specPort = specPort;
          this._mapParam = mapParam;
@@ -239,7 +238,7 @@ public class IndigoNodeSettings {
       _allDialogSettings.add(new SpinnerDialogMap(dialogComp, mapParam));
    }
    
-   public void registerDialogComponent(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelColumnName mapParam) {
+   public void registerDialogComponent(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelString mapParam) {
       _allDialogSettings.add(new ColumnDialogMap(dialogComp, specPort, mapParam));
    }
    

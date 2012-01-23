@@ -149,7 +149,7 @@ public class IndigoValenceCheckerNodeModel extends IndigoNodeModel
    }
    
    private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
-      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getStringValue());
       return stype;
    }
 

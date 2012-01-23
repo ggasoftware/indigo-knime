@@ -15,7 +15,6 @@
 package com.ggasoftware.indigo.knime.rgdecomp;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
@@ -25,8 +24,8 @@ public class IndigoRGroupDecomposerSettings extends IndigoNodeSettings
    public static final int MOL_PORT = 0;
    public static final int SCAF_PORT = 1;
    
-   public final SettingsModelColumnName molColumn = new SettingsModelColumnName("molColumn", null);
-   public final SettingsModelColumnName scaffoldColumn = new SettingsModelColumnName("scaffoldColumn", null);
+   public final SettingsModelString molColumn = new SettingsModelString("molColumn", null);
+   public final SettingsModelString scaffoldColumn = new SettingsModelString("scaffoldColumn", null);
    public final SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "R-Group #");
    public final SettingsModelString newScafColName = new SettingsModelString("newScafColName", "Scaffold");
    public final SettingsModelBoolean aromatize = new SettingsModelBoolean("aromatize", true);

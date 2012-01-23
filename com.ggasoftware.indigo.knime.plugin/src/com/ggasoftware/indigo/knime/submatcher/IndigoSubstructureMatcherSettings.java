@@ -16,7 +16,6 @@ package com.ggasoftware.indigo.knime.submatcher;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
@@ -31,8 +30,8 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
       Standard, DaylightAAM
    }
    
-   public final SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
-   public final SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
+   public final SettingsModelString targetColName = new SettingsModelString("targetColName", null);
+   public final SettingsModelString queryColName = new SettingsModelString("queryColName", null);
    public final SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
    public final SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
    public final SettingsModelBoolean align = new SettingsModelBoolean("align", false);

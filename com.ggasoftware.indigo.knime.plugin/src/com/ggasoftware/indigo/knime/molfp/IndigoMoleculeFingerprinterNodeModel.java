@@ -144,7 +144,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
    }
    
    private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
-      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getStringValue());
       _settings.structureType = stype;
       return stype;
    }

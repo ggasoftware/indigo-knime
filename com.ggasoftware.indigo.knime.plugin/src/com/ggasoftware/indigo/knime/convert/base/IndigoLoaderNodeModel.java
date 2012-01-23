@@ -241,7 +241,7 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
             throw new InvalidSettingsException("There is no compatible colums in the source table");
          else
          {
-         	_settings.colName.setSelection(compatible_columns.get(0), false);
+         	_settings.colName.setStringValue(compatible_columns.get(0));
          	_settings.newColName.setStringValue(_settings.colName.getStringValue() + " (Indigo)");
          	if (compatible_columns.size() > 1)
 	            setWarningMessage("Column \"" + _settings.colName.getStringValue() + "\" was used by default.");

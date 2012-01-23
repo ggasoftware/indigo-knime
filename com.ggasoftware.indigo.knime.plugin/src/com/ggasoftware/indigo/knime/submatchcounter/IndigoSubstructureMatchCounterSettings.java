@@ -16,7 +16,6 @@ package com.ggasoftware.indigo.knime.submatchcounter;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
@@ -28,8 +27,8 @@ public class IndigoSubstructureMatchCounterSettings extends IndigoNodeSettings
       Atoms, Bonds, None
    }
 
-   public final SettingsModelColumnName targetColName = new SettingsModelColumnName("targetColName", null);
-   public final SettingsModelColumnName queryColName = new SettingsModelColumnName("queryColName", null);
+   public final SettingsModelString targetColName = new SettingsModelString("targetColName", null);
+   public final SettingsModelString queryColName = new SettingsModelString("queryColName", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "Number of matches");
    public final SettingsModelInteger uniqueness = new SettingsModelInteger("uniqueness", Uniqueness.Atoms.ordinal());
    public final SettingsModelBoolean highlight = new SettingsModelBoolean("highlight", false);

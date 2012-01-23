@@ -6,18 +6,12 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="targetColumn">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column1 (fingerprint)"/>
-</config>
+<entry key="targetColumn" type="xstring" value="column1 (fingerprint)"/>
 <config key="queryColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="queryColumn">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column1 (fingerprint)"/>
-</config>
+<entry key="queryColumn" type="xstring" value="column1 (fingerprint)"/>
 <config key="newColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

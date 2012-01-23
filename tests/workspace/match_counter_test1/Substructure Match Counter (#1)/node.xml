@@ -6,18 +6,12 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="targetColName">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column2"/>
-</config>
+<entry key="targetColName" type="xstring" value="column2"/>
 <config key="queryColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="queryColName">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column2"/>
-</config>
+<entry key="queryColName" type="xstring" value="column2"/>
 <config key="newColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
@@ -32,17 +26,17 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="highlight" type="xboolean" value="true"/>
+<entry key="highlight" type="xboolean" value="false"/>
 <config key="appendColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumn" type="xboolean" value="true"/>
+<entry key="appendColumn" type="xboolean" value="false"/>
 <config key="appendColumnName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumnName" type="xstring" value="column2 (highlihghted)"/>
+<entry key="appendColumnName" type="xstring" value=""/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>

@@ -14,7 +14,6 @@
 
 package com.ggasoftware.indigo.knime.molfp;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
@@ -28,7 +27,7 @@ public class IndigoMoleculeFingerprinterSettings extends IndigoNodeSettings
    public static final int FP_MIN = 1;
    public static final int FP_MAX = 1000000;
    
-   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString colName = new SettingsModelString("colName", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelIntegerBounded fpSizeQWords = new SettingsModelIntegerBounded("fpSizeQWords", FP_DEFAULT, FP_MIN, FP_MAX);
    

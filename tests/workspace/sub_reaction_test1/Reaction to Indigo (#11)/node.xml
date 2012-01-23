@@ -6,10 +6,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="colName">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column1"/>
-</config>
+<entry key="colName" type="xstring" value="column1"/>
 <config key="appendColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>

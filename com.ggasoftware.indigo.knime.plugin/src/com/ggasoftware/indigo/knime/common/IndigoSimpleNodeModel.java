@@ -178,7 +178,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    }
    
    private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec) {
-      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getColumnName());
+      STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, _settings.colName.getStringValue());
       _settings.structureType = stype;
       return stype;
    }
@@ -198,6 +198,12 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       
       if(stype.equals(STRUCTURE_TYPE.Unknown)) 
          throw new InvalidSettingsException("can not define structure type: reaction or molecule columns");
+      /*
+       * Set loading parameters warning message
+       */
+      if(_settings.warningMessage != null) {
+         setWarningMessage(_settings.warningMessage);
+      }
       
       return new DataTableSpec[] { createRearranger(inSpec).createSpec() };
    }
@@ -230,7 +236,6 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    {
       IndigoSimpleSettings s = new IndigoSimpleSettings();
       s.loadSettingsFrom(settings);
-      s.validateSettings(settings);
       if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
       

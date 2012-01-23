@@ -322,7 +322,7 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
    
    private STRUCTURE_TYPE _defineStructureType(DataTableSpec tSpec, DataTableSpec qSpec) {
       STRUCTURE_TYPE stype = IndigoNodeSettings.getStructureType(tSpec, qSpec,
-            _settings.targetColName.getColumnName(), _settings.queryColName.getColumnName());
+            _settings.targetColName.getStringValue(), _settings.queryColName.getStringValue());
       _settings.structureType = stype;
       return stype;
    }

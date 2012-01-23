@@ -6,29 +6,22 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="colName">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column1"/>
-</config>
+<entry key="colName" type="xstring" value="column1"/>
 <config key="appendColumn_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="appendColumn" type="xboolean" value="true"/>
+<entry key="appendColumn" type="xboolean" value="false"/>
 <config key="newColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newColName" type="xstring" value="column1 (featureless)"/>
+<entry key="newColName" type="xstring" isnull="true" value=""/>
 <config key="selectedFeatures_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_stringarray"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="selectedFeatures">
-<entry key="array-size" type="xint" value="2"/>
-<entry key="0" type="xstring" value="Isotopes"/>
-<entry key="1" type="xstring" value="Minor components"/>
-</config>
+<config key="selectedFeatures"/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>

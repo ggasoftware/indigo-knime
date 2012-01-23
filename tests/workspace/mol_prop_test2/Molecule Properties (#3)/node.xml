@@ -6,18 +6,14 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<config key="colName">
-<entry key="useRowID" type="xboolean" value="false"/>
-<entry key="columnName" type="xstring" value="column1"/>
-</config>
+<entry key="colName" type="xstring" value="column1"/>
 <config key="selectedProps_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_stringarray"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
 <config key="selectedProps">
-<entry key="array-size" type="xint" value="2"/>
-<entry key="0" type="xstring" value="Molecular weight"/>
-<entry key="1" type="xstring" value="Monoisotopic mass"/>
+<entry key="array-size" type="xint" value="1"/>
+<entry key="0" type="xstring" value="Molecular formula"/>
 </config>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>

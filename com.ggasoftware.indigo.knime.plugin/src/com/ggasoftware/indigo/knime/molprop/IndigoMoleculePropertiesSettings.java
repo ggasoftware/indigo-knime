@@ -14,14 +14,14 @@
 
 package com.ggasoftware.indigo.knime.molprop;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
 public class IndigoMoleculePropertiesSettings extends IndigoNodeSettings
 {
-   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString colName = new SettingsModelString("colName", null);
    public final SettingsModelStringArray selectedProps = new SettingsModelStringArray("selectedProps", null);
 
    public IndigoMoleculePropertiesSettings() {

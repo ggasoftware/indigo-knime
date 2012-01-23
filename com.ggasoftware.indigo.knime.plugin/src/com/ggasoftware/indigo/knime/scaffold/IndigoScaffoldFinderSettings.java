@@ -15,7 +15,6 @@
 package com.ggasoftware.indigo.knime.scaffold;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
@@ -25,7 +24,7 @@ public class IndigoScaffoldFinderSettings extends IndigoNodeSettings
 {
    public static final int INPUT_PORT = 0;
    
-   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString colName = new SettingsModelString("colName", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "Scaffold");
    public final SettingsModelBoolean tryExactMethod = new SettingsModelBoolean("tryExactMethod", true);
    public final SettingsModelInteger maxIterExact = new SettingsModelInteger("maxIterExact", 50000);

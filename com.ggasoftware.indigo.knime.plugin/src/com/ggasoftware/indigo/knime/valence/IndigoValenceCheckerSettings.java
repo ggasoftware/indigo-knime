@@ -14,7 +14,7 @@
 
 package com.ggasoftware.indigo.knime.valence;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
@@ -22,7 +22,7 @@ public class IndigoValenceCheckerSettings extends IndigoNodeSettings
 {
    public static final int INPUT_PORT = 0;
    
-   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString colName = new SettingsModelString("colName", null);
 
    public IndigoValenceCheckerSettings() {
       addSettingsParameter(colName);

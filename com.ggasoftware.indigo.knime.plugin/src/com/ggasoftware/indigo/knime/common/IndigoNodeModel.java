@@ -8,7 +8,7 @@ import org.knime.core.data.DataType;
 import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
@@ -53,7 +53,7 @@ public abstract class IndigoNodeModel extends NodeModel
       return colName;
    }
 
-   protected void searchMixedIndigoColumn(DataTableSpec spec, SettingsModelColumnName colNameModel, Class<? extends DataValue> class1,
+   protected void searchMixedIndigoColumn(DataTableSpec spec, SettingsModelString colNameModel, Class<? extends DataValue> class1,
          Class<? extends DataValue> class2) throws InvalidSettingsException {
       
       String colName = colNameModel.getStringValue();

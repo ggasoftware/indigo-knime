@@ -14,7 +14,6 @@
 
 package com.ggasoftware.indigo.knime.fpsim;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
@@ -36,8 +35,8 @@ public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
       Minimum, Maximum, Average
    }
    
-   public final SettingsModelColumnName targetColumn = new SettingsModelColumnName("targetColumn", null);
-   public final SettingsModelColumnName queryColumn = new SettingsModelColumnName("queryColumn", null);
+   public final SettingsModelString targetColumn = new SettingsModelString("targetColumn", null);
+   public final SettingsModelString queryColumn = new SettingsModelString("queryColumn", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "similarity");
    public final SettingsModelInteger metric = new SettingsModelInteger("metric", Metric.Tanimoto.ordinal());
    public final SettingsModelDouble tverskyAlpha = new SettingsModelDouble("tverskyAlpha", 0.5f);

@@ -15,7 +15,6 @@
 package com.ggasoftware.indigo.knime.convert.base;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
-import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
@@ -28,7 +27,7 @@ public class IndigoSaverSettings extends IndigoNodeSettings
    }
 
    public static final int INPUT_PORT = 0;
-   public final SettingsModelColumnName colName = new SettingsModelColumnName("colName", null);
+   public final SettingsModelString colName = new SettingsModelString("colName", null);
    public final SettingsModelBoolean appendColumn = new SettingsModelBoolean("appendColumn", false);
    public final SettingsModelString newColName = new SettingsModelString("newColName", null);
    public final SettingsModelString destFormat = new SettingsModelString("destFormat", Format.Mol.toString());
