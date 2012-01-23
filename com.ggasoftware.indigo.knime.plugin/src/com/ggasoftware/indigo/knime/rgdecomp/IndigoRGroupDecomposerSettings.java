@@ -26,7 +26,7 @@ public class IndigoRGroupDecomposerSettings extends IndigoNodeSettings
    public static final int SCAF_PORT = 1;
    
    public final SettingsModelColumnName molColumn = new SettingsModelColumnName("molColumn", null);
-   public final SettingsModelColumnName scaffoldColumn = new SettingsModelColumnName("molColumn", null);
+   public final SettingsModelColumnName scaffoldColumn = new SettingsModelColumnName("scaffoldColumn", null);
    public final SettingsModelString newColPrefix = new SettingsModelString("newColPrefix", "R-Group #");
    public final SettingsModelString newScafColName = new SettingsModelString("newScafColName", "Scaffold");
    public final SettingsModelBoolean aromatize = new SettingsModelBoolean("aromatize", true);
