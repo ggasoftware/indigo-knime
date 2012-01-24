@@ -4,23 +4,17 @@
     <name>Component Combiner</name>
     
     <shortDescription>
-        
     </shortDescription>
     
     <fullDescription>
-        <intro>Insert long description here...</intro>
-        <option name="short name of first option (like in the dialog)">description of first option</option>
-        <option name="short name of second option (like in the dialog)">description of second option</option>
+        <intro>Supports the IndigoMolecule and IndigoQueryMolecule inputs. This node combines the input molecule components into joined molecules and writes the result molecules
+               into the output table column. Defines the output column type automatically.</intro>
+        <option name="Include Columns">Filter for choosing the component columns</option>
+        <option name=""Result molecule column name"">Column name for the output molecules</option>
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Description of first input port...</inPort>
-        <!-- possibly more input ports here-->
-        <outPort index="0" name="Out-Port name">Description of first output port...</outPort>
-        <!-- possibly more output ports here-->
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules or query molecules</inPort>
+        <outPort index="0" name="Joined components">The same as input, plus the column with the combined components</outPort>
     </ports>    
-    <views>
-        <view index="0" name="name of first view">Description of first view...</view>
-        <!--view index="1" name="name of second view">Description of second view...</view-->
-    </views>
 </knimeNode>
