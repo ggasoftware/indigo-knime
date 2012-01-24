@@ -113,7 +113,7 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
                 * Merge with molecule
                 */
                IndigoObject io = ((IndigoDataValue)dataCell).getIndigoObject();
-               if(resultMol == null) {
+               if(cellType == null) {
                   /*
                    * Create cell clone
                    */
