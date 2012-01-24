@@ -62,6 +62,7 @@ public class IndigoComponentCombinerNodeDialog extends NodeDialogPane {
          throws InvalidSettingsException {
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
+      filterPanel.saveSettingsTo(settings);
    }
    
    @Override
