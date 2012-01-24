@@ -2,7 +2,6 @@ package com.ggasoftware.indigo.knime.compjoin;
 
 import javax.swing.JTextField;
 
-import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeDialogPane;
@@ -10,11 +9,8 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnFilter;
-import org.knime.core.node.util.ColumnFilter;
 
 import com.ggasoftware.indigo.knime.IndigoDialogPanel;
-import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
-import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 
 public class IndigoComponentCombinerNodeDialog extends NodeDialogPane {
    private final IndigoComponentCombinerSettings _settings = new IndigoComponentCombinerSettings();
@@ -35,20 +31,8 @@ public class IndigoComponentCombinerNodeDialog extends NodeDialogPane {
          */
         filterPanel = new DialogComponentColumnFilter(_settings.colNames, 
               IndigoComponentCombinerSettings.INPUT_PORT, 
-              true, new ColumnFilter() {
-               @Override
-               public boolean includeColumn(DataColumnSpec colSpec) {
-                  if(colSpec.getType().isCompatible(IndigoMolValue.class))
-                     return true;
-                  if(colSpec.getType().isCompatible(IndigoQueryMolValue.class))
-                     return true;
-                  return false;
-               }
-               @Override
-               public String allFilteredMsg() {
-                  return "no 'IndigoMolValue' or 'IndigoQueryMolValue' was found";
-               }
-            });
+              true, _settings.columnFilter);
+        
         dialogPanel.addItem(filterPanel.getComponentPanel());
         dialogPanel.addItemsPanel("Output Column Settings");
         dialogPanel.addItem("Result molecule column name", _newColName);
@@ -60,6 +44,9 @@ public class IndigoComponentCombinerNodeDialog extends NodeDialogPane {
    @Override
    protected void saveSettingsTo(NodeSettingsWO settings)
          throws InvalidSettingsException {
+      if(_settings.colNames.getIncludeList().isEmpty())
+         throw new InvalidSettingsException("selected column list can not be empty");
+      
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
       filterPanel.saveSettingsTo(settings);

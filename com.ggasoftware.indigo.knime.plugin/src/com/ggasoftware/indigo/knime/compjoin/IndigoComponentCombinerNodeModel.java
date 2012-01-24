@@ -252,11 +252,51 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
    @Override
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException {
-      
-      DataType result = _defineColumnType(inSpecs[IndigoComponentCombinerSettings.INPUT_PORT]);
+      DataTableSpec dataTableSpec = inSpecs[IndigoComponentCombinerSettings.INPUT_PORT];
+      DataType result = _defineColumnType(dataTableSpec);
+      if(result == null) {
+         /*
+          * Select list by autoconfig
+          */
+         ArrayList<String> excludeList = new ArrayList<String>();
+         ArrayList<String> includeList = new ArrayList<String>();
+         
+         for (int col_idx = 0; col_idx < dataTableSpec.getNumColumns(); col_idx++) {
+            DataColumnSpec columnSpec = dataTableSpec.getColumnSpec(col_idx);
+            String colName = columnSpec.getName();
+            
+            if(_settings.columnFilter.includeColumn(columnSpec)) {
+               if(result == null)
+                  result = columnSpec.getType();
+               
+               if(result.equals(columnSpec.getType()))
+                  includeList.add(colName);
+               else
+                  excludeList.add(colName);
+                  
+            } else {
+               excludeList.add(colName);
+            }
+         }
+         /*
+          * Add all columns
+          */
+         if(includeList.isEmpty())
+            result = null;
+         else {
+            _settings.colNames.setIncludeList(includeList);
+            _settings.colNames.setExcludeList(excludeList);
+            StringBuilder autoMes = new StringBuilder();
+            autoMes.append("Component combiner auto configuration: include columns: ");
+            for(String incName : includeList) {
+               autoMes.append("'").append(incName).append("' ");
+            }
+            setWarningMessage(autoMes.toString());
+         }
+      }
       
       if(result == null)
-         throw new InvalidSettingsException("empty selected list");
+         throw new InvalidSettingsException("selected column list can not be empty");
       
       if(!result.equals(IndigoMolCell.TYPE) && !result.equals(IndigoQueryMolCell.TYPE))
          throw new InvalidSettingsException("unsupported type: " + result.toString());
