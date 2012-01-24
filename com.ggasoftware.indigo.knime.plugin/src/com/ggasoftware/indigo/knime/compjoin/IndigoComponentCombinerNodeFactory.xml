@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
-<knimeNode icon="./default.png" type="Manipulator">
+<knimeNode icon="../icons/indigo.png" type="Manipulator">
     <name>Component Combiner</name>
     
     <shortDescription>
@@ -10,7 +10,7 @@
         <intro>Supports the IndigoMolecule and IndigoQueryMolecule inputs. This node combines the input molecule components into joined molecules and writes the result molecules
                into the output table column. Defines the output column type automatically.</intro>
         <option name="Include Columns">Filter for choosing the component columns</option>
-        <option name=""Result molecule column name"">Column name for the output molecules</option>
+        <option name="Result molecule column name">Column name for the output molecules</option>
     </fullDescription>
     
     <ports>
