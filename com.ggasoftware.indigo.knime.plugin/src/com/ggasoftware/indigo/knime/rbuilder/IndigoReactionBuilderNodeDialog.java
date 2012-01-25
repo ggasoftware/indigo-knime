@@ -53,7 +53,7 @@ public class IndigoReactionBuilderNodeDialog extends NodeDialogPane {
       dialogPanel.addItem(_addReactants, _reactantColName);
       dialogPanel.addItem(_addProducts, _productColName);
       dialogPanel.addItem(_addCatalysts, _catalystColName);
-      dialogPanel.addItem("Result reaction column name", _newColName);
+      dialogPanel.addItem("Result column name", _newColName);
       
       /*
        * Add change listeners
