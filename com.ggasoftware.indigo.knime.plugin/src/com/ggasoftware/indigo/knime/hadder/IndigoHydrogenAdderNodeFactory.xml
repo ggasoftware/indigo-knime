@@ -8,8 +8,10 @@
     </shortDescription>
     
     <fullDescription>
-        <intro><p>Supports molecules and reactions. This node adds explicit hydrogens to Indigo structures to fulfill the valencies.</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+        <intro><p>This node adds explicit hydrogens to Indigo structures to fulfill the valencies.</p>
+        <p><b>Supported types:</b> molecule, reaction</p>
+        <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
+        
         <option name="Structure Column">The column that contains the structures.</option>
         <option name="Append Column">Appends a new structure column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
     </fullDescription>
