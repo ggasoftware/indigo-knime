@@ -14,6 +14,7 @@ import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolCell;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 
 public abstract class IndigoNodeModel extends NodeModel
@@ -103,6 +104,25 @@ public abstract class IndigoNodeModel extends NodeModel
          return MOLCELL_TYPE.QueryMolecule;
 
       return MOLCELL_TYPE.QuerySmile;
+   }
+   
+   public enum REACTIONCELL_TYPE{
+      Reaction, QuerySmile, QuerySmarts, QueryReaction
+   }
+   
+   public static REACTIONCELL_TYPE defineReactionCellType(DataCell dataCell) {
+      if (dataCell.getType().equals(IndigoReactionCell.TYPE))
+         return REACTIONCELL_TYPE.Reaction;
+      
+      IndigoQueryReactionCell queryCell = (IndigoQueryReactionCell) dataCell;
+      
+      if (queryCell.isSmarts())
+         return REACTIONCELL_TYPE.QuerySmarts;
+      
+      if (countLines(queryCell.getSource()) > 1)
+         return REACTIONCELL_TYPE.QueryReaction;
+      
+      return REACTIONCELL_TYPE.QuerySmile;
    }
 
    private final static String LINE_SEP = System.getProperty("line.separator");

@@ -28,7 +28,7 @@ public class IndigoReactionSplitterNodeDialog extends NodeDialogPane {
 
    private final IndigoReactionSplitterSettings _settings = new IndigoReactionSplitterSettings();
    
-   private final ColumnSelectionComboxBox _reactionColName = new ColumnSelectionComboxBox(
+   private final ColumnSelectionComboxBox _reactionColumn = new ColumnSelectionComboxBox(
          (Border) null, _settings.columnFilter);
    
    private final JTextField _reactantColName = new JTextField(20);
@@ -49,7 +49,7 @@ public class IndigoReactionSplitterNodeDialog extends NodeDialogPane {
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Input reaction column", _reactionColName);
+      dialogPanel.addItem("Input reaction column", _reactionColumn);
       dialogPanel.addItemsPanel("Output Column Names");
       dialogPanel.addItem(_extractReactants, _reactantColName);
       dialogPanel.addItem(_extractProducts, _productColName);
@@ -87,7 +87,7 @@ public class IndigoReactionSplitterNodeDialog extends NodeDialogPane {
    
    private void _registerDialogComponents() {
       
-      _settings.registerDialogComponent(_reactionColName, IndigoReactionSplitterSettings.INPUT_PORT, _settings.reactionColName);
+      _settings.registerDialogComponent(_reactionColumn, IndigoReactionSplitterSettings.INPUT_PORT, _settings.reactionColumn);
       
       _settings.registerDialogComponent(_reactantColName, _settings.reactantColName);
       _settings.registerDialogComponent(_productColName, _settings.productColName);
