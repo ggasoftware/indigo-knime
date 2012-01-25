@@ -446,6 +446,12 @@ public class IndigoReactionBuilderNodeModel extends IndigoNodeModel {
    @Override
    protected void validateSettings(final NodeSettingsRO settings)
          throws InvalidSettingsException {
+      
+      IndigoReactionBuilderSettings s = new IndigoReactionBuilderSettings();
+      s.loadSettingsFrom(settings);
+      
+      if(s.newColName.getStringValue() == null || s.newColName.getStringValue().length() < 1)
+         throw new InvalidSettingsException("result column name can not be empty");
 
    }
 
