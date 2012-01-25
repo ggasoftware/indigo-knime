@@ -61,7 +61,7 @@ public class IndigoReactionSplitterNodeModel extends IndigoNodeModel {
       String extractSelf(String reaction) {
          String result = null;
          String[] splittedReaction = reaction.split(">");
-         if(splittedReaction.length > 0 && !splittedReaction[0].isEmpty())
+         if(splittedReaction.length > 0 && splittedReaction[0] != null && !splittedReaction[0].isEmpty())
             result = splittedReaction[0];
          return result;
       }
@@ -77,7 +77,7 @@ public class IndigoReactionSplitterNodeModel extends IndigoNodeModel {
       String extractSelf(String reaction) {
          String result = null;
          String[] splittedReaction = reaction.split(">");
-         if(splittedReaction.length > 2 && !splittedReaction[2].isEmpty())
+         if(splittedReaction.length > 2 && splittedReaction[2] != null && !splittedReaction[2].isEmpty())
             result = splittedReaction[2];
          return result;
       }
@@ -93,7 +93,7 @@ public class IndigoReactionSplitterNodeModel extends IndigoNodeModel {
       String extractSelf(String reaction) {
          String result = null;
          String[] splittedReaction = reaction.split(">");
-         if(splittedReaction.length > 1 && !splittedReaction[1].isEmpty())
+         if(splittedReaction.length > 1 && splittedReaction[1] != null && !splittedReaction[1].isEmpty())
             result = splittedReaction[1];
          return result;
       }
