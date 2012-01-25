@@ -21,6 +21,9 @@ public class IndigoReactionBuilderSettings extends IndigoNodeSettings{
    public final SettingsModelBoolean addReactants = new SettingsModelBoolean("addReactants", true);
    public final SettingsModelBoolean addProducts = new SettingsModelBoolean("addProducts", true);
    public final SettingsModelBoolean addCatalysts = new SettingsModelBoolean("addCatalysts", false);
+   
+   public final SettingsModelString newColName = new SettingsModelString("newColName", "Result reaction");
+   
    private final HashMap<SettingsModelBoolean, SettingsModelString> _settingsColumnMap = new HashMap<SettingsModelBoolean, SettingsModelString>();;
    
    public final ColumnFilter columnFilter = new ColumnFilter() {
@@ -46,6 +49,7 @@ public class IndigoReactionBuilderSettings extends IndigoNodeSettings{
       addSettingsParameter(addReactants);
       addSettingsParameter(addProducts);
       addSettingsParameter(addCatalysts);
+      addSettingsParameter(newColName);
       
       _settingsColumnMap.put(addReactants, reactantColName);
       _settingsColumnMap.put(addProducts, productColName);

@@ -3,6 +3,7 @@ package com.ggasoftware.indigo.knime.rbuilder;
 import java.util.ArrayList;
 
 import javax.swing.JCheckBox;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -35,6 +36,8 @@ public class IndigoReactionBuilderNodeDialog extends NodeDialogPane {
    private final JCheckBox _addProducts = new JCheckBox("Add products");
    private final JCheckBox _addCatalysts = new JCheckBox("Add catalysts");
    
+   private final JTextField _newColName = new JTextField(20);
+   
    private final ArrayList<ChangeListener> _changeListeners = new ArrayList<ChangeListener>();
    
    /**
@@ -50,6 +53,7 @@ public class IndigoReactionBuilderNodeDialog extends NodeDialogPane {
       dialogPanel.addItem(_addReactants, _reactantColName);
       dialogPanel.addItem(_addProducts, _productColName);
       dialogPanel.addItem(_addCatalysts, _catalystColName);
+      dialogPanel.addItem("Result reaction column name", _newColName);
       
       /*
        * Add change listeners
@@ -88,6 +92,7 @@ public class IndigoReactionBuilderNodeDialog extends NodeDialogPane {
       _settings.registerDialogComponent(_addReactants, _settings.addReactants);
       _settings.registerDialogComponent(_addProducts, _settings.addProducts);
       _settings.registerDialogComponent(_addCatalysts, _settings.addCatalysts);
+      _settings.registerDialogComponent(_newColName, _settings.newColName);
    }
 
    @Override

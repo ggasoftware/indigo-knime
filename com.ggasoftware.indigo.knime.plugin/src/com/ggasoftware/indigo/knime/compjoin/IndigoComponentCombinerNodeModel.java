@@ -36,9 +36,7 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
  */
 public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
 
-   private enum CELL_TYPE{
-      Molecule, QuerySmile, QuerySmarts, QueryMolecule
-   }
+   
    private final IndigoComponentCombinerSettings _settings = new IndigoComponentCombinerSettings();
    // the logger instance
    private static final NodeLogger LOGGER = NodeLogger
@@ -93,7 +91,7 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
             outputCells[c_idx] = inputRow.getCell(c_idx);
          
          IndigoObject resultMol = null;
-         CELL_TYPE cellType = null;
+         MOLCELL_TYPE cellType = null;
          /*
           * For query types
           */
@@ -113,12 +111,17 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
                 * Merge with molecule
                 */
                IndigoObject io = ((IndigoDataValue)dataCell).getIndigoObject();
+               /*
+                * Define type
+                */
+               MOLCELL_TYPE inputType = defineMolCellType(dataCell);
+               
                if(cellType == null) {
                   /*
                    * Create cell clone
                    */
-                  cellType = _defineCellType(dataCell);
-                  if(cellType.equals(CELL_TYPE.QuerySmarts) || cellType.equals(CELL_TYPE.QuerySmile)) {
+                  cellType = inputType;
+                  if(cellType.equals(MOLCELL_TYPE.QuerySmarts) || cellType.equals(MOLCELL_TYPE.QuerySmile)) {
                      queryCell = (IndigoQueryMolCell)dataCell;
                      queryCellData.append(queryCell.getSource());
                   } else {
@@ -126,10 +129,8 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
                   }
                } else {
                   /*
-                   * Define type
+                   * cell type already exists
                    */
-                  CELL_TYPE inputType = _defineCellType(dataCell);
-                  
                   if(!cellType.equals(inputType)) {
                      String errMessage = "can not merge two different types: '" + cellType.toString() + "' '" + inputType.toString() + "'";
                      resultMol = null;
@@ -161,6 +162,7 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
             }
          } catch (Exception e) {
             LOGGER.warn(e.getMessage());
+            cellType = null;
          } finally {
             IndigoPlugin.unlock();
          }
@@ -204,28 +206,8 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
       return new BufferedDataTable[] { outputContainer.getTable() };
    }
    
-   private CELL_TYPE _defineCellType(DataCell dataCell) {
-      if(dataCell.getType().equals(IndigoMolCell.TYPE))
-         return CELL_TYPE.Molecule;
-      
-      IndigoQueryMolCell queryCell = (IndigoQueryMolCell)dataCell;
-      
-      if(queryCell.isSmarts())
-         return CELL_TYPE.QuerySmarts;
-      
-      if(countLines(queryCell.getSource()) > 1)
-         return CELL_TYPE.QueryMolecule;
-      
-      return CELL_TYPE.QuerySmile;
-   }
    
-   private final static String LINE_SEP = System.getProperty("line.separator");
    
-   private static int countLines(String str) {
-      return str.split(LINE_SEP).length;
-   }
-
-
    protected DataTableSpec _getDataTableSpec (DataTableSpec inSpec, DataType columnType) throws InvalidSettingsException {
       DataColumnSpec[] specs = new DataColumnSpec[inSpec.getNumColumns() + 1];
       

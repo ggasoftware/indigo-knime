@@ -13,6 +13,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
+import com.ggasoftware.indigo.knime.cell.IndigoQueryMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 
 public abstract class IndigoNodeModel extends NodeModel
@@ -83,6 +84,31 @@ public abstract class IndigoNodeModel extends NodeModel
          if (! (spec.getColumnSpec(colName).getType().isCompatible(class1) || spec.getColumnSpec(colName).getType().isCompatible(class2)))
             throw new InvalidSettingsException("Column '" + colName + "' is not a " + class1.getName() + " or " + class2.getName());
       }
+   }
+   
+   public enum MOLCELL_TYPE{
+      Molecule, QuerySmile, QuerySmarts, QueryMolecule
+   }
+
+   public static MOLCELL_TYPE defineMolCellType(DataCell dataCell) {
+      if (dataCell.getType().equals(IndigoMolCell.TYPE))
+         return MOLCELL_TYPE.Molecule;
+
+      IndigoQueryMolCell queryCell = (IndigoQueryMolCell) dataCell;
+
+      if (queryCell.isSmarts())
+         return MOLCELL_TYPE.QuerySmarts;
+
+      if (countLines(queryCell.getSource()) > 1)
+         return MOLCELL_TYPE.QueryMolecule;
+
+      return MOLCELL_TYPE.QuerySmile;
+   }
+
+   private final static String LINE_SEP = System.getProperty("line.separator");
+
+   private static int countLines(String str) {
+      return str.split(LINE_SEP).length;
    }
    
    protected DataColumnSpec _createNewColumnSpec(String colName, STRUCTURE_TYPE structureType) {
