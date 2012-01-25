@@ -9,7 +9,8 @@
     
     <fullDescription>
         <intro><p>Converts the Indigo reactions in one of the input table's columns into various string representations (RXN, SMILES).</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+        <p><b>Supported Indigo types:</b> Reaction</p>
+        <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
         
         <option name="Indigo column">The column that contains Indigo reactions.</option>
         <option name="Append column">Appends a new column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
