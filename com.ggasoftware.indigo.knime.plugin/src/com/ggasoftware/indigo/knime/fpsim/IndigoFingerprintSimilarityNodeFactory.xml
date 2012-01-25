@@ -8,8 +8,10 @@
     
     <fullDescription>
         <intro>
-        <p>This node calculates the values of structural similarity of input fingerprints against a given reference fingerprint.
-        It also can take multiple reference fingerprints and aggregate the similarity values.</p>
+               <p>This node calculates the values of structural similarity of input fingerprints against a given reference fingerprint.
+               It also can take multiple reference fingerprints and aggregate the similarity values.</p>
+               <p><b>Supported types:</b> BitVector</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
         </intro>
         
         <option name="Fingerprints column">The column that contains the fingerprints.</option>

@@ -9,9 +9,11 @@
     
     <fullDescription>
         <intro><p>Create new columns holding molecular properties, computed for each structure.
-        The computations are based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a>
-        toolkit and include number of heavy atoms, molecular weight, number of aromatic atoms, and others.</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+               The computations are based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a>
+               toolkit and include number of heavy atoms, molecular weight, number of aromatic atoms, and others.</p>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Column">Indigo column containing the molecular structure. </option>
         <option name="Properties">Move the available properties into the INCLUDE (right) list.</option>
