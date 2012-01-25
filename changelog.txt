@@ -3,6 +3,7 @@ Load from smarts parameter was added for query reactions and molecules
 Limit component number parameter was added for the Component Separator node
 Component Combiner node was added (supports IndigoMolecule and QueryIndigoMolecule input)
 New parameters loading model was applied (convenience for appending new parameters)
+Reaction Builder node was implemented (supports IndigoMolecule and QueryIndigoMolecule inputs) 
 
 >****************************************************************************************************************
 1.1.0.201201191806 nightly build:

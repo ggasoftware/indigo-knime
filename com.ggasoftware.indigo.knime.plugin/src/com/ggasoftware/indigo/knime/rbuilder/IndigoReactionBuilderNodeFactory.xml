@@ -8,19 +8,17 @@
     </shortDescription>
     
     <fullDescription>
-        <intro>Insert long description here...</intro>
-        <option name="short name of first option (like in the dialog)">description of first option</option>
-        <option name="short name of second option (like in the dialog)">description of second option</option>
+        <intro>Supports the IndigoMolecule and IndigoQueryMolecule inputs. 
+        This node combines the input molecules and creates reactions from given reactants, products and catalysts columns. 
+        Defines the output column type automatically.</intro>
+        <option name="Add reactants">Flag (append or skip) and column selection for molecule reactants.</option>
+        <option name="Add products">Flag (append or skip) and column selection for molecule products.</option>
+        <option name="Add catalysts">Flag (append or skip) and column selection for molecule catalysts.</option>
+        <option name="Result reaction column name">Column name for the output molecules</option>
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="In-Port name">Description of first input port...</inPort>
-        <!-- possibly more input ports here-->
-        <outPort index="0" name="Out-Port name">Description of first output port...</outPort>
-        <!-- possibly more output ports here-->
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules or query molecules</inPort>
+        <outPort index="0" name="Result reactions">The same as input, plus the column with the created reactions</outPort>
     </ports>    
-    <views>
-        <view index="0" name="name of first view">Description of first view...</view>
-        <!--view index="1" name="name of second view">Description of second view...</view-->
-    </views>
 </knimeNode>
