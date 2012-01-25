@@ -8,9 +8,11 @@
     </shortDescription>
     
     <fullDescription>
-        <intro>Supports the IndigoMolecule and IndigoQueryMolecule inputs. 
-        This node combines the input molecules and creates reactions from given reactants, products and catalysts columns. 
-        Defines the output column type automatically.</intro>
+        <intro><p>This node combines the input molecules and creates reactions from given reactants, products and catalysts columns. 
+               Defines the output column type automatically.</p>
+               <p><b>Supported Indigo types:</b> Molecule, Query Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         <option name="Add reactants">Flag (append or skip) and column selection for molecule reactants.</option>
         <option name="Add products">Flag (append or skip) and column selection for molecule products.</option>
         <option name="Add catalysts">Flag (append or skip) and column selection for molecule catalysts.</option>

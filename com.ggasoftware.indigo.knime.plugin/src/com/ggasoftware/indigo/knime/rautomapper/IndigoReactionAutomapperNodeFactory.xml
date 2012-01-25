@@ -8,9 +8,10 @@
     </shortDescription>
     
     <fullDescription>
-        <intro><p>Generates reaction atom-to-atom mappings (AAM).
-        The target column must have Indigo reaction type (IndigoReactionCell, IndigoQueryReactionCell).</p>
-		<p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to parse and display structures.</p></intro>
+        <intro><p>Generates reaction atom-to-atom mappings (AAM).</p>
+		         <p><b>Supported Indigo types:</b> Reaction, Query Reaction</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         
         <option name="Reaction Column">The column that contains the reactions.</option>
