@@ -7,8 +7,13 @@
     </shortDescription>
     
     <fullDescription>
-        <intro>Supports the IndigoMolecule and IndigoQueryMolecule inputs. This node combines the input molecule components into joined molecules and writes the result molecules
-               into the output table column. Defines the output column type automatically.</intro>
+        <intro><p>This node combines the input molecule components into joined molecules and writes the result molecules
+               into the output table column. Defines the output column type automatically.</p>
+               <p><b>Supported Indigo types:</b> Molecule, Query Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
+               
+               
         <option name="Include Columns">Filter for choosing the component columns</option>
         <option name="Result molecule column name">Column name for the output molecules</option>
     </fullDescription>

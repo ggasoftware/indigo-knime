@@ -9,7 +9,9 @@
     
     <fullDescription>
         <intro><p>This node counts the number of unique independent matches of a given query file in each molecule of the input table</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process and display structures.</p></intro>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Molecules column">The column that contains Indigo molecules.</option>
         <option name="Query molecule column">The column that contains the query molecule.</option>

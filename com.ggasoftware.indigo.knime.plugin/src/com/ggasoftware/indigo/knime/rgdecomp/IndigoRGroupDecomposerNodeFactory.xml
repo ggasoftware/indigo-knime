@@ -8,8 +8,10 @@
     
     <fullDescription>
         <intro><p>This node performs R-Group decomposition of a given collection of structures, using a scaffold that
-        is common for these structures</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+               is common for these structures</p>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Molecule column">Column that contains Indigo molecules</option>
         <option name="Scaffold column">Column that contains the scaffold (Indigo query molecule)</option>

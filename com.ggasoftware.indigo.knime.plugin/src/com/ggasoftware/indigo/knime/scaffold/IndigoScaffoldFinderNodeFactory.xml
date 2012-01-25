@@ -8,8 +8,10 @@
     
     <fullDescription>
         <intro><p>This node finds the maximum common scaffold (MCS) of an arbitrary amount of the input molecules. In case of multiple
-        MCS, they are all written to the output table</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+               MCS, they are all written to the output table</p>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Molecule column">Column containing Indigo molecules</option>
         <option name="New column with scaffolds">Name for the new column that contains the found scaffold(s)</option>

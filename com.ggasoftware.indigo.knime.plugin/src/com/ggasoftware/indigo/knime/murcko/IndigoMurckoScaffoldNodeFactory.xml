@@ -8,7 +8,9 @@
     
     <fullDescription>
         <intro><p>This node calculates Murcko scaffolds of input molecules.</p>
-        <p>This node uses <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> classes to process structures.</p></intro>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Molecule Column">The column that contains the molecules.</option>
         <option name="Append Column">Append a new molecule column (with the name as specified in the text field) if checked, replace the original column otherwise.</option>

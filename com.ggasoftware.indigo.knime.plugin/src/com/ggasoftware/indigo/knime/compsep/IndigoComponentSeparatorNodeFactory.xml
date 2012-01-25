@@ -7,9 +7,12 @@
     </shortDescription>
     
     <fullDescription>
-        <intro>This node decomposes the input molecules into connected components and writes the components
+        <intro><p>This node decomposes the input molecules into connected components and writes the components
                into the output table columns. The biggest component goes into the first column, the
-               second biggest component goes into the second column, and so on.</intro>
+               second biggest component goes into the second column, and so on.</p>
+               <p><b>Supported Indigo types:</b> Molecule</p>
+               <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
+        </intro>
         
         <option name="Indigo column">The column that contains Indigo molecules.</option>
 		<option name="New column prefix">Each of the new columns will be named with this prefix + number (1,2,3,..)</option>
