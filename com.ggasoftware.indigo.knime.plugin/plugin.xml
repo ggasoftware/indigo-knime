@@ -25,6 +25,7 @@
       <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperNodeFactory" id="com.ggasoftware.indigo.knime.rautomapper.ReactionAutomapperNodeFactory"/>
       <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
       <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory" id="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory"/>
+      <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory" id="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory"/>
       <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.arom.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
       <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.dearom.IndigoDearomatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory"/>
       <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory" id="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory"/>
@@ -36,6 +37,7 @@
       <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.valence.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
       <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilarityNodeFactory" id="com.ggasoftware.indigo.knime.IndigoFingerprintSimilarityNodeFactory"/>
       <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.molfp.IndigoMoleculeFingerprinterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
+
 
 </extension>
    
