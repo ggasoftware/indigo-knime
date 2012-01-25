@@ -9,7 +9,7 @@
     
     <fullDescription>
         <intro><p>This node removes explicit hydrogens from Indigo structures.</p>
-        <p><b>Supported types:</b> molecule, reaction</p>
+        <p><b>Supported Indigo types:</b> Molecule, Reaction</p>
         <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
         
         <option name="Structure Column">The column that contains the structures.</option>

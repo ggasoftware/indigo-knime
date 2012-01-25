@@ -10,7 +10,7 @@
     <fullDescription>
         <intro><p>This node converts the chemical structures in one of the input table's columns into the aromatic
         form. The target column must contain Indigo cells.</p>
-        <p><b>Supported types:</b> molecule, reaction</p>
+        <p><b>Supported Indigo types:</b> Molecule, Reaction</p>
         <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
         
         <option name="Structure Column">The column that contains the structures.</option>
