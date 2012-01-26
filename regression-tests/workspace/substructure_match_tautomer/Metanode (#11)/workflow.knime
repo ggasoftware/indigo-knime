@@ -5,6 +5,10 @@
 <entry key="name" type="xstring" value="Metanode"/>
 <entry key="customDescription" type="xstring" isnull="true" value=""/>
 <entry key="state" type="xstring" value="CONFIGURED"/>
+<config key="node_message">
+<entry key="type" type="xstring" value="ERROR"/>
+<entry key="message" type="xstring" value="Error in sub flow."/>
+</config>
 <config key="workflow_credentials"/>
 <config key="nodes">
 <config key="node_7">
@@ -48,7 +52,7 @@
 <entry key="0" type="xint" value="234"/>
 <entry key="1" type="xint" value="154"/>
 <entry key="2" type="xint" value="73"/>
-<entry key="3" type="xint" value="94"/>
+<entry key="3" type="xint" value="110"/>
 </config>
 </config>
 </config>
@@ -56,14 +60,14 @@
 <config key="connections">
 <config key="connection_0">
 <entry key="sourceID" type="xint" value="-1"/>
-<entry key="destID" type="xint" value="8"/>
-<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destID" type="xint" value="7"/>
+<entry key="sourcePort" type="xint" value="0"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 <config key="connection_1">
 <entry key="sourceID" type="xint" value="-1"/>
-<entry key="destID" type="xint" value="7"/>
-<entry key="sourcePort" type="xint" value="0"/>
+<entry key="destID" type="xint" value="8"/>
+<entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 <config key="connection_2">

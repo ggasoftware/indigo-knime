@@ -11,24 +11,30 @@
 <entry key="align" type="xboolean" value="false"/>
 <entry key="alignByQuery" type="xboolean" value="false"/>
 <entry key="highlight" type="xboolean" value="false"/>
-<entry key="appendQueryKeyColumn" type="xboolean" value="false"/>
-<entry key="queryKeyColumn" type="xstring" value=""/>
-<entry key="appendQueryMatchCountKeyColumn" type="xboolean" value="false"/>
-<entry key="queryMatchCountKeyColumn" type="xstring" value=""/>
+<entry key="appendQueryKeyColumn" type="xboolean" value="true"/>
+<entry key="queryKeyColumn" type="xstring" value="column1 (query row ID)"/>
+<entry key="appendQueryMatchCountKeyColumn" type="xboolean" value="true"/>
+<entry key="queryMatchCountKeyColumn" type="xstring" value="column1 (queries matched)"/>
 <entry key="matchAllExceptSelected" type="xboolean" value="false"/>
 <entry key="matchAnyAtLeastSelected" type="xboolean" value="true"/>
 <entry key="matchAnyAtLeast" type="xint" value="1"/>
 </config>
-<entry key="hasContent" type="xboolean" value="false"/>
+<entry key="hasContent" type="xboolean" value="true"/>
 <entry key="isInactive" type="xboolean" value="false"/>
 <config key="ports">
 <config key="port_1">
 <entry key="index" type="xint" value="1"/>
-<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+<entry key="port_spec_class" type="xstring" value="org.knime.core.data.DataTableSpec"/>
+<entry key="port_object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
+<entry key="port_object_summary" type="xstring" value="Rows: 614, Cols: 3"/>
+<entry key="port_dir_location" type="xstring" value="port_1"/>
 </config>
 <config key="port_2">
 <entry key="index" type="xint" value="2"/>
-<entry key="port_dir_location" type="xstring" isnull="true" value=""/>
+<entry key="port_spec_class" type="xstring" value="org.knime.core.data.DataTableSpec"/>
+<entry key="port_object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
+<entry key="port_object_summary" type="xstring" value="Rows: 386, Cols: 1"/>
+<entry key="port_dir_location" type="xstring" value="port_2"/>
 </config>
 </config>
 </config>

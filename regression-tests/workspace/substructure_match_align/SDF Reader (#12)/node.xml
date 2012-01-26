@@ -4,7 +4,7 @@
 <config key="model">
 <config key="urls">
 <entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xstring" value="file:F:/opt/knime_2.5.1/workspace/indigo_knime_regression_tests/substructure_match_align/data/1.sdf"/>
+<entry key="0" type="xstring" value="file:F:/work/indigo-knime/regression-tests/workspace/substructure_match_align/data/2.sdf"/>
 </config>
 <entry key="useRowID" type="xboolean" value="false"/>
 <entry key="extractName" type="xboolean" value="false"/>
@@ -15,7 +15,7 @@
 <entry key="sourceLocationColumn" type="xboolean" value="false"/>
 <entry key="limitMolecules" type="xboolean" value="false"/>
 <entry key="limit" type="xint" value="0"/>
-<entry key="extractAllProperties" type="xboolean" value="false"/>
+<entry key="extractAllProperties" type="xboolean" value="true"/>
 <config key="properties">
 <entry key="count" type="xint" value="0"/>
 </config>

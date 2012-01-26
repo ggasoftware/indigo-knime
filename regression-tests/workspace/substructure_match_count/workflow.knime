@@ -98,13 +98,13 @@
 </config>
 <config key="connection_2">
 <entry key="sourceID" type="xint" value="6"/>
-<entry key="destID" type="xint" value="10"/>
+<entry key="destID" type="xint" value="11"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 <config key="connection_3">
 <entry key="sourceID" type="xint" value="6"/>
-<entry key="destID" type="xint" value="11"/>
+<entry key="destID" type="xint" value="10"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>

@@ -30,8 +30,8 @@
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="326"/>
-<entry key="1" type="xint" value="96"/>
+<entry key="0" type="xint" value="330"/>
+<entry key="1" type="xint" value="87"/>
 <entry key="2" type="xint" value="110"/>
 <entry key="3" type="xint" value="79"/>
 </config>
@@ -60,8 +60,8 @@
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="195"/>
-<entry key="1" type="xint" value="147"/>
+<entry key="0" type="xint" value="184"/>
+<entry key="1" type="xint" value="127"/>
 <entry key="2" type="xint" value="57"/>
 <entry key="3" type="xint" value="66"/>
 </config>
@@ -71,13 +71,13 @@
 <config key="connections">
 <config key="connection_0">
 <entry key="sourceID" type="xint" value="4"/>
-<entry key="destID" type="xint" value="7"/>
+<entry key="destID" type="xint" value="6"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="0"/>
 </config>
 <config key="connection_1">
 <entry key="sourceID" type="xint" value="4"/>
-<entry key="destID" type="xint" value="6"/>
+<entry key="destID" type="xint" value="7"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="0"/>
 </config>
