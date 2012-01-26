@@ -7,18 +7,18 @@
     </shortDescription>
     
     <fullDescription>
-        <intro> <p> Bla bla bla </p>
+        <intro> <p> </p>
                <p><b>Supported Indigo types:</b> Molecule, Query Reaction</p>
                <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
         </intro>
         
-        <option name="Monomer column"></option>
+        <option name="Molecule column"></option>
         <option name="Query Reaction column"></option>
         <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Input monomers">Table containing Indigo molecules to transform</inPort>
+        <inPort index="0" name="Input molecules">Table containing Indigo molecules to transform</inPort>
         <inPort index="1" name="Input query reactions">Table containing Indigo query reactions</inPort>
         <outPort index="0" name="Result molecules">The same as input, plus the columns with the created molecules</outPort>
     </ports>    

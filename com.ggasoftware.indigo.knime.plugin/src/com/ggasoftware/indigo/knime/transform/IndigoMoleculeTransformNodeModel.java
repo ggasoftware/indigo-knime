@@ -56,18 +56,18 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception {
       BufferedDataTable reactionTable = inData[IndigoMoleculeTransformSettings.REACTION_PORT];
-      BufferedDataTable monomerTable = inData[IndigoMoleculeTransformSettings.MONOMER_PORT];
-      DataTableSpec monomerSpec = monomerTable.getDataTableSpec();
+      BufferedDataTable moleculeTable = inData[IndigoMoleculeTransformSettings.MOL_PORT];
+      DataTableSpec moleculeSpec = moleculeTable.getDataTableSpec();
       DataTableSpec reactionSpec = reactionTable.getDataTableSpec();
       
-      DataTableSpec outputSpec = _getDataTableSpec(monomerSpec);
+      DataTableSpec outputSpec = _getDataTableSpec(moleculeSpec);
       BufferedDataContainer outputContainer = exec.createDataContainer(outputSpec);
       /*
        * Search columns
        */
-      int monomerColIdx = monomerSpec.findColumnIndex(_settings.monomerColumn.getStringValue());
-      if(monomerColIdx == -1)
-         throw new RuntimeException("column '" + _settings.monomerColumn.getStringValue() + "' can not be found");
+      int moleculeColIdx = moleculeSpec.findColumnIndex(_settings.molColumn.getStringValue());
+      if(moleculeColIdx == -1)
+         throw new RuntimeException("column '" + _settings.molColumn.getStringValue() + "' can not be found");
       
       int reactionColIdx = reactionSpec.findColumnIndex(_settings.reactionColumn.getStringValue());
       if(reactionColIdx == -1)
@@ -112,11 +112,11 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
       if(_settings.appendColumn.getBooleanValue()) 
          transformColIdx = outputSpec.getNumColumns() - 1;
       else
-         transformColIdx = monomerColIdx;
+         transformColIdx = moleculeColIdx;
       
       int rowNumber = 1;
-      for (DataRow inputRow : monomerTable) {
-         DataCell dataCell = inputRow.getCell(monomerColIdx);
+      for (DataRow inputRow : moleculeTable) {
+         DataCell dataCell = inputRow.getCell(moleculeColIdx);
          DataCell transformCell = null;
          
          if (dataCell.isMissing())
@@ -136,16 +136,16 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
                IndigoPlugin.lock();
                
                IndigoObject io = ((IndigoDataValue)dataCell).getIndigoObject();
-               IndigoObject monomer = io.clone();
+               IndigoObject molecule = io.clone();
                /*
                 * Apply all the reactions from the list
                 */
                for(IndigoObject reaction : reactionsList)
-                  IndigoPlugin.getIndigo().transform(reaction, monomer);
+                  IndigoPlugin.getIndigo().transform(reaction, molecule);
                /*
                 * Create result cell
                 */
-               transformCell = new IndigoMolCell(monomer);
+               transformCell = new IndigoMolCell(molecule);
                
             } catch (IndigoException e) {
                LOGGER.warn("Warning while applying a transformation: " + e.getMessage() + " for molecule with rowId: " + inputRow.getKey().toString());
@@ -174,7 +174,7 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
                outputCells));
          
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) monomerTable.getRowCount(),
+         exec.setProgress(rowNumber / (double) moleculeTable.getRowCount(),
                "Adding row " + rowNumber);
          rowNumber++;
       }
@@ -216,10 +216,10 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
    protected DataTableSpec[] configure(final DataTableSpec[] inSpecs)
          throws InvalidSettingsException {
       DataTableSpec rspec = inSpecs[IndigoMoleculeTransformSettings.REACTION_PORT];
-      DataTableSpec mspec = inSpecs[IndigoMoleculeTransformSettings.MONOMER_PORT];
+      DataTableSpec mspec = inSpecs[IndigoMoleculeTransformSettings.MOL_PORT];
       
       searchIndigoColumn(rspec, _settings.reactionColumn, IndigoQueryReactionValue.class);
-      searchIndigoColumn(mspec, _settings.monomerColumn, IndigoMolValue.class);
+      searchIndigoColumn(mspec, _settings.molColumn, IndigoMolValue.class);
       /*
        * Set loading parameters warning message
        */
