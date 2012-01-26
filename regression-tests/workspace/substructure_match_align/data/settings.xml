@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="factory" type="xstring" value="org.knime.chem.base.node.io.sdf.SDFReader3NodeFactory"/>
+<entry key="node_file" type="xstring" value="node.xml"/>
+<config key="flow_stack"/>
+<config key="internal_node_subsettings">
+<entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
+</config>
+<entry key="customDescription" type="xstring" isnull="true" value=""/>
+<entry key="state" type="xstring" value="IDLE"/>
+<config key="node_message">
+<entry key="type" type="xstring" value="WARNING"/>
+<entry key="message" type="xstring" value="Cannot access 'file:C:/Users/mkvyatkovskiy/Downloads/knime_2.5.1/workspace/indigo_knime_regression_tests/substructure_match_align/SDF%20Reader%20(%2312)/1.sdf': C:\Users\mkvyatkovskiy\Downloads\knime_2.5.1\workspace\indigo_knime_regression_tests\substructure_match_align\SDF Reader (#12)\1.sdf (The system cannot find the file specified)"/>
+</config>
+</config>

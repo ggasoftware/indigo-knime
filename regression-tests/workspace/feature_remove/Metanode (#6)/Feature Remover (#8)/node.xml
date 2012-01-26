@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="name" type="xstring" value="Feature Remover"/>
+<config key="model">
+<entry key="colName" type="xstring" value="column1"/>
+<entry key="newColName" type="xstring" value="column1 (featureless)"/>
+<entry key="appendColumn" type="xboolean" value="true"/>
+<config key="selectedFeatures">
+<entry key="array-size" type="xint" value="10"/>
+<entry key="0" type="xstring" value="Cis-trans"/>
+<entry key="1" type="xstring" value="Isotopes"/>
+<entry key="2" type="xstring" value="Highlighting"/>
+<entry key="3" type="xstring" value="Attachment points"/>
+<entry key="4" type="xstring" value="Pseudoatoms"/>
+<entry key="5" type="xstring" value="Data S-groups"/>
+<entry key="6" type="xstring" value="Chirality"/>
+<entry key="7" type="xstring" value="Minor components"/>
+<entry key="8" type="xstring" value="Repeating units"/>
+<entry key="9" type="xstring" value="R-sites"/>
+</config>
+</config>
+<entry key="hasContent" type="xboolean" value="true"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_spec_class" type="xstring" value="org.knime.core.data.DataTableSpec"/>
+<entry key="port_object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
+<entry key="port_object_summary" type="xstring" value="Rows: 1000, Cols: 2"/>
+<entry key="port_dir_location" type="xstring" value="port_1"/>
+</config>
+</config>
+</config>

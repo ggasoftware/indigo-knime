@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
+<entry key="name" type="xstring" value="Substructure Matcher"/>
+<config key="model">
+<entry key="colName" type="xstring" value="column1"/>
+<entry key="colName2" type="xstring" value="column1"/>
+<entry key="mode" type="xstring" value="Normal"/>
+<entry key="appendColumn" type="xboolean" value="false"/>
+<entry key="exact" type="xboolean" value="false"/>
+<entry key="align" type="xboolean" value="false"/>
+<entry key="alignByQuery" type="xboolean" value="false"/>
+<entry key="highlight" type="xboolean" value="false"/>
+<entry key="appendQueryKeyColumn" type="xboolean" value="false"/>
+<entry key="appendQueryMatchCountKeyColumn" type="xboolean" value="false"/>
+<entry key="matchAllExceptSelected" type="xboolean" value="false"/>
+<entry key="matchAnyAtLeastSelected" type="xboolean" value="true"/>
+<entry key="matchAnyAtLeast" type="xint" value="1"/>
+</config>
+<entry key="hasContent" type="xboolean" value="true"/>
+<entry key="isInactive" type="xboolean" value="false"/>
+<config key="ports">
+<config key="port_1">
+<entry key="index" type="xint" value="1"/>
+<entry key="port_spec_class" type="xstring" value="org.knime.core.data.DataTableSpec"/>
+<entry key="port_object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
+<entry key="port_object_summary" type="xstring" value="Rows: 1, Cols: 1"/>
+<entry key="port_dir_location" type="xstring" value="port_1"/>
+</config>
+<config key="port_2">
+<entry key="index" type="xint" value="2"/>
+<entry key="port_spec_class" type="xstring" value="org.knime.core.data.DataTableSpec"/>
+<entry key="port_object_class" type="xstring" value="org.knime.core.node.BufferedDataTable"/>
+<entry key="port_object_summary" type="xstring" value="Rows: 999, Cols: 1"/>
+<entry key="port_dir_location" type="xstring" value="port_2"/>
+</config>
+</config>
+</config>
