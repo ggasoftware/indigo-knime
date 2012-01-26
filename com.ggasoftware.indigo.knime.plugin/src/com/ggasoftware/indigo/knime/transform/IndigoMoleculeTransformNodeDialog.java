@@ -76,8 +76,8 @@ public class IndigoMoleculeTransformNodeDialog extends NodeDialogPane {
 
       IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Reaction column", _reactionColumn);
       dialogPanel.addItem("Monomer column", _monomerColumn);
+      dialogPanel.addItem("Query Reaction column", _reactionColumn);
       dialogPanel.addItem(_appendColumn, _newColName);
       
       _appendColumn.addChangeListener(_changeListener);
@@ -86,8 +86,8 @@ public class IndigoMoleculeTransformNodeDialog extends NodeDialogPane {
    }
    
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_reactionColumn, IndigoMoleculeTransformSettings.REACTION_PORT,  _settings.reactionColumn);
       _settings.registerDialogComponent(_monomerColumn, IndigoMoleculeTransformSettings.MONOMER_PORT,  _settings.monomerColumn);
+      _settings.registerDialogComponent(_reactionColumn, IndigoMoleculeTransformSettings.REACTION_PORT,  _settings.reactionColumn);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
    }
