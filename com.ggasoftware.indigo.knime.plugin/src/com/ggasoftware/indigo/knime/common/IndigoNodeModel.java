@@ -24,6 +24,11 @@ public abstract class IndigoNodeModel extends NodeModel
       super(nrInDataPorts, nrOutDataPorts);
    }
 
+   protected void searchIndigoColumn (DataTableSpec spec, SettingsModelString colName, Class<? extends DataValue> cls)
+   throws InvalidSettingsException {
+      colName.setStringValue(searchIndigoColumn(spec, colName.getStringValue(), cls));
+   }
+   
    protected String searchIndigoColumn (DataTableSpec spec, String colName, Class<? extends DataValue> cls)
    throws InvalidSettingsException
    {

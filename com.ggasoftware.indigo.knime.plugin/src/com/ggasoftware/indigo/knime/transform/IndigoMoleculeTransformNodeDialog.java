@@ -81,6 +81,8 @@ public class IndigoMoleculeTransformNodeDialog extends NodeDialogPane {
       dialogPanel.addItem(_appendColumn, _newColName);
       
       _appendColumn.addChangeListener(_changeListener);
+      
+      addTab("Standard Settings", dialogPanel.getPanel());
    }
    
    private void _registerDialogComponents() {
