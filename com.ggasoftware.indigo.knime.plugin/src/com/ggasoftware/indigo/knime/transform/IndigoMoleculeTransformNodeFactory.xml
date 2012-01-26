@@ -7,8 +7,10 @@
     </shortDescription>
     
     <fullDescription>
-        <intro> <p> </p>
-               <p><b>Supported Indigo types:</b> Molecule, Query Reaction</p>
+        <intro> <p>This node transforms molecules according to 
+        	reaction-base set of rules. See the <a href="http://ggasoftware.com/opensource/indigo/concepts/transformation">examples</a> for more details.    
+         </p>
+               <p><b>Supported Indigo types:</b> Molecule </p>
                <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
         </intro>
         
