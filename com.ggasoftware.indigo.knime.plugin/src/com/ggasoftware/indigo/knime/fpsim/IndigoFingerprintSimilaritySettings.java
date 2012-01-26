@@ -14,11 +14,10 @@
 
 package com.ggasoftware.indigo.knime.fpsim;
 
-import org.knime.core.node.defaultnodesettings.SettingsModelDouble;
-import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.SettingsModelFloat;
 
 public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
 {
@@ -38,10 +37,10 @@ public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
    public final SettingsModelString targetColumn = new SettingsModelString("colName", null);
    public final SettingsModelString queryColumn = new SettingsModelString("colName2", null);
    public final SettingsModelString newColName = new SettingsModelString("newColName", "similarity");
-   public final SettingsModelInteger metric = new SettingsModelInteger("metric", Metric.Tanimoto.ordinal());
-   public final SettingsModelDouble tverskyAlpha = new SettingsModelDouble("tverskyAlpha", 0.5f);
-   public final SettingsModelDouble tverskyBeta = new SettingsModelDouble("tverskyBeta", 0.5f);
-   public final SettingsModelInteger aggregation = new SettingsModelInteger("aggregation", Aggregation.Average.ordinal());
+   public final SettingsModelString metric = new SettingsModelString("metric", Metric.Tanimoto.toString());
+   public final SettingsModelFloat tverskyAlpha = new SettingsModelFloat("tverskyAlpha", 0.5f);
+   public final SettingsModelFloat tverskyBeta = new SettingsModelFloat("tverskyBeta", 0.5f);
+   public final SettingsModelString aggregation = new SettingsModelString("aggregation", Aggregation.Average.toString());
 
    
    public IndigoFingerprintSimilaritySettings() {
@@ -53,6 +52,7 @@ public class IndigoFingerprintSimilaritySettings extends IndigoNodeSettings
       addSettingsParameter(tverskyAlpha);
       addSettingsParameter(tverskyBeta);
    }
+
 
 
 }

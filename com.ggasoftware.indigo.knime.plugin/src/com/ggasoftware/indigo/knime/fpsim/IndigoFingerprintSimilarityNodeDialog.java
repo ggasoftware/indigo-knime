@@ -39,10 +39,10 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
          (Border) null, BitVectorValue.class);
    
    private final JTextField _newColumn = new JTextField(20);
-   private final JComboBox _metrics = new JComboBox(new String[] {
+   private final JComboBox _metrics = new JComboBox(new Object[] {
          Metric.Tanimoto.toString(), Metric.EuclidSub.toString(), Metric.Tversky.toString() });
    
-   private final JComboBox _aggregation = new JComboBox(new String[] {
+   private final JComboBox _aggregation = new JComboBox(new Object[] {
          Aggregation.Average.toString(), Aggregation.Minimum.toString(), Aggregation.Maximum.toString()});
    
    JLabel _alphaLabel = new JLabel("alpha:");
@@ -139,8 +139,6 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    private void _registerDialogComponents() {
       _settings.registerDialogComponent(_targetColumn, IndigoFingerprintSimilaritySettings.TARGET_PORT, _settings.targetColumn);
       _settings.registerDialogComponent(_queryColumn, IndigoFingerprintSimilaritySettings.QUERY_PORT, _settings.queryColumn);
-      _settings.registerDialogComponent(_metrics, _settings.metric);
-      _settings.registerDialogComponent(_aggregation, _settings.aggregation);
       _settings.registerDialogComponent(_newColumn, _settings.newColName);
       _settings.registerDialogComponent(_alpha, _settings.tverskyAlpha);
       _settings.registerDialogComponent(_beta, _settings.tverskyBeta);
@@ -157,7 +155,11 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
          _settings.loadSettingsFrom(settings);
          _settings.loadDialogSettings(specs);
          
+         _metrics.setSelectedItem(Metric.valueOf(_settings.metric.getStringValue()));
+         _aggregation.setSelectedItem(Aggregation.valueOf(_settings.aggregation.getStringValue()));
+         
          _metricsListener.actionPerformed(null);
+         
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());
       }
@@ -170,6 +172,9 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
    protected void saveSettingsTo (final NodeSettingsWO settings)
          throws InvalidSettingsException
    {
+      _settings.metric.setStringValue(_metrics.getSelectedItem().toString());
+      _settings.aggregation.setStringValue(_aggregation.getSelectedItem().toString());
+      
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
    }

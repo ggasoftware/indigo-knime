@@ -379,7 +379,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       IndigoObject query = queryData.query;
       Indigo indigo = IndigoPlugin.getIndigo();
       
-      if(_settings.mode.getIntValue() == ReactionMode.DaylightAAM.ordinal())
+      if(_settings.mode.getStringValue().equals(ReactionMode.DaylightAAM.toString()))
          mode = "Daylight-AAM";
 
       match = indigo.substructureMatcher(target, mode).match(query);
@@ -438,9 +438,9 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       if (!_settings.exact.getBooleanValue() || target.countHeavyAtoms() <= query.countAtoms())
       {
-         if (_settings.mode.getIntValue() == MoleculeMode.Resonance.ordinal())
+         if (_settings.mode.getStringValue().equals(MoleculeMode.Resonance.toString()))
             mode = "RES";
-         else if (_settings.mode.getIntValue() == MoleculeMode.Tautomer.ordinal())
+         else if (_settings.mode.getStringValue().equals(MoleculeMode.Tautomer.ordinal()))
          {
             mode = "TAU R* R-C";
  

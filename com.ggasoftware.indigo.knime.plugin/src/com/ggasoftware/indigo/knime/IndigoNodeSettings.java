@@ -26,12 +26,15 @@ import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.SettingsModelFloat;
 
 /*
  * Class for basic settings handling
  */
 public class IndigoNodeSettings {
    
+   
+
    private interface DialogMap {
       abstract void load(final DataTableSpec[] specs) throws NotConfigurableException;
       abstract void save();
@@ -157,6 +160,27 @@ public class IndigoNodeSettings {
 
    }
    
+   public class FloatDialogMap implements DialogMap {
+      private final JFormattedTextField _dialogComp;
+      private final SettingsModelFloat _mapParam;
+      
+      public FloatDialogMap(JFormattedTextField dialogComp, SettingsModelFloat mapParam) {
+         _dialogComp = dialogComp;
+         _mapParam = mapParam;
+      }
+
+      @Override
+      public void load(DataTableSpec[] specs) throws NotConfigurableException {
+         _dialogComp.setValue(_mapParam.getFloatValue());
+      }
+
+      @Override
+      public void save() {
+         _mapParam.setFloatValue(((Number)_dialogComp.getValue()).floatValue());
+      }
+
+   }
+   
    public class DeprecatedSettingsModelBooleanInverse extends SettingsModelBoolean {
 
       private final String _configName;
@@ -214,7 +238,8 @@ public class IndigoNodeSettings {
       }
       loadAdditionalSettings(settings);
       if(wMessage.length() > 0 ) {
-         wMessage.insert(0, "Error while loading settings: ");
+         wMessage.insert(0, "Not all the settings have been loaded: ");
+         wMessage.append("\nProbably, these settings are new, and the default values have been used. Please, review the configuration and resave it.");
          warningMessage = wMessage.toString();
          if(throwError)
             throw new InvalidSettingsException(warningMessage);
@@ -265,6 +290,11 @@ public class IndigoNodeSettings {
    
    public void registerDialogComponent(JFormattedTextField dialogComp, SettingsModelDouble mapParam) {
       _allDialogSettings.add(new DoubleDialogMap(dialogComp, mapParam));
+   }
+   
+   public void registerDialogComponent(JFormattedTextField dialogComp,
+         SettingsModelFloat mapParam) {
+      _allDialogSettings.add(new FloatDialogMap(dialogComp, mapParam));
       
    }
    

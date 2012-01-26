@@ -86,13 +86,13 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
       
       if (c == 0)
          return 0;
-      else if (_settings.metric.getIntValue() == Metric.Tanimoto.ordinal())
+      else if (_settings.metric.getStringValue().equals(Metric.Tanimoto.toString()))
          return (float)c / (a + b - c);
-      else if (_settings.metric.getIntValue() == Metric.EuclidSub.ordinal())
+      else if (_settings.metric.getStringValue().equals(Metric.EuclidSub.toString()))
          return (float)c / a;
       else
-         return (float)c / (float)(_settings.tverskyAlpha.getDoubleValue() * (a - c) +
-                            _settings.tverskyBeta.getDoubleValue()  * (b - c) + c); 
+         return (float)c / (float)(_settings.tverskyAlpha.getFloatValue() * (a - c) +
+                            _settings.tverskyBeta.getFloatValue()  * (b - c) + c); 
    }
    
    /**
@@ -162,28 +162,28 @@ public class IndigoFingerprintSimilarityNodeModel extends IndigoNodeModel
          float result = 0;
          int count = 0;
          
-         if (_settings.aggregation.getIntValue() == Aggregation.Minimum.ordinal())
+         if (_settings.aggregation.getStringValue().equals(Aggregation.Minimum.toString()))
             result = 1000000;
          
          for (BitVectorValue template : templates)
          {
             float sim = _calcSimilarity(bitvector, template);
 
-            if (_settings.aggregation.getIntValue() == Aggregation.Minimum.ordinal()) {
+            if (_settings.aggregation.getStringValue().equals(Aggregation.Minimum.toString())) {
                if (sim < result)
                   result = sim;
             }
-            if (_settings.aggregation.getIntValue() == Aggregation.Maximum.ordinal()) {
+            if (_settings.aggregation.getStringValue().equals(Aggregation.Maximum.toString())) {
                if (sim > result)
                   result = sim;
             }
-            if (_settings.aggregation.getIntValue() == Aggregation.Average.ordinal()) {
+            if (_settings.aggregation.getStringValue().equals(Aggregation.Average.toString())) {
                result += sim;
             }
             count++;
          }
 
-         if (_settings.aggregation.getIntValue() == Aggregation.Average.ordinal())
+         if (_settings.aggregation.getStringValue().equals(Aggregation.Average.toString()))
             result /= count;
          
          int i;

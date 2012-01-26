@@ -32,7 +32,7 @@ public class IndigoSubstructureMatcherSettings extends IndigoNodeSettings {
    
    public final SettingsModelString targetColName = new SettingsModelString("colName", null);
    public final SettingsModelString queryColName = new SettingsModelString("colName2", null);
-   public final SettingsModelInteger mode = new SettingsModelInteger("mode", MoleculeMode.Normal.ordinal());
+   public final SettingsModelString mode = new SettingsModelString("mode", MoleculeMode.Normal.toString());
    public final SettingsModelBoolean exact = new SettingsModelBoolean("exact", false);
    public final SettingsModelBoolean align = new SettingsModelBoolean("align", false);
    public final SettingsModelBoolean alignByQuery = new SettingsModelBoolean("alignByQuery", false);

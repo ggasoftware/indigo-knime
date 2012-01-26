@@ -233,7 +233,6 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       _settings.registerDialogComponent(_exact, _settings.exact);
       _settings.registerDialogComponent(_highlight, _settings.highlight);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
-      _settings.registerDialogComponent(_mode, _settings.mode);
       _settings.registerDialogComponent(_appendQueryKeyColumn, _settings.appendQueryKeyColumn);
 
       _settings.registerDialogComponent(_appendQueryKeyColumn, _settings.appendQueryKeyColumn);
@@ -253,7 +252,7 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       try {
          _settings.loadSettingsFrom(settings);
          _settings.loadDialogSettings(specs);
-
+         
          _changeListener.stateChanged(null);
          
          _targetSpec = specs[IndigoSubstructureMatcherNodeModel.TARGET_PORT];
@@ -262,6 +261,15 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
           * Update mode
           */
          _columnChangeListener.itemStateChanged(null);
+         
+         String selectedMode = _settings.mode.getStringValue();
+         if(selectedMode != null && selectedMode.length() > 0) {
+            STRUCTURE_TYPE stype = _getStructureType();
+            if(stype.equals(STRUCTURE_TYPE.Reaction))
+               _mode.setSelectedItem(ReactionMode.valueOf(selectedMode));
+            else if (stype.equals(STRUCTURE_TYPE.Molecule))
+               _mode.setSelectedItem(MoleculeMode.valueOf(selectedMode));
+         }
          
       } catch (InvalidSettingsException e) {
          throw new NotConfigurableException(e.getMessage());
@@ -277,6 +285,8 @@ public class IndigoSubstructureMatcherNodeDialog extends NodeDialogPane
       
       if(stype.equals(STRUCTURE_TYPE.Unknown))
          throw new InvalidSettingsException("can not select reaction and molecule column in the same time!");
+      
+      _settings.mode.setStringValue(_mode.getSelectedItem().toString());
       
       _settings.saveDialogSettings();
       _settings.saveSettingsTo(settings);
