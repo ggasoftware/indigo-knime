@@ -14,8 +14,8 @@
                <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
         </intro>
         
-        <option name="Molecule column"></option>
-        <option name="Query Reaction column"></option>
+        <option name="Molecule column">The column that contains Indigo molecules</option>
+        <option name="Query Reaction column">The column that contains Indigo query reactions</option>
         <option name="Append Column">Appends a new molecule column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
     </fullDescription>
     
