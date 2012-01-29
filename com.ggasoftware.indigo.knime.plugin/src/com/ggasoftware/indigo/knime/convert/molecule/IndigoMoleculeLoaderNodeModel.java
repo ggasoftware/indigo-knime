@@ -37,8 +37,10 @@ public class IndigoMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
+	   if(src.isMissing())
+	      return DataType.getMissingCell();
       String value = src.toString();
-	   if (src.getType() == StringCell.TYPE) {
+	   if (src.getType().equals(StringCell.TYPE)) {
    	   if (value.startsWith("InChI="))
    	   {
    	      IndigoInchi inchi = IndigoPlugin.getIndigoInchi();

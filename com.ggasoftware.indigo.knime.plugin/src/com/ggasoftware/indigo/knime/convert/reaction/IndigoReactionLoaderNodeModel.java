@@ -34,6 +34,8 @@ public class IndigoReactionLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
+	   if(src.isMissing())
+         return DataType.getMissingCell();
 		return new IndigoReactionCell(indigo.loadReaction(src.toString()));
 	}
 

@@ -36,6 +36,8 @@ public class IndigoQueryReactionLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
+	   if(src.isMissing())
+         return DataType.getMissingCell();
 	   /*
        * Define smarts type
        */
