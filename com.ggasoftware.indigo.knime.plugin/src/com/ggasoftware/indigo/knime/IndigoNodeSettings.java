@@ -273,7 +273,7 @@ public class IndigoNodeSettings {
       loadAdditionalSettings(settings);
       if(wMessage.length() > 0 ) {
          wMessage.insert(0, "Not all the settings have been loaded: ");
-         wMessage.append("\nProbably, these settings are new, and the default values have been used. Please, review the configuration and resave it.");
+         wMessage.append("Probably, these settings are new, and the default values have been used. Please, review the configuration and resave it.");
          warningMessage = wMessage.toString();
          if(throwError)
             throw new InvalidSettingsException(warningMessage);
