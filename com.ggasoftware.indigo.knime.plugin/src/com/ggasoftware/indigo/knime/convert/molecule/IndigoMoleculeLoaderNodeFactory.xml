@@ -11,7 +11,7 @@
         <intro><p>Converts the elements in one of the input table's columns into an internal
         format (IndigoMolCell), which can then be rendered as molecule or used for further computations.
         The target column must contain string representations of molecules (SDF, Smiles, CML).</p>
-        <p><b>Supported types:</b> String, SDF, Smiles, CML, Mol</p>
+        <p><b>Supported types:</b> String, SDF, Smiles, CML, Mol, InChI</p>
         <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
         
         <option name="Molecule Column">The column that contains the molecules.</option>

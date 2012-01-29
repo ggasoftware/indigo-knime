@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
+<knimeNode icon="../icons/bond-replacer.png" type="Manipulator">
+    <name>Bond Replacer</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        <intro><p>This node replaces the structure bond types with a specifed bond type.</p>
+        <p><b>Supported Indigo types:</b> Molecule, Reaction</p>
+        <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p></intro>
+        
+        <option name="Structure Column">The column that contains the structures.</option>
+        <option name="Append Column">Appends a new structure column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input structures">Table containing Indigo structures</inPort>
+        <outPort index="0" name="Structures with replaced bonds">The same as input, but with bonds replaced</outPort>
+    </ports>    
+</knimeNode>

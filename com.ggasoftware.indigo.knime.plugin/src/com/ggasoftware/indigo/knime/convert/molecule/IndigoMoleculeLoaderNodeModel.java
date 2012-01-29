@@ -16,10 +16,13 @@ package com.ggasoftware.indigo.knime.convert.molecule;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataType;
+import org.knime.core.data.def.StringCell;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoInchi;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.convert.base.IndigoLoaderNodeModel;
+import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 public class IndigoMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
@@ -34,6 +37,14 @@ public class IndigoMoleculeLoaderNodeModel extends IndigoLoaderNodeModel {
 
 	@Override
 	protected DataCell createDataCell(Indigo indigo, DataCell src) {
-		return new IndigoMolCell(indigo.loadMolecule(src.toString()));
+      String value = src.toString();
+	   if (src.getType() == StringCell.TYPE) {
+   	   if (value.startsWith("InChI="))
+   	   {
+   	      IndigoInchi inchi = IndigoPlugin.getIndigoInchi();
+   	      return new IndigoMolCell(inchi.loadMolecule(value));
+   	   }
+	   }
+      return new IndigoMolCell(indigo.loadMolecule(value));
 	}
 }

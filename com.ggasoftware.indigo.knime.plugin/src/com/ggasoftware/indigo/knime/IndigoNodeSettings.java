@@ -89,6 +89,28 @@ public class IndigoNodeSettings {
       }
       
    }
+   private class ComboStringDialogMap implements DialogMap {
+      
+      private final JComboBox _dialogComp;
+      private final SettingsModelString _mapParam;
+
+      public ComboStringDialogMap(JComboBox dialogComp, SettingsModelString mapParam) {
+         this._dialogComp = dialogComp;
+         this._mapParam = mapParam;
+      }
+      public void load(DataTableSpec[] specs) {
+         String value = _mapParam.getStringValue(); 
+         for (int i = 0; i < _dialogComp.getItemCount(); i++)
+            if (_dialogComp.getItemAt(i).toString().equals(value)) {
+               _dialogComp.setSelectedIndex(i);
+               break;
+            }
+      }
+      public void save() {
+         _mapParam.setStringValue(_dialogComp.getSelectedItem().toString());
+      }
+      
+   }
    
    private class StringDialogMap implements DialogMap {
       private final JTextField _dialogComp;
@@ -128,6 +150,8 @@ public class IndigoNodeSettings {
       private final ColumnSelectionComboxBox _dialogComp;
       private final int _specPort;
       private final SettingsModelString _mapParam;
+      private boolean _optional = false;
+      private boolean _disabled = false;
 
       public ColumnDialogMap(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelString mapParam) {
          this._dialogComp = dialogComp;
@@ -135,10 +159,20 @@ public class IndigoNodeSettings {
          this._mapParam = mapParam;
       }
       public void load(DataTableSpec[] specs) throws NotConfigurableException {
+         _disabled = (_optional && specs[_specPort] == null);
+         if (_disabled) {
+            return;
+         }
          _dialogComp.update(specs[_specPort],   _mapParam.getStringValue());
       }
       public void save() {
+         if (_disabled) {
+            return;
+         }
          _mapParam.setStringValue(_dialogComp.getSelectedColumn());
+      }
+      public void setOptional (boolean optional) {
+         _optional = optional;
       }
    }
    
@@ -275,6 +309,10 @@ public class IndigoNodeSettings {
    public void registerDialogComponent(JComboBox dialogComp, SettingsModelInteger mapParam) {
       _allDialogSettings.add(new ComboDialogMap(dialogComp, mapParam));
    }
+
+   public void registerDialogComponent(JComboBox dialogComp, SettingsModelString mapParam) {
+      _allDialogSettings.add(new ComboStringDialogMap(dialogComp, mapParam));
+   }
    
    public void registerDialogComponent(JTextField dialogComp, SettingsModelString mapParam) {
       _allDialogSettings.add(new StringDialogMap(dialogComp, mapParam));
@@ -285,7 +323,13 @@ public class IndigoNodeSettings {
    }
    
    public void registerDialogComponent(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelString mapParam) {
-      _allDialogSettings.add(new ColumnDialogMap(dialogComp, specPort, mapParam));
+      registerDialogComponent(dialogComp, specPort, mapParam, false);
+   }
+
+   public void registerDialogComponent(ColumnSelectionComboxBox dialogComp, int specPort, SettingsModelString mapParam, boolean optional) {
+      ColumnDialogMap columnDialogMap = new ColumnDialogMap(dialogComp, specPort, mapParam);
+      columnDialogMap.setOptional(optional);
+      _allDialogSettings.add(columnDialogMap);
    }
    
    public void registerDialogComponent(JFormattedTextField dialogComp, SettingsModelDouble mapParam) {

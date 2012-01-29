@@ -23,7 +23,7 @@ public class IndigoSaverSettings extends IndigoNodeSettings
 {
    public enum Format
    {
-      Mol, SDF, Smiles, CanonicalSmiles, CML, Rxn
+      Mol, SDF, Smiles, CanonicalSmiles, CML, Rxn, InChI, InChIKey
    }
 
    public static final int INPUT_PORT = 0;

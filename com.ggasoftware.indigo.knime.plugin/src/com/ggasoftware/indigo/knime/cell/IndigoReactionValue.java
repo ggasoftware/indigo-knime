@@ -31,7 +31,7 @@ public interface IndigoReactionValue extends IndigoDataValue {
 	   {
 	      /** Singleton icon to be used to display this cell type. */
 	      private static final Icon ICON = loadIcon(
-	            com.ggasoftware.indigo.knime.cell.IndigoReactionValue.class, "/../indigo.png");
+	            com.ggasoftware.indigo.knime.cell.IndigoReactionValue.class, "/../icons/reaction.png");
 
 	      /** Only subclasses are allowed to instantiate this class. */
 	      protected IndigoReactionUtilityFactory()

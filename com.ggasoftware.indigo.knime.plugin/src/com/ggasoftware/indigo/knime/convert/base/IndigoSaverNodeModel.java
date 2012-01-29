@@ -36,6 +36,7 @@ import org.knime.core.data.DataValue;
 import org.knime.core.data.RowKey;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.ColumnRearranger;
+import org.knime.core.data.def.StringCell;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
@@ -46,6 +47,7 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 
 import com.ggasoftware.indigo.IndigoException;
+import com.ggasoftware.indigo.IndigoInchi;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
@@ -111,8 +113,10 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
             type = SdfCell.TYPE;
          else if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()) || _settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
             type = SmilesCell.TYPE;
-         else
+         else if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()) || _settings.destFormat.getStringValue().equals(Format.CML.toString()))
             type = CMLCell.TYPE;
+         else
+            type = StringCell.TYPE;
 
          if (settings.appendColumn.getBooleanValue())
          {
@@ -142,36 +146,52 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                
-               if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()) || 
-                     _settings.destFormat.getStringValue().equals(Format.SDF.toString()) ||
-                     _settings.destFormat.getStringValue().equals(Format.CML.toString()) ||
-                     _settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
+               String destFormat = _settings.destFormat.getStringValue();
+               if (destFormat.equals(Format.Mol.toString()) || 
+                     destFormat.equals(Format.SDF.toString()) ||
+                     destFormat.equals(Format.CML.toString()) ||
+                     destFormat.equals(Format.Rxn.toString()))
                   if (_settings.generateCoords.getBooleanValue() && !io.hasCoord())
                   {
                      io = io.clone();
                      io.layout();
                   }
                
-               if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()))
+               if (destFormat.equals(Format.Mol.toString()))
                   return MolCellFactory.create(io.molfile());
-               if (_settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
+               if (destFormat.equals(Format.Rxn.toString()))
                    return RxnCellFactory.create(io.rxnfile());
-               if (_settings.destFormat.getStringValue().equals(Format.SDF.toString())) {
+               if (destFormat.equals(Format.SDF.toString())) {
                   return SdfCellFactory.create(io.molfile() + "\n$$$$\n");
                }
-               if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()))
+               if (destFormat.equals(Format.Smiles.toString()))
                   return new SmilesCell(io.smiles());
-               if (_settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
+               if (destFormat.equals(Format.CanonicalSmiles.toString()))
                {
                   IndigoObject clone = io.clone();
                   clone.aromatize();
                   return new SmilesCell(clone.canonicalSmiles());
                }
+               if (destFormat.equals(Format.InChI.toString()) ||
+                     destFormat.equals(Format.InChIKey.toString()))
+               {
+                  IndigoInchi indigo_inchi = IndigoPlugin.getIndigoInchi(); 
+                  String result = indigo_inchi.getInchi(io);
+                  // Uncomment this only after implementing InChI 
+                  // stereolayer support:
+                  //String warning = indigo_inchi.getWarning(); 
+                  //if (warning != "")
+                  //   LOGGER.info("InChI warning: " + warning);
+                  if (destFormat.equals(Format.InChIKey.toString()))
+                     result = indigo_inchi.getInchiKey(result); 
+                  return new StringCell(result);
+               }
                return CMLCellFactory.create(io.cml());
             }
             catch (IndigoException ex)
             {
-               LOGGER.error("Could not convert molecule: " + ex.getMessage(), ex);
+               LOGGER.error("Could not convert molecule with RowId=" + 
+                     row.getKey() + ": " + ex.getMessage(), ex);
                return DataType.getMissingCell();
             }
             finally
@@ -206,17 +226,20 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
       ColumnRearranger crea = new ColumnRearranger(inSpec);
 
       DataType type = null;
-      if (_settings.destFormat.getStringValue().equals(Format.Mol.toString()))
+      String destFormat = _settings.destFormat.getStringValue();
+      if (destFormat.equals(Format.Mol.toString()))
          type = MolCell.TYPE;
-      else if (_settings.destFormat.getStringValue().equals(Format.Rxn.toString()))
+      else if (destFormat.equals(Format.Rxn.toString()))
           type = RxnCell.TYPE;
-      else if (_settings.destFormat.getStringValue().equals(Format.SDF.toString()))
+      else if (destFormat.equals(Format.SDF.toString()))
          type = SdfCell.TYPE;
-      else if (_settings.destFormat.getStringValue().equals(Format.Smiles.toString()) ||
-            _settings.destFormat.getStringValue().equals(Format.CanonicalSmiles.toString()))
+      else if (destFormat.equals(Format.Smiles.toString()) ||
+            destFormat.equals(Format.CanonicalSmiles.toString()))
          type = SmilesCell.TYPE;
-      else if (_settings.destFormat.getStringValue().equals(Format.CML.toString()))
+      else if (destFormat.equals(Format.CML.toString()))
          type = CMLCell.TYPE;
+      else if (destFormat.equals(Format.InChI.toString()) || destFormat.equals(Format.InChIKey.toString()))
+         type = StringCell.TYPE;
 
       DataColumnSpec cs;
       if (_settings.appendColumn.getBooleanValue())

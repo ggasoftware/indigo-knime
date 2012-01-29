@@ -41,7 +41,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
 
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
-   private final IndigoSimpleSettings _settings = new IndigoSimpleSettings();
+   private final IndigoSimpleSettings _settings;
    private final String _desc;
    
    private final JLabel _structureType = new JLabel();
@@ -85,24 +85,38 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
       }
    };
 
-   public IndigoSimpleNodeDialog (String desc)
+   protected final IndigoDialogPanel _dialogPanel;
+
+   public IndigoSimpleNodeDialog (String desc, IndigoSimpleSettings settings, boolean needAddTab)
    {
       super();
       _desc = desc;
+      _settings = settings;
       
       _registerDialogComponents();
 
-      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
+      _dialogPanel = new IndigoDialogPanel();
       
-      dialogPanel.addItemsPanel("Column Settings");
-      dialogPanel.addItem("Structure type", _structureType);
-      dialogPanel.addItem("Indigo column", _indigoColumn);
-      dialogPanel.addItem(_appendColumn, _newColName);
+      _dialogPanel.addItemsPanel("Column Settings");
+      _dialogPanel.addItem("Structure type", _structureType);
+      _dialogPanel.addItem("Indigo column", _indigoColumn);
+      _dialogPanel.addItem(_appendColumn, _newColName);
 
       _indigoColumn.addItemListener(_columnChangeListener);
       _appendColumn.addChangeListener(_changeListener);
 
-      addTab("Standard settings", dialogPanel.getPanel());
+      if (needAddTab)
+         addTabDialog();
+   }
+   
+   protected void addTabDialog ()
+   {
+      addTab("Standard settings", _dialogPanel.getPanel());
+   }
+   
+   public IndigoSimpleNodeDialog (String desc)
+   {
+      this(desc, new IndigoSimpleSettings(), true);
    }
 
    private void _registerDialogComponents() {

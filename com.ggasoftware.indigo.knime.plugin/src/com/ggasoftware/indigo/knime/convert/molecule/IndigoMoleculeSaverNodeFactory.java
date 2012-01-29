@@ -23,7 +23,7 @@ public class IndigoMoleculeSaverNodeFactory extends
 	@Override
 	protected Object[] getFormats() {
 		return new Object[] { Format.Mol, Format.SDF, Format.Smiles, 
-				Format.CanonicalSmiles, Format.CML };
+				Format.CanonicalSmiles, Format.CML, Format.InChI, Format.InChIKey };
 	}
 
 	@Override

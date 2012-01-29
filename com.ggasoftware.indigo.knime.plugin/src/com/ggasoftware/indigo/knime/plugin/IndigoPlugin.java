@@ -36,6 +36,7 @@ import org.knime.chem.types.SmilesValue;
 import org.osgi.framework.BundleContext;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoInchi;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValueRenderer;
 
 public class IndigoPlugin extends AbstractUIPlugin
@@ -47,6 +48,7 @@ public class IndigoPlugin extends AbstractUIPlugin
    private static final ReentrantLock _lock = new ReentrantLock();
 
    private static Indigo indigo = new Indigo();
+   private static IndigoInchi indigo_inchi;
 
    public IndigoPlugin()
    {
@@ -57,6 +59,13 @@ public class IndigoPlugin extends AbstractUIPlugin
    public static Indigo getIndigo ()
    {
       return indigo;
+   }
+   
+   public static IndigoInchi getIndigoInchi ()
+   {
+      if (indigo_inchi == null)
+         indigo_inchi = new IndigoInchi(indigo);
+      return indigo_inchi; 
    }
 
    public static void lock ()

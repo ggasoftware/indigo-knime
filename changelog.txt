@@ -1,3 +1,10 @@
+InChI conversion in both directions (but without stereochemistry yet)
+Combinatorial Reaction Enumeration
+Bond Replacer Node
+Icons
+
+>****************************************************************************************************************
+1.1.0.201201261932  nightly build:
 Molecule transformation node
 Bug with highlighting was fixed
 Load from smarts parameter was added for query reactions and molecules

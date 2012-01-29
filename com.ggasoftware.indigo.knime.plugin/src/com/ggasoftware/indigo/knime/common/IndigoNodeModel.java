@@ -9,6 +9,7 @@ import org.knime.core.data.DataValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.core.node.port.PortType;
 
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
@@ -24,6 +25,13 @@ public abstract class IndigoNodeModel extends NodeModel
       super(nrInDataPorts, nrOutDataPorts);
    }
 
+   protected IndigoNodeModel (final PortType[] inPortTypes,
+         final PortType[] outPortTypes)
+   {
+      super(inPortTypes, outPortTypes);
+   }
+   
+   
    protected void searchIndigoColumn (DataTableSpec spec, SettingsModelString colName, Class<? extends DataValue> cls)
    throws InvalidSettingsException {
       colName.setStringValue(searchIndigoColumn(spec, colName.getStringValue(), cls));

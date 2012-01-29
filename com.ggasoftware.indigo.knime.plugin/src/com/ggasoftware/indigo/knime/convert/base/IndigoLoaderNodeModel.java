@@ -23,7 +23,6 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,7 +223,16 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-   	if (_settings.colName.getStringValue() == null || _settings.colName.getStringValue().length() < 1) {
+      boolean columnChanged = false;
+      String colName = _settings.colName.getStringValue();
+      if (colName != null && colName.length() > 0) {
+         int colIdx = inSpecs[0].findColumnIndex(colName);
+         if (colIdx == -1) {
+            colName = null; // for autogessing
+            columnChanged = true;
+         }
+      }
+   	if (colName == null || colName.length() < 1) {
    		// Try to deduce column name automatically
          List<String> compatible_columns = new ArrayList<String>();
          // Collect them in the order of classes
@@ -241,10 +249,11 @@ public abstract class IndigoLoaderNodeModel extends NodeModel
             throw new InvalidSettingsException("There is no compatible colums in the source table");
          else
          {
-         	_settings.colName.setStringValue(compatible_columns.get(0));
-         	_settings.newColName.setStringValue(_settings.colName.getStringValue() + " (Indigo)");
-         	if (compatible_columns.size() > 1)
-	            setWarningMessage("Column \"" + _settings.colName.getStringValue() + "\" was used by default.");
+            colName = compatible_columns.get(0);  
+         	_settings.colName.setStringValue(colName);
+         	_settings.newColName.setStringValue(colName + " (Indigo)");
+         	if (compatible_columns.size() > 1 || columnChanged)
+	            setWarningMessage("Column \"" + colName + "\" was used by default.");
          }
    	}
    	if(_settings.warningMessage != null) {

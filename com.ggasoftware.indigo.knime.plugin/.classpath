@@ -3,8 +3,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/indigo-renderer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/indigo-renderer.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/indigo.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jna.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/indigo-inchi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

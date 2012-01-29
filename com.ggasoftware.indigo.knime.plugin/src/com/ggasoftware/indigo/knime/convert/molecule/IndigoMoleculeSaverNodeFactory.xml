@@ -14,7 +14,7 @@
         
         <option name="Indigo column">The column that contains Indigo molecules.</option>
         <option name="Append column">Appends a new column (with the name as specified in the text field) if checked, replaces the original column otherwise.</option>
-        <option name="Destination format">Select the destination format here (Molfile, SMILES, Canonical SMILES, CML). Canonical SMILES implies
+        <option name="Destination format">Select the destination format here (Molfile, SMILES, Canonical SMILES, CML, InChI, InChIKey). Canonical SMILES implies
         automatic aromatization of the structures.</option>
         <option name="Generate coordinates if needed">Applicable only when the output format is Molfile or CML</option>
     </fullDescription>
