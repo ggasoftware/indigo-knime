@@ -64,13 +64,13 @@
       <category description="Reaction Nodes" level-id="reaction" name="Reaction Nodes" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Combinatorial Chemistry" level-id="combinatorial_chemistry" name="Combinatorial Chemistry" path="/community/indigo"/>
+      <category description="Combinatorial Chemistry" icon="icons/groups/combichem-group.png"  level-id="combinatorial_chemistry" name="Combinatorial Chemistry" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
       <category description="Manipulators" icon="icons/groups/manipulators.png" level-id="manipulators" name="Manipulators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Properties" level-id="properties" name="Properties" path="/community/indigo"/>
+      <category description="Properties" icon="icons/groups/properties.png" level-id="properties" name="Properties" path="/community/indigo"/>
     </extension>
     <extension point="org.eclipse.equinox.preferences.preferences">
        <initializer class="com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE knimeNode PUBLIC "-//UNIKN//DTD KNIME Node 2.0//EN" "http://www.knime.org/Node.dtd">
-<knimeNode icon="../indigo.png" type="Other">
+<knimeNode icon="../icons/fingerprint.png" type="Other">
     <name>Indigo Fingerprint</name>
     
     <shortDescription>
@@ -13,7 +13,7 @@
                <p><b>Supported Indigo types:</b> Molecule, Reaction</p>
                <p>The node is based on the <a href="http://ggasoftware.com/opensource/indigo">Indigo</a> cheminformatics toolkit.</p>
         </intro>
-        
+        	
         <option name="Indigo column">The column that contains the structures.</option>
         <option name="New column name">Name of the fingerprint column in the output table.</option>
         <option name="Fingerprint length in qwords">Desired length of the fingerprint (1 qword = 8 bytes).</option>
