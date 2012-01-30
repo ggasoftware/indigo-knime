@@ -440,7 +440,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       {
          if (_settings.mode.getStringValue().equals(MoleculeMode.Resonance.toString()))
             mode = "RES";
-         else if (_settings.mode.getStringValue().equals(MoleculeMode.Tautomer.ordinal()))
+         else if (_settings.mode.getStringValue().equals(MoleculeMode.Tautomer.toString()))
          {
             mode = "TAU R* R-C";
  
