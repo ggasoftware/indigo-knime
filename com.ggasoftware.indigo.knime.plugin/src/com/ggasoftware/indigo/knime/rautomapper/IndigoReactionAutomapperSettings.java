@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
-import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
@@ -19,9 +19,9 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    static final String CFGKEY_IGNORE_RADICALS = "ignore_radicals";
    static final String CFGKEY_IGNORE_VALENCE = "ignore_valence";
 
-   public final SettingsModelString reactionColumn = new SettingsModelString("column", null);
+   public final SettingsModelColumnName reactionColumn = new SettingsModelColumnName("column", null);
    public final DeprecatedSettingsModelBooleanInverse appendColumn = new DeprecatedSettingsModelBooleanInverse("replaceColumn", false);
-   public final SettingsModelString newColName = new SettingsModelString("newColumn", null);
+   public final SettingsModelColumnName newColName = new SettingsModelColumnName("newColumn", null);
    public final SettingsModelInteger mode = new SettingsModelInteger("mode", AAMode.Discard.ordinal());
    
    public final SettingsModelBoolean ignoreCharges = new SettingsModelBoolean(CFGKEY_IGNORE_CHARGES, false);
