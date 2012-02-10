@@ -60,7 +60,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
       if (colIdx == -1)
          throw new Exception("column not found");
 
-      IndigoObject scaffolds;
+      IndigoObject scaffolds = null;
       
       try
       {
@@ -72,12 +72,18 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          for (DataRow inputRow : inData[IndigoScaffoldFinderSettings.INPUT_PORT])
          {
             if(inputRow.getCell(colIdx).isMissing()) {
-               LOGGER.warn("Molecule table contains missing cells: ignoring");
+               LOGGER.warn("Molecule table contains missing cells: ignoring " + inputRow.getKey());
                continue;
             }
                
             IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(colIdx);
-            arr.arrayAdd(molcell.getIndigoObject());
+            IndigoObject molObj = molcell.getIndigoObject();
+            String str = molObj.checkBadValence();
+            if (str != null && !str.equals("")) {
+               LOGGER.warn("Molecule table contains incorrect molecules: skipping " + inputRow.getKey() + ": " + str);
+            } else {
+               arr.arrayAdd(molObj);
+            }
          }
          IndigoObject extracted = null;
          
@@ -98,19 +104,24 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          
          scaffolds = extracted.allScaffolds();
       }
+      catch (IndigoException e)
+      {
+         LOGGER.error("internal error while launching extract scaffold: " + e.getMessage());
+      }
       finally
       {
          IndigoPlugin.unlock();
       }
-      
-      int i = 1;
-      {
-         for (IndigoObject scaf : scaffolds.iterateArray())
+      if (scaffolds != null) {
+         int i = 1;
          {
-            DataCell[] cells = new DataCell[1];
-            String molfile = scaf.molfile();
-            cells[0] = IndigoQueryMolCell.fromString(molfile);
-            outputContainer.addRowToTable(new DefaultRow("Row" + i++, cells));
+            for (IndigoObject scaf : scaffolds.iterateArray()) {
+               DataCell[] cells = new DataCell[1];
+               String molfile = scaf.molfile();
+               cells[0] = IndigoQueryMolCell.fromString(molfile);
+               outputContainer
+                     .addRowToTable(new DefaultRow("Row" + i++, cells));
+            }
          }
       }
 

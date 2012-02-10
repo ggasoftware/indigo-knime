@@ -39,7 +39,7 @@
 <entry key="6" type="xstring" value="CC1CCC(C(C)C)C(C1)C1CCCCC1"/>
 <entry key="7" type="xstring" value="CC1CCC(C(C)C)C(C1)C1CCCCC1"/>
 <entry key="8" type="xstring" value="CC1CCC(C(C)C)C(C1)C1CCCCC1"/>
-<entry key="9" type="xstring" value="CC1CCC(C(C)C)C(C1)C1CCCCC1"/>
+<entry key="9" type="xstring" value="CCC(CC)C1=CC=N(C)(C)(C)(C)(C)C(CC)=C1"/>
 </config>
 <entry key="rowIdPrefix" type="xstring" value="Row"/>
 <entry key="rowIdSuffix" type="xstring" value=""/>
