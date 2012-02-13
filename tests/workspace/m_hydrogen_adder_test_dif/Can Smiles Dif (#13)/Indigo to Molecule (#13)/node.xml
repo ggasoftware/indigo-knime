@@ -1,42 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.knime.org/2008/09/XMLConfig" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.knime.org/2008/09/XMLConfig http://www.knime.org/XMLConfig_2008_09.xsd" key="settings.xml">
-<entry key="name" type="xstring" value="Substructure Match Counter"/>
+<entry key="name" type="xstring" value="Indigo to Molecule"/>
 <config key="model">
 <config key="colName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="colName" type="xstring" value="column2"/>
-<config key="colName2_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
+<entry key="colName" type="xstring" value="column1"/>
+<config key="replaceColumn_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="colName2" type="xstring" value="column2"/>
+<entry key="replaceColumn" type="xboolean" value="true"/>
 <config key="newColName_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newColName" type="xstring" value="m_count"/>
-<config key="uniqueness_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="uniqueness" type="xint" value="0"/>
-<config key="highlight_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="highlight" type="xboolean" value="false"/>
-<config key="appendColumn_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
-<entry key="EnabledStatus" type="xboolean" value="true"/>
-</config>
-<entry key="appendColumn" type="xboolean" value="false"/>
-<config key="newColName2_Internals">
+<entry key="newColName" type="xstring" value=""/>
+<config key="destFormat_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="newColName2" type="xstring" value=""/>
+<entry key="destFormat" type="xstring" value="Smiles"/>
+<config key="generateCoords_Internals">
+<entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
+<entry key="EnabledStatus" type="xboolean" value="true"/>
+</config>
+<entry key="generateCoords" type="xboolean" value="true"/>
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>
