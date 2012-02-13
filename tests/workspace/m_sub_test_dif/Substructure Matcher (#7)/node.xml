@@ -13,10 +13,10 @@
 </config>
 <entry key="colName2" type="xstring" value="column1"/>
 <config key="mode_Internals">
-<entry key="SettingsModelID" type="xstring" value="SMID_integer"/>
+<entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="mode" type="xint" value="0"/>
+<entry key="mode" type="xstring" value="Normal"/>
 <config key="exact_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
