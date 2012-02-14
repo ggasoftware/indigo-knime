@@ -72,7 +72,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
          for (DataRow inputRow : inData[IndigoScaffoldFinderSettings.INPUT_PORT])
          {
             if(inputRow.getCell(colIdx).isMissing()) {
-               LOGGER.warn("Molecule table contains missing cells: ignoring " + inputRow.getKey());
+               LOGGER.warn("Molecule table contains missing cells: ignoring RowId '" + inputRow.getKey() + "'");
                continue;
             }
                
@@ -80,7 +80,7 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
             IndigoObject molObj = molcell.getIndigoObject();
             String str = molObj.checkBadValence();
             if (str != null && !str.equals("")) {
-               LOGGER.warn("Molecule table contains incorrect molecules: skipping " + inputRow.getKey() + ": " + str);
+               LOGGER.warn("Molecule table contains incorrect molecules: skipping row with RowId = '" + inputRow.getKey() + "': " + str);
             } else {
                arr.arrayAdd(molObj);
             }
