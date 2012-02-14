@@ -38,8 +38,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    }
 
    // the logger instance
-   private static final NodeLogger logger = NodeLogger
-         .getLogger(IndigoSimpleNodeModel.class);
+//   private static final NodeLogger logger = NodeLogger
+//         .getLogger(IndigoSimpleNodeModel.class);
 
    private final IndigoSimpleSettings _settings;
    Transformer _transformer;
@@ -70,6 +70,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       _defineStructureType(bufferedDataTable.getDataTableSpec());
       
       ColumnRearranger crea = createRearranger(bufferedDataTable.getDataTableSpec());
+      
+      handleWarningMessages();
 
       return new BufferedDataTable[] { exec.createColumnRearrangeTable(
             bufferedDataTable, crea, exec) };
@@ -121,8 +123,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               logger.error("Could not " + _message + " for " + row.getKey() + 
-                     ": " + ex.getMessage(), ex);
+               appendWarningMessage("Could not " + _message + " for " + row.getKey() + 
+                     ": " + ex.getMessage());
                return DataType.getMissingCell();
             }
             finally
