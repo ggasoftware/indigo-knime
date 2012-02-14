@@ -20,7 +20,7 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
 {
    private IndigoMurckoScaffoldSettings _settings = new IndigoMurckoScaffoldSettings();
 
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMurckoScaffoldNodeModel.class);
+//   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMurckoScaffoldNodeModel.class);
    
    protected DataTableSpec getDataTableSpec (DataTableSpec inputTableSpec) throws InvalidSettingsException
    {
@@ -264,9 +264,9 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               LOGGER.error("Exception during processing row " + 
-                     inputRow.getKey() + ": " + ex.getMessage() + 
-                     ". Replaced with missing cell.", ex);
+               appendWarningMessage("Error during processing row '" + 
+                     inputRow.getKey() + "': " + ex.getMessage() + 
+                     ": replaced with missing cell.");
                cell = DataType.getMissingCell();
                target = null;
             }
@@ -313,6 +313,8 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
                "Adding row " + rowNumber);
          rowNumber++;
       }
+      
+      handleWarningMessages();
 
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
