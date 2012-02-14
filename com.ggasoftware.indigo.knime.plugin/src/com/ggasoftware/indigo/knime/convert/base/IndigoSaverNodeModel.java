@@ -80,10 +80,13 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
    {
       ColumnRearranger crea = createRearranger(inData[0].getDataTableSpec());
       
-      handleWarningMessages();
 
-      return new BufferedDataTable[] { exec.createColumnRearrangeTable(
-            inData[0], crea, exec) };
+      BufferedDataTable rearrangeTable = exec.createColumnRearrangeTable(
+            inData[0], crea, exec);
+      
+      handleWarningMessages();
+      
+      return new BufferedDataTable[] { rearrangeTable };
    }
 
    /**

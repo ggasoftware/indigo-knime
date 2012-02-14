@@ -71,10 +71,13 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       
       ColumnRearranger crea = createRearranger(bufferedDataTable.getDataTableSpec());
       
-      handleWarningMessages();
 
-      return new BufferedDataTable[] { exec.createColumnRearrangeTable(
-            bufferedDataTable, crea, exec) };
+      BufferedDataTable rearrangeTable = exec.createColumnRearrangeTable(
+            bufferedDataTable, crea, exec);
+      
+      handleWarningMessages();
+      
+      return new BufferedDataTable[] { rearrangeTable };
    }
 
    /**
