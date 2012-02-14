@@ -1,5 +1,7 @@
 package com.ggasoftware.indigo.knime.common;
 
+import java.util.LinkedList;
+
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
@@ -175,5 +177,44 @@ public abstract class IndigoNodeModel extends NodeModel
          throw new RuntimeException("Structure type is not defined");
       }
       return result;
+   }
+   
+   /*
+    * Prepare warning message list
+    */
+   protected final LinkedList<String> _warningMessages = new LinkedList<String>();
+   public final int MAX_WARNING_SIZE = 10;
+   protected void appendWarningMessage(String mes) {
+      /*
+       * Add only first N messages
+       */
+      if(_warningMessages.size() < MAX_WARNING_SIZE)
+         _warningMessages.addLast(mes);
+      else
+         _warningMessages.addLast(null);
+   }
+   
+   protected void handleWarningMessages() {
+      /*
+       * Create warning message
+       */
+      if(!_warningMessages.isEmpty()) {
+         StringBuilder warnMessage = new StringBuilder();
+         int size = 0;
+         for(String mes : _warningMessages) {
+            if(size < MAX_WARNING_SIZE) {
+               if(size > 0)
+                  warnMessage.append('\n');
+               warnMessage.append(mes);
+            } else {
+               warnMessage.append('\n');
+               warnMessage.append(_warningMessages.size() - MAX_WARNING_SIZE);
+               warnMessage.append(" other warning messages ...");
+               break;
+            }
+            ++size;
+         }
+         setWarningMessage(warnMessage.toString());
+      }
    }
 }

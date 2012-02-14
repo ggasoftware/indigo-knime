@@ -11,6 +11,7 @@ import org.knime.core.data.*;
 import org.knime.core.data.def.DefaultRow;
 import org.knime.core.node.*;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.*;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
@@ -18,6 +19,10 @@ import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
 {
+   
+// the logger instance
+//   private static final NodeLogger LOGGER = NodeLogger
+//         .getLogger(IndigoComponentSeparatorNodeModel.class);
 
    protected IndigoComponentSeparatorNodeModel()
    {
@@ -91,7 +96,7 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
       
       DataTableSpec spec = calcDataTableSpec(bufferedDataTable.getDataTableSpec(), maxcomp);
       BufferedDataContainer outputContainer = exec.createDataContainer(spec);
-
+      
       for (DataRow inputRow : bufferedDataTable)
       {
          RowKey key = inputRow.getKey();
@@ -140,6 +145,8 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
                 */
                for (i = 0; i < collectionSize; i++)
                   cells[inputRow.getNumCells() + i] = new IndigoMolCell(collection.get(i));
+            } catch (IndigoException e) {
+               appendWarningMessage("Could not separate the molecule with RowId = '" + inputRow.getKey() + "': " + e.getMessage());
             }
             finally
             {
@@ -147,12 +154,16 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
             }
          }
          
+         handleWarningMessages();
+         
+         
          outputContainer.addRowToTable(new DefaultRow(key, cells));
       }
       
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }
+
 
    /**
     * {@inheritDoc}

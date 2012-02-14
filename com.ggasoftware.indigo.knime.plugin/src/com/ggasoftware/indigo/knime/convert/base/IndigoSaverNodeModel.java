@@ -42,7 +42,6 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 
@@ -58,8 +57,8 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
 {
    private final IndigoSaverSettings _settings = new IndigoSaverSettings();
 
-   private static final NodeLogger LOGGER = NodeLogger
-         .getLogger(IndigoSaverNodeModel.class);
+//   private static final NodeLogger LOGGER = NodeLogger
+//         .getLogger(IndigoSaverNodeModel.class);
 
    private final Class<? extends DataValue> _dataValueClass;
    
@@ -80,6 +79,8 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
       ColumnRearranger crea = createRearranger(inData[0].getDataTableSpec());
+      
+      handleWarningMessages();
 
       return new BufferedDataTable[] { exec.createColumnRearrangeTable(
             inData[0], crea, exec) };
@@ -190,8 +191,8 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               LOGGER.error("Could not convert molecule with RowId=" + 
-                     row.getKey() + ": " + ex.getMessage(), ex);
+               appendWarningMessage("Could not convert molecule with RowId=" + 
+                     row.getKey() + ": " + ex.getMessage());
                return DataType.getMissingCell();
             }
             finally
