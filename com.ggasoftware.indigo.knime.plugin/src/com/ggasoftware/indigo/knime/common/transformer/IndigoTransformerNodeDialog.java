@@ -34,6 +34,9 @@ import javax.swing.event.ChangeListener;
 
 public class IndigoTransformerNodeDialog extends NodeDialogPane
 {
+   public static interface DialogComponents {
+      public void loadDialogComponents(IndigoDialogPanel dialogPanel, IndigoTransformerSettings settings);
+   }
 
    @SuppressWarnings("unchecked")
    private final ColumnSelectionComboxBox _indigoColumn = new ColumnSelectionComboxBox(
@@ -85,9 +88,7 @@ public class IndigoTransformerNodeDialog extends NodeDialogPane
       }
    };
 
-   protected final IndigoDialogPanel _dialogPanel;
-
-   public IndigoTransformerNodeDialog (String desc, IndigoTransformerSettings settings, boolean needAddTab)
+   public IndigoTransformerNodeDialog (String desc, IndigoTransformerSettings settings, DialogComponents dialogComponents)
    {
       super();
       _desc = desc;
@@ -95,28 +96,29 @@ public class IndigoTransformerNodeDialog extends NodeDialogPane
       
       _registerDialogComponents();
 
-      _dialogPanel = new IndigoDialogPanel();
+      IndigoDialogPanel dialogPanel = new IndigoDialogPanel();
       
-      _dialogPanel.addItemsPanel("Column Settings");
-      _dialogPanel.addItem("Structure type", _structureType);
-      _dialogPanel.addItem("Indigo column", _indigoColumn);
-      _dialogPanel.addItem(_appendColumn, _newColName);
+      dialogPanel.addItemsPanel("Column Settings");
+      dialogPanel.addItem("Structure type", _structureType);
+      dialogPanel.addItem("Indigo column", _indigoColumn);
+      dialogPanel.addItem(_appendColumn, _newColName);
 
       _indigoColumn.addItemListener(_columnChangeListener);
       _appendColumn.addChangeListener(_changeListener);
+      
+      if(dialogComponents != null)
+         dialogComponents.loadDialogComponents(dialogPanel, _settings);
 
-      if (needAddTab)
-         addTabDialog();
+      addTab("Standard settings", dialogPanel.getPanel());
    }
    
-   protected void addTabDialog ()
-   {
-      addTab("Standard settings", _dialogPanel.getPanel());
+   public IndigoTransformerNodeDialog (String desc, IndigoTransformerSettings settings) {
+      this(desc, settings, null);
    }
    
    public IndigoTransformerNodeDialog (String desc)
    {
-      this(desc, new IndigoTransformerSettings(), true);
+      this(desc, new IndigoTransformerSettings(), null);
    }
 
    private void _registerDialogComponents() {

@@ -20,17 +20,36 @@ import javax.swing.JComboBox;
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
+import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
+import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeSettings.BondOrder;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
 import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeDialog;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeDialog.DialogComponents;
 import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeModel;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerSettings;
 
 public class IndigoBondReplacerNodeFactory extends
       NodeFactory<IndigoTransformerNodeModel>
 {
+   public enum BondOrder {
+      Single, Double, Triple, Aromatic
+   }
+   
+   public class IndigoBondReplacerNodeSettings extends IndigoTransformerSettings
+   {
+      public final SettingsModelString bondOrder = new SettingsModelString("bondOrder", BondOrder.Single.toString());
+      public final SettingsModelBoolean replaceHighlighted = new SettingsModelBoolean("replaceHighlighted", false);
 
+      public IndigoBondReplacerNodeSettings() {
+         super();
+         addSettingsParameter(bondOrder);
+         addSettingsParameter(replaceHighlighted);
+      }
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -110,26 +129,29 @@ public class IndigoBondReplacerNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      final IndigoBondReplacerNodeSettings settings = new IndigoBondReplacerNodeSettings();
-      return new IndigoTransformerNodeDialog("bonds replaced", settings, false) {
+      final IndigoBondReplacerNodeSettings rsettings = new IndigoBondReplacerNodeSettings();
+      
+      DialogComponents dialogComponents = new DialogComponents() {
          private final JComboBox _bondOrder = new JComboBox(new Object[] {
                BondOrder.Single, BondOrder.Double, BondOrder.Triple,
                BondOrder.Aromatic });
          private final JCheckBox _replaceHighlighted = new JCheckBox(
                "Replace only highlighted bonds");
+         
+         @Override
+         public void loadDialogComponents(IndigoDialogPanel dialogPanel, IndigoTransformerSettings settings) {
+            settings.registerDialogComponent(_bondOrder, rsettings.bondOrder);
+            settings.registerDialogComponent(_replaceHighlighted,
+                  rsettings.replaceHighlighted);
 
-         {
-            settings.registerDialogComponent(_bondOrder, settings.bondOrder);
-            settings.registerDialogComponent(_replaceHighlighted, settings.replaceHighlighted);
-            
             // Initialize
-            _dialogPanel.addItemsPanel("Replacer settings");
-            _dialogPanel.addItem("Bond order", _bondOrder);
-            _dialogPanel.addItem(_replaceHighlighted);
-            
-            addTabDialog();
+            dialogPanel.addItemsPanel("Replacer settings");
+            dialogPanel.addItem("Bond order", _bondOrder);
+            dialogPanel.addItem(_replaceHighlighted);
          }
+         
       };
+      return new IndigoTransformerNodeDialog("bonds replaced", rsettings, dialogComponents);
    }
 
 }
