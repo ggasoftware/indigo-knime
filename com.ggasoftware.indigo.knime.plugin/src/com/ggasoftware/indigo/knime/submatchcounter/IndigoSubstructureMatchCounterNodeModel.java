@@ -92,6 +92,8 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
 
          rowNumber++;
       }
+      
+      handleWarningMessages();
 
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
@@ -132,25 +134,29 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
       IndigoObject[] queries, Indigo indigo, DataRow inputRow)
    {
       DataCell[] cells;
-      int i;
+      int c_idx;
       
       cells = new DataCell[outSpec.getNumColumns()];
       
-      for (i = 0; i < inputRow.getNumCells(); i++)
-         cells[i] = inputRow.getCell(i);
+      for (c_idx = 0; c_idx < inputRow.getNumCells(); c_idx++)
+         cells[c_idx] = inputRow.getCell(c_idx);
       
       DataCell targetCell = inputRow.getCell(colIdx);
+      /*
+       *  Mark all columns as missing
+       */
+      if (_settings.appendColumn.getBooleanValue()) {
+         cells[c_idx] = DataType.getMissingCell();
+         c_idx++;
+      }
+      
+      for (int j = 0; j < queries.length; j++) {
+         cells[c_idx] = DataType.getMissingCell();
+         c_idx++;
+      }
+      c_idx = inputRow.getNumCells();
+      
       if (targetCell.isMissing()) {
-         // Mark all columns as missing
-         if (_settings.appendColumn.getBooleanValue()) {
-            cells[i] = DataType.getMissingCell();
-            i++;
-         }
-         
-         for (int j = 0; j < queries.length; j++) {
-            cells[i] = DataType.getMissingCell();
-            i++;
-         }
          return cells;
       }
       
@@ -158,6 +164,12 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
          IndigoPlugin.lock();
          
          IndigoObject target = ((IndigoDataCell)targetCell).getIndigoObject();
+         
+         String valence = target.checkBadValence();
+         if(valence != null && !valence.equals("")) {
+            appendWarningMessage("Error while processing target structure with RowId = '" + inputRow.getKey() + "': " +  valence);
+            return cells;
+         }
          
          IndigoObject highlighted = target.clone();
          
@@ -167,27 +179,29 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
          IndigoObject matcher = indigo.substructureMatcher(highlighted);
          
          for (IndigoObject q : queries) {
-            if (q == null) {
-               cells[i++] = DataType.getMissingCell();
+            if (q == null)
                continue;
-            }
-            cells[i++] = new IntCell(matcher.countMatches(q));
+            try {
+               int matchCount = matcher.countMatches(q);
 
-            if (_settings.highlight.getBooleanValue()) {
-               /*
-                * Not working for reactions at the moment
-                */
-               for (IndigoObject match : matcher.iterateMatches(q)) {
-                  _highlightStructures(match, q);
+               cells[c_idx++] = new IntCell(matchCount);
+
+               if (_settings.highlight.getBooleanValue()) {
+                  for (IndigoObject match : matcher.iterateMatches(q)) {
+                     _highlightStructures(match, q);
+                  }
                }
-            }
-         }
 
-         if (_settings.highlight.getBooleanValue()) {
-            if (_settings.appendColumn.getBooleanValue())
-               cells[i] = _createNewDataCell(highlighted);
-            else
-               cells[colIdx] = _createNewDataCell(highlighted);
+               if (_settings.highlight.getBooleanValue()) {
+                  if (_settings.appendColumn.getBooleanValue())
+                     cells[c_idx] = _createNewDataCell(highlighted);
+                  else
+                     cells[colIdx] = _createNewDataCell(highlighted);
+               }
+            } catch (IndigoException e) {
+               appendWarningMessage("Error while calling substructure counter: target key = '"
+                     + inputRow.getKey() + "'");
+            }
          }
       } finally {
          IndigoPlugin.unlock();
