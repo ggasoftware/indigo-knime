@@ -194,8 +194,8 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               appendWarningMessage("Could not convert molecule with RowId=" + 
-                     row.getKey() + ": " + ex.getMessage());
+               appendWarningMessage("Could not convert structure with RowId='" + 
+                     row.getKey() + "': " + ex.getMessage());
                return DataType.getMissingCell();
             }
             finally
