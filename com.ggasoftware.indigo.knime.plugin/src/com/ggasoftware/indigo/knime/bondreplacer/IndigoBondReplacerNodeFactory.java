@@ -23,22 +23,22 @@ import org.knime.core.node.NodeView;
 
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeSettings.BondOrder;
-import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeDialog;
-import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeModel;
 import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeDialog;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeModel;
 
 public class IndigoBondReplacerNodeFactory extends
-      NodeFactory<IndigoSimpleNodeModel>
+      NodeFactory<IndigoTransformerNodeModel>
 {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public IndigoSimpleNodeModel createNodeModel ()
+   public IndigoTransformerNodeModel createNodeModel ()
    {
       final IndigoBondReplacerNodeSettings settings = new IndigoBondReplacerNodeSettings();
-      return new IndigoSimpleNodeModel("replace bonds", settings,
+      return new IndigoTransformerNodeModel("replace bonds", settings,
             new IndigoTransformer()
             {
                @Override
@@ -89,8 +89,8 @@ public class IndigoBondReplacerNodeFactory extends
     * {@inheritDoc}
     */
    @Override
-   public NodeView<IndigoSimpleNodeModel> createNodeView (final int viewIndex,
-         final IndigoSimpleNodeModel nodeModel)
+   public NodeView<IndigoTransformerNodeModel> createNodeView (final int viewIndex,
+         final IndigoTransformerNodeModel nodeModel)
    {
       return null;
    }
@@ -111,7 +111,7 @@ public class IndigoBondReplacerNodeFactory extends
    public NodeDialogPane createNodeDialogPane ()
    {
       final IndigoBondReplacerNodeSettings settings = new IndigoBondReplacerNodeSettings();
-      return new IndigoSimpleNodeDialog("bonds replaced", settings, false) {
+      return new IndigoTransformerNodeDialog("bonds replaced", settings, false) {
          private final JComboBox _bondOrder = new JComboBox(new Object[] {
                BondOrder.Single, BondOrder.Double, BondOrder.Triple,
                BondOrder.Aromatic });

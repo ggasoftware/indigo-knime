@@ -19,21 +19,21 @@ import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeDialog;
-import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeModel;
 import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeDialog;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerNodeModel;
 
 public class IndigoHydrogenRemoverNodeFactory extends
-      NodeFactory<IndigoSimpleNodeModel>
+      NodeFactory<IndigoTransformerNodeModel>
 {
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public IndigoSimpleNodeModel createNodeModel ()
+   public IndigoTransformerNodeModel createNodeModel ()
    {
-      return new IndigoSimpleNodeModel("fold hydrogens",
+      return new IndigoTransformerNodeModel("fold hydrogens",
             new IndigoTransformer()
             {
                @Override
@@ -57,8 +57,8 @@ public class IndigoHydrogenRemoverNodeFactory extends
     * {@inheritDoc}
     */
    @Override
-   public NodeView<IndigoSimpleNodeModel> createNodeView (final int viewIndex,
-         final IndigoSimpleNodeModel nodeModel)
+   public NodeView<IndigoTransformerNodeModel> createNodeView (final int viewIndex,
+         final IndigoTransformerNodeModel nodeModel)
    {
       return null;
    }
@@ -78,6 +78,6 @@ public class IndigoHydrogenRemoverNodeFactory extends
    @Override
    public NodeDialogPane createNodeDialogPane ()
    {
-      return new IndigoSimpleNodeDialog("-H");
+      return new IndigoTransformerNodeDialog("-H");
    }
 }

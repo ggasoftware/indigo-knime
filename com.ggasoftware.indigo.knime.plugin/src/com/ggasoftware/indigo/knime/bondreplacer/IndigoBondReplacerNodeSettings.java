@@ -17,9 +17,9 @@ package com.ggasoftware.indigo.knime.bondreplacer;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.ggasoftware.indigo.knime.common.IndigoSimpleSettings;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformerSettings;
 
-public class IndigoBondReplacerNodeSettings extends IndigoSimpleSettings
+public class IndigoBondReplacerNodeSettings extends IndigoTransformerSettings
 {
    public enum BondOrder {
       Single, Double, Triple, Aromatic

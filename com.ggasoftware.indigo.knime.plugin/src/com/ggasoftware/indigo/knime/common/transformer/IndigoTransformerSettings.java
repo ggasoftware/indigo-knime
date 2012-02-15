@@ -12,13 +12,13 @@
  * along with this program; if not, see <http://www.gnu.org/licenses>.
  ***************************************************************************/
 
-package com.ggasoftware.indigo.knime.common;
+package com.ggasoftware.indigo.knime.common.transformer;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 
-public class IndigoSimpleSettings extends IndigoNodeSettings
+public class IndigoTransformerSettings extends IndigoNodeSettings
 {
    public static final int INPUT_PORT = 0;
    
@@ -31,7 +31,7 @@ public class IndigoSimpleSettings extends IndigoNodeSettings
     */
    public STRUCTURE_TYPE structureType;
 
-   public IndigoSimpleSettings() {
+   public IndigoTransformerSettings() {
       addSettingsParameter(colName);
       addSettingsParameter(appendColumn);
       addSettingsParameter(newColName);

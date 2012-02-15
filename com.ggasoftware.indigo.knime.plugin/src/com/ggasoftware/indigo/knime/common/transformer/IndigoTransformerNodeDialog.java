@@ -12,7 +12,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses>.
  ***************************************************************************/
 
-package com.ggasoftware.indigo.knime.common;
+package com.ggasoftware.indigo.knime.common.transformer;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -32,7 +32,7 @@ import javax.swing.border.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class IndigoSimpleNodeDialog extends NodeDialogPane
+public class IndigoTransformerNodeDialog extends NodeDialogPane
 {
 
    @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
 
    private final JCheckBox _appendColumn = new JCheckBox("Append column");
    private final JTextField _newColName = new JTextField(20);
-   private final IndigoSimpleSettings _settings;
+   private final IndigoTransformerSettings _settings;
    private final String _desc;
    
    private final JLabel _structureType = new JLabel();
@@ -87,7 +87,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
 
    protected final IndigoDialogPanel _dialogPanel;
 
-   public IndigoSimpleNodeDialog (String desc, IndigoSimpleSettings settings, boolean needAddTab)
+   public IndigoTransformerNodeDialog (String desc, IndigoTransformerSettings settings, boolean needAddTab)
    {
       super();
       _desc = desc;
@@ -114,13 +114,13 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
       addTab("Standard settings", _dialogPanel.getPanel());
    }
    
-   public IndigoSimpleNodeDialog (String desc)
+   public IndigoTransformerNodeDialog (String desc)
    {
-      this(desc, new IndigoSimpleSettings(), true);
+      this(desc, new IndigoTransformerSettings(), true);
    }
 
    private void _registerDialogComponents() {
-      _settings.registerDialogComponent(_indigoColumn, IndigoSimpleSettings.INPUT_PORT, _settings.colName);
+      _settings.registerDialogComponent(_indigoColumn, IndigoTransformerSettings.INPUT_PORT, _settings.colName);
       _settings.registerDialogComponent(_appendColumn, _settings.appendColumn);
       _settings.registerDialogComponent(_newColName, _settings.newColName);
    }
@@ -143,7 +143,7 @@ public class IndigoSimpleNodeDialog extends NodeDialogPane
          _settings.loadSettingsFrom(settings);
          _settings.loadDialogSettings(specs);
          
-         _indigoSpec = specs[IndigoSimpleSettings.INPUT_PORT];
+         _indigoSpec = specs[IndigoTransformerSettings.INPUT_PORT];
          _changeListener.stateChanged(null);
          _columnChangeListener.itemStateChanged(null);
          

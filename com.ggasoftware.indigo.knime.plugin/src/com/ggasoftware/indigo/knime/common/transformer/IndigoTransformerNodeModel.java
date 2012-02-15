@@ -12,7 +12,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses>.
  ***************************************************************************/
 
-package com.ggasoftware.indigo.knime.common;
+package com.ggasoftware.indigo.knime.common.transformer;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,21 +27,21 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
-import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
+import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
-public class IndigoSimpleNodeModel extends IndigoNodeModel
+public class IndigoTransformerNodeModel extends IndigoNodeModel
 {
 
    // the logger instance
 //   private static final NodeLogger logger = NodeLogger
 //         .getLogger(IndigoSimpleNodeModel.class);
 
-   private final IndigoSimpleSettings _settings;
+   private final IndigoTransformerSettings _settings;
    IndigoTransformer _transformer;
    String _message;
 
-   public IndigoSimpleNodeModel(String message, IndigoSimpleSettings settings, IndigoTransformer transformer)
+   public IndigoTransformerNodeModel(String message, IndigoTransformerSettings settings, IndigoTransformer transformer)
    {
       super(1, 1);
       _message = message;
@@ -49,9 +49,9 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       _settings = settings;
    }
    
-   public IndigoSimpleNodeModel(String message, IndigoTransformer transformer)
+   public IndigoTransformerNodeModel(String message, IndigoTransformer transformer)
    {
-      this(message, new IndigoSimpleSettings(), transformer);
+      this(message, new IndigoTransformerSettings(), transformer);
    }
 
    /**
@@ -62,7 +62,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
          final ExecutionContext exec) throws Exception
    {
 
-      BufferedDataTable bufferedDataTable = inData[IndigoSimpleSettings.INPUT_PORT];
+      BufferedDataTable bufferedDataTable = inData[IndigoTransformerSettings.INPUT_PORT];
       _defineStructureType(bufferedDataTable.getDataTableSpec());
       
       ColumnRearranger crea = createRearranger(bufferedDataTable.getDataTableSpec());
@@ -89,7 +89,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       int _colIndex;
       private final DataColumnSpec[] m_colSpec;
 
-      Converter(final DataTableSpec inSpec, final DataColumnSpec cs, final IndigoSimpleSettings settings, final int colIndex) {
+      Converter(final DataTableSpec inSpec, final DataColumnSpec cs, final IndigoTransformerSettings settings, final int colIndex) {
          _colIndex = colIndex;
 
          if (settings.appendColumn.getBooleanValue()) {
@@ -197,7 +197,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    protected DataTableSpec[] configure (final DataTableSpec[] inSpecs)
          throws InvalidSettingsException
    {
-      DataTableSpec inSpec = inSpecs[IndigoSimpleSettings.INPUT_PORT];
+      DataTableSpec inSpec = inSpecs[IndigoTransformerSettings.INPUT_PORT];
       
       searchMixedIndigoColumn(inSpec, _settings.colName, IndigoMolValue.class, IndigoReactionValue.class);
       
@@ -241,7 +241,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
    protected void validateSettings (final NodeSettingsRO settings)
          throws InvalidSettingsException
    {
-      IndigoSimpleSettings s = new IndigoSimpleSettings();
+      IndigoTransformerSettings s = new IndigoTransformerSettings();
       s.loadSettingsFrom(settings);
       if (s.colName.getStringValue() == null || s.colName.getStringValue().length() < 1)
          throw new InvalidSettingsException("No column name given");
