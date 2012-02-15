@@ -94,6 +94,8 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
                io.aromatize();
 
                fp = io.fingerprint("sim").toString();
+            }catch (IndigoException e) {
+               appendWarningMessage("Error while aromatizing structure with RowId = '" + inputRow.getKey()+ "': " + e.getMessage());
             } finally {
                IndigoPlugin.unlock();
             }
@@ -113,6 +115,8 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
 
          rowNumber++;
       }
+      
+      handleWarningMessages();
 
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
