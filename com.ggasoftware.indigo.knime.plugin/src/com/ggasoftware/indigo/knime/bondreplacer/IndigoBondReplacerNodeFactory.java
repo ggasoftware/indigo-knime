@@ -55,9 +55,19 @@ public class IndigoBondReplacerNodeFactory extends
                      newOrder = 4;
                   else
                      throw new RuntimeException("Unknown bond order type: " + bondOrderString);
-                     
+                  
+                  if(reaction) {
+                     for (IndigoObject mol : io.iterateMolecules()) 
+                        _replaceBonds(settings.replaceHighlighted.getBooleanValue(), mol, newOrder);
+                  } else {
+                     _replaceBonds(settings.replaceHighlighted.getBooleanValue(), io, newOrder);
+                  }
+               }
+
+               private void _replaceBonds(boolean replaceHighlighted,
+                     IndigoObject io, int newOrder) {
                   for (IndigoObject bond : io.iterateBonds()) {
-                     if (settings.replaceHighlighted.getBooleanValue() && !bond.isHighlighted())
+                     if (replaceHighlighted && !bond.isHighlighted())
                         continue;
                      bond.setBondOrder(newOrder);
                   }
