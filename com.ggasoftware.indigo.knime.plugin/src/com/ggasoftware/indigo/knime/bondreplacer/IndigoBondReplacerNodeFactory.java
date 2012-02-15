@@ -25,6 +25,7 @@ import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeSettings.BondOrder;
 import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeDialog;
 import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeModel;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
 
 public class IndigoBondReplacerNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
@@ -38,7 +39,7 @@ public class IndigoBondReplacerNodeFactory extends
    {
       final IndigoBondReplacerNodeSettings settings = new IndigoBondReplacerNodeSettings();
       return new IndigoSimpleNodeModel("replace bonds", settings,
-            new IndigoSimpleNodeModel.Transformer()
+            new IndigoTransformer()
             {
                @Override
                public void transform (IndigoObject io, boolean reaction)

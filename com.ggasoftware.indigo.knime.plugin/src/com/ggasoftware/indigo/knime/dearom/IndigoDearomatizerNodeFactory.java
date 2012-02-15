@@ -21,6 +21,7 @@ import org.knime.core.node.NodeView;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeDialog;
 import com.ggasoftware.indigo.knime.common.IndigoSimpleNodeModel;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
 
 public class IndigoDearomatizerNodeFactory extends
       NodeFactory<IndigoSimpleNodeModel>
@@ -33,7 +34,7 @@ public class IndigoDearomatizerNodeFactory extends
    public IndigoSimpleNodeModel createNodeModel ()
    {
       return new IndigoSimpleNodeModel("dearomatize molecule",
-            new IndigoSimpleNodeModel.Transformer()
+            new IndigoTransformer()
             {
                @Override
                public void transform (IndigoObject io, boolean reaction)

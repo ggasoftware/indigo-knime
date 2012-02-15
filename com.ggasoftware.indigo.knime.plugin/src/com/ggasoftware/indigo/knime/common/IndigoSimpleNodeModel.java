@@ -27,25 +27,21 @@ import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.transformer.IndigoTransformer;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 public class IndigoSimpleNodeModel extends IndigoNodeModel
 {
-
-   public static abstract class Transformer
-   {
-      public abstract void transform (IndigoObject io, boolean reaction);
-   }
 
    // the logger instance
 //   private static final NodeLogger logger = NodeLogger
 //         .getLogger(IndigoSimpleNodeModel.class);
 
    private final IndigoSimpleSettings _settings;
-   Transformer _transformer;
+   IndigoTransformer _transformer;
    String _message;
 
-   public IndigoSimpleNodeModel(String message, IndigoSimpleSettings settings, Transformer transformer)
+   public IndigoSimpleNodeModel(String message, IndigoSimpleSettings settings, IndigoTransformer transformer)
    {
       super(1, 1);
       _message = message;
@@ -53,7 +49,7 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
       _settings = settings;
    }
    
-   public IndigoSimpleNodeModel(String message, Transformer transformer)
+   public IndigoSimpleNodeModel(String message, IndigoTransformer transformer)
    {
       this(message, new IndigoSimpleSettings(), transformer);
    }
