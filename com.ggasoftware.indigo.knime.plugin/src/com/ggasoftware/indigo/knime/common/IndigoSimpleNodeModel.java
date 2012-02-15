@@ -126,8 +126,8 @@ public class IndigoSimpleNodeModel extends IndigoNodeModel
             }
             catch (IndigoException ex)
             {
-               appendWarningMessage("Could not " + _message + " for " + row.getKey() + 
-                     ": " + ex.getMessage());
+               appendWarningMessage("Could not " + _message + " for row with RowId='" + row.getKey() + 
+                     "': " + ex.getMessage());
                return DataType.getMissingCell();
             }
             finally
