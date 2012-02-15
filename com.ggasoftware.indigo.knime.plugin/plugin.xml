@@ -4,114 +4,46 @@
 <plugin>
    <extension point="org.knime.workbench.repository.nodes">
       <!-- <node category-path="/community/indigo/io" factory-class="com.ggasoftware.indigo.knime.io.rxnreader.RXNReaderNodeFactory" id="com.ggasoftware.indigo.knime.io.rxnreader.RXNReaderNodeFactory"/> -->
-      <node category-path="/community/indigo/molecule_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoMoleculeLoaderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
-      <node category-path="/community/indigo/molecule_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoQueryMoleculeLoaderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
-      <node category-path="/community/indigo/molecule_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoMoleculeSaverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"/>
-      <node category-path="/community/indigo/molecule_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoQueryMoleculeSaverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
+      <node category-path="/community/indigo/molecule_translators" factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoMoleculeLoaderNodeFactory" category-path="/community/indigo/molecule_translators" factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoQueryMoleculeLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoQueryMoleculeLoaderNodeFactory" category-path="/community/indigo/molecule_translators" factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoMoleculeSaverNodeFactory" category-path="/community/indigo/molecule_translators" factory-class="com.ggasoftware.indigo.knime.convert.molecule.IndigoQueryMoleculeSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryMoleculeSaverNodeFactory"/>
       
-      <node category-path="/community/indigo/reaction_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoReactionLoaderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoReactionLoaderNodeFactory"/>
-      <node category-path="/community/indigo/reaction_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoQueryReactionLoaderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoQueryReactionLoaderNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoReactionLoaderNodeFactory"/>
-      <node category-path="/community/indigo/reaction_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoReactionSaverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoReactionSaverNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoQueryReactionLoaderNodeFactory"/>
-      <node category-path="/community/indigo/reaction_translators" 
-         factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoQueryReactionSaverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoQueryReactionSaverNodeFactory"
-         after="com.ggasoftware.indigo.knime.IndigoReactionSaverNodeFactory"/>
+      <node category-path="/community/indigo/reaction_translators" factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoReactionLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoReactionLoaderNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoReactionLoaderNodeFactory" category-path="/community/indigo/reaction_translators" factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoQueryReactionLoaderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryReactionLoaderNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoQueryReactionLoaderNodeFactory" category-path="/community/indigo/reaction_translators" factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoReactionSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoReactionSaverNodeFactory"/>
+      <node after="com.ggasoftware.indigo.knime.IndigoReactionSaverNodeFactory" category-path="/community/indigo/reaction_translators" factory-class="com.ggasoftware.indigo.knime.convert.reaction.IndigoQueryReactionSaverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoQueryReactionSaverNodeFactory"/>
       
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.compjoin.IndigoComponentCombinerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.compjoin.IndigoComponentCombinerNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory" 
-         id="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.murcko.IndigoMurckoScaffoldNodeFactory" 
-         id="com.ggasoftware.indigo.knime.murcko.IndigoMurckoScaffoldNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.rgdecomp.IndigoRGroupDecomposerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoRGroupDecomposerNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.scaffold.IndigoScaffoldFinderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
-      <node category-path="/community/indigo/molecule" 
-         factory-class="com.ggasoftware.indigo.knime.transform.IndigoMoleculeTransformNodeFactory" 
-         id="com.ggasoftware.indigo.knime.transform.IndigoMoleculeTransformNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.compjoin.IndigoComponentCombinerNodeFactory" id="com.ggasoftware.indigo.knime.compjoin.IndigoComponentCombinerNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory" id="com.ggasoftware.indigo.knime.compsep.IndigoComponentSeparatorNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.murcko.IndigoMurckoScaffoldNodeFactory" id="com.ggasoftware.indigo.knime.murcko.IndigoMurckoScaffoldNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.rgdecomp.IndigoRGroupDecomposerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoRGroupDecomposerNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.scaffold.IndigoScaffoldFinderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoScaffoldFinderNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatchCounterNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
+      <node category-path="/community/indigo/molecule" factory-class="com.ggasoftware.indigo.knime.transform.IndigoMoleculeTransformNodeFactory" id="com.ggasoftware.indigo.knime.transform.IndigoMoleculeTransformNodeFactory"/>
       
-      <node category-path="/community/indigo/reaction" 
-         factory-class="com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperNodeFactory" 
-         id="com.ggasoftware.indigo.knime.rautomapper.ReactionAutomapperNodeFactory"/>
-      <node category-path="/community/indigo/reaction" 
-         factory-class="com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
-      <node category-path="/community/indigo/reaction" 
-         factory-class="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory"/>
-      <node category-path="/community/indigo/reaction" 
-         factory-class="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory" 
-         id="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory"/>
+      <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rautomapper.IndigoReactionAutomapperNodeFactory" id="com.ggasoftware.indigo.knime.rautomapper.ReactionAutomapperNodeFactory"/>
+      <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.submatcher.IndigoSubstructureMatcherNodeFactory" id="com.ggasoftware.indigo.knime.IndigoSubstructureMatcherNodeFactory"/>
+      <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory" id="com.ggasoftware.indigo.knime.rbuilder.IndigoReactionBuilderNodeFactory"/>
+      <node category-path="/community/indigo/reaction" factory-class="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory" id="com.ggasoftware.indigo.knime.rsplitter.IndigoReactionSplitterNodeFactory"/>
       
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.arom.IndigoAromatizerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.dearom.IndigoDearomatizerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.hadder.IndigoHydrogenAdderNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
-      <node category-path="/community/indigo/manipulators" 
-         factory-class="com.ggasoftware.indigo.knime.hremover.IndigoHydrogenRemoverNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.arom.IndigoAromatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoAromatizerNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.dearom.IndigoDearomatizerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoDearomatizerNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory" id="com.ggasoftware.indigo.knime.areplacer.IndigoAtomReplacerNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeFactory" id="com.ggasoftware.indigo.knime.bondreplacer.IndigoBondReplacerNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory" id="com.ggasoftware.indigo.knime.fremover.IndigoFeatureRemoverNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.hadder.IndigoHydrogenAdderNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenAdderNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.hremover.IndigoHydrogenRemoverNodeFactory" id="com.ggasoftware.indigo.knime.IndigoHydrogenRemoverNodeFactory"/>
+      <node category-path="/community/indigo/manipulators" factory-class="com.ggasoftware.indigo.knime.layout.IndigoLayout2DNodeFactory" id="com.ggasoftware.indigo.knime.layout.IndigoLayout2DNodeFactory"/>
       
-      <node category-path="/community/indigo/properties" 
-         factory-class="com.ggasoftware.indigo.knime.molprop.IndigoMoleculePropertiesNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
-      <node category-path="/community/indigo/properties" 
-         factory-class="com.ggasoftware.indigo.knime.valence.IndigoValenceCheckerNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
-      <node category-path="/community/indigo/properties" 
-         factory-class="com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilarityNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoFingerprintSimilarityNodeFactory"/>
-      <node category-path="/community/indigo/properties" 
-         factory-class="com.ggasoftware.indigo.knime.molfp.IndigoMoleculeFingerprinterNodeFactory" 
-         id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
+      <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.molprop.IndigoMoleculePropertiesNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculePropertiesNodeFactory"/>
+      <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.valence.IndigoValenceCheckerNodeFactory" id="com.ggasoftware.indigo.knime.IndigoValenceCheckerNodeFactory"/>
+      <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.fpsim.IndigoFingerprintSimilarityNodeFactory" id="com.ggasoftware.indigo.knime.IndigoFingerprintSimilarityNodeFactory"/>
+      <node category-path="/community/indigo/properties" factory-class="com.ggasoftware.indigo.knime.molfp.IndigoMoleculeFingerprinterNodeFactory" id="com.ggasoftware.indigo.knime.IndigoMoleculeFingerprinterNodeFactory"/>
 
-      <node category-path="/community/indigo/combinatorial_chemistry" 
-         factory-class="com.ggasoftware.indigo.knime.combchem.IndigoReactionGeneratorNodeFactory" 
-         id="com.ggasoftware.indigo.knime.combchem.IndigoReactionGeneratorNodeFactory"/>
+      <node category-path="/community/indigo/combinatorial_chemistry" factory-class="com.ggasoftware.indigo.knime.combchem.IndigoReactionGeneratorNodeFactory" id="com.ggasoftware.indigo.knime.combchem.IndigoReactionGeneratorNodeFactory"/>
+
 
 </extension>
    
@@ -125,22 +57,22 @@
       <category description="Molecule Translators" icon="icons/groups/translators.png" level-id="molecule_translators" name="Molecule Translators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Reaction Translators" icon="icons/groups/translators.png" level-id="reaction_translators" name="Reaction Translators" path="/community/indigo" after="molecule_translators"/>
+      <category after="molecule_translators" description="Reaction Translators" icon="icons/groups/translators.png" level-id="reaction_translators" name="Reaction Translators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Molecule Nodes" level-id="molecule" name="Molecule Nodes" path="/community/indigo" after="reaction_translators"/>
+      <category after="reaction_translators" description="Molecule Nodes" level-id="molecule" name="Molecule Nodes" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Reaction Nodes" level-id="reaction" name="Reaction Nodes" path="/community/indigo" after="molecule"/>
+      <category after="molecule" description="Reaction Nodes" level-id="reaction" name="Reaction Nodes" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Combinatorial Chemistry" icon="icons/groups/combichem-group.png"  level-id="combinatorial_chemistry" name="Combinatorial Chemistry" path="/community/indigo" after="reaction"/>
+      <category after="reaction" description="Combinatorial Chemistry" icon="icons/groups/combichem-group.png" level-id="combinatorial_chemistry" name="Combinatorial Chemistry" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Manipulators" icon="icons/groups/manipulators.png" level-id="manipulators" name="Manipulators" path="/community/indigo" after="combinatorial_chemistry"/>
+      <category after="combinatorial_chemistry" description="Manipulators" icon="icons/groups/manipulators.png" level-id="manipulators" name="Manipulators" path="/community/indigo"/>
     </extension>
     <extension point="org.knime.workbench.repository.categories">
-      <category description="Properties" icon="icons/groups/properties.png" level-id="properties" name="Properties" path="/community/indigo" after="manipulators"/>
+      <category after="manipulators" description="Properties" icon="icons/groups/properties.png" level-id="properties" name="Properties" path="/community/indigo"/>
     </extension>
     <extension point="org.eclipse.equinox.preferences.preferences">
        <initializer class="com.ggasoftware.indigo.knime.plugin.IndigoPreferenceInitializer"/>
