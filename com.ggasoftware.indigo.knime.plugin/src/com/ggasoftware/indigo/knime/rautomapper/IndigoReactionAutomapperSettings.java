@@ -7,7 +7,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public static enum AAMode {

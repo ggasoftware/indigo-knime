@@ -4,7 +4,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoFeatureRemoverSettings extends IndigoNodeSettings
 {

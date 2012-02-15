@@ -25,11 +25,11 @@ import org.knime.core.data.*;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
-import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.convert.base.IndigoSaverSettings.Format;
 
 public class IndigoSaverNodeDialog extends NodeDialogPane

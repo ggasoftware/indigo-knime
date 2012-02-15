@@ -4,8 +4,8 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
-import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
 
 import javax.swing.*;
 import javax.swing.border.*;

@@ -23,11 +23,11 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.*;
 
-import com.ggasoftware.indigo.knime.IndigoDialogPanel;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings.STRUCTURE_TYPE;
 
 public class IndigoMoleculeFingerprinterNodeDialog extends NodeDialogPane
 {

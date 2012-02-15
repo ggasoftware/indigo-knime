@@ -2,7 +2,7 @@ package com.ggasoftware.indigo.knime.combchem;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoReactionGeneratorSettings extends IndigoNodeSettings {
    public static final int REACTION_PORT = 0;

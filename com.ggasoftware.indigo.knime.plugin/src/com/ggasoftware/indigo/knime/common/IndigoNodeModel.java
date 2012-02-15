@@ -14,11 +14,11 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.port.PortType;
 
 import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolCell;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings.STRUCTURE_TYPE;
 
 public abstract class IndigoNodeModel extends NodeModel
 {

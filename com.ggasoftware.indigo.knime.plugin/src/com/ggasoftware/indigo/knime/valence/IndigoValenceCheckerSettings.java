@@ -16,7 +16,7 @@ package com.ggasoftware.indigo.knime.valence;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoValenceCheckerSettings extends IndigoNodeSettings
 {

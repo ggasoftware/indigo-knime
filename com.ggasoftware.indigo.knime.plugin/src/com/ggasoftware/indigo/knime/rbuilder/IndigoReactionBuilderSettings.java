@@ -7,9 +7,9 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.util.ColumnFilter;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoReactionBuilderSettings extends IndigoNodeSettings{
    public static final int INPUT_PORT = 0;

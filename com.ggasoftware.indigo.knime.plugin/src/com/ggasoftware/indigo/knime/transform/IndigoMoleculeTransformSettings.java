@@ -3,7 +3,7 @@ package com.ggasoftware.indigo.knime.transform;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoMoleculeTransformSettings extends IndigoNodeSettings {
    public static final int MOL_PORT = 0;

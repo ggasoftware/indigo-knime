@@ -22,9 +22,9 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.*;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
-import com.ggasoftware.indigo.knime.IndigoDialogPanel;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
 
 public class IndigoRGroupDecomposerNodeDialog extends NodeDialogPane
 {

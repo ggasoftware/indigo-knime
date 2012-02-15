@@ -1,4 +1,4 @@
-package com.ggasoftware.indigo.knime;
+package com.ggasoftware.indigo.knime.common;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,6 @@ import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
-import com.ggasoftware.indigo.knime.common.SettingsModelFloat;
 
 /*
  * Class for basic settings handling

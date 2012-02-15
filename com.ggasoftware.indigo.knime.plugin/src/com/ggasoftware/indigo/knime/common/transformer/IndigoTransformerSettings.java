@@ -16,7 +16,7 @@ package com.ggasoftware.indigo.knime.common.transformer;
 
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoTransformerSettings extends IndigoNodeSettings
 {

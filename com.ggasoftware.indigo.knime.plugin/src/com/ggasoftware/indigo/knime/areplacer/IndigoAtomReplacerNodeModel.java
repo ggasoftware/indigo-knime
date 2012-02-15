@@ -13,12 +13,12 @@ import org.knime.core.node.*;
 
 import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 public class IndigoAtomReplacerNodeModel extends IndigoNodeModel

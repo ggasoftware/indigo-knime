@@ -17,7 +17,7 @@ package com.ggasoftware.indigo.knime.molprop;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.core.node.defaultnodesettings.SettingsModelStringArray;
 
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
 public class IndigoMoleculePropertiesSettings extends IndigoNodeSettings
 {

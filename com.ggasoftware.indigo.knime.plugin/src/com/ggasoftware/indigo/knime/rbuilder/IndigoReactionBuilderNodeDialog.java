@@ -16,7 +16,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.util.ColumnSelectionComboxBox;
 
-import com.ggasoftware.indigo.knime.IndigoDialogPanel;
+import com.ggasoftware.indigo.knime.common.IndigoDialogPanel;
 
 
 /**

@@ -22,8 +22,6 @@ import org.knime.core.node.*;
 import org.knime.core.data.def.*;
 
 import com.ggasoftware.indigo.*;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings;
-import com.ggasoftware.indigo.knime.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.cell.IndigoDataCell;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolCell;
@@ -33,6 +31,8 @@ import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoReactionValue;
 import com.ggasoftware.indigo.knime.common.IndigoNodeModel;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
+import com.ggasoftware.indigo.knime.common.IndigoNodeSettings.STRUCTURE_TYPE;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 import com.ggasoftware.indigo.knime.submatchcounter.IndigoSubstructureMatchCounterSettings.Uniqueness;
 

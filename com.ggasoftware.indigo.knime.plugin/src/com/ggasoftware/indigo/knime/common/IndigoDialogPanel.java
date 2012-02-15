@@ -1,4 +1,4 @@
-package com.ggasoftware.indigo.knime;
+package com.ggasoftware.indigo.knime.common;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
