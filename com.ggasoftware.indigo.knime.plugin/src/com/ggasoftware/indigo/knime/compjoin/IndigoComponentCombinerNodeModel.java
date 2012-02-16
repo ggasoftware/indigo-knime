@@ -125,7 +125,8 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
                      queryCell = (IndigoQueryMolCell)dataCell;
                      queryCellData.append(queryCell.getSource());
                   } else {
-                     resultMol = io.clone();
+                     resultMol = io;
+//                     resultMol = io.clone();
                   }
                } else {
                   /*

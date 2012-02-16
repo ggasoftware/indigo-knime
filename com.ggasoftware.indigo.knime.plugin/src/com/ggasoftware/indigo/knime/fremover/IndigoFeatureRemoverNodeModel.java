@@ -216,7 +216,7 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
             try
             {
                IndigoPlugin.lock();
-               target = target.clone();
+//               target = target.clone();
                String[] features = _settings.selectedFeatures.getStringArrayValue();
                if (features != null)
                   for (String s : features) {

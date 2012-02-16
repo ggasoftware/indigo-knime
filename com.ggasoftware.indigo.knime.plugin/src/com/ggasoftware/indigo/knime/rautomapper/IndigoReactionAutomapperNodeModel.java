@@ -77,7 +77,8 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
             IndigoPlugin.lock();
 
             if (inputRow.getCell(colIdx) instanceof IndigoReactionCell) {
-               newcell = new IndigoReactionCell(((IndigoReactionCell) inputRow.getCell(colIdx)).getIndigoObject().clone());
+               IndigoReactionCell reactionCell = (IndigoReactionCell) inputRow.getCell(colIdx);
+               newcell = reactionCell.clone();
             } else if (inputRow.getCell(colIdx) instanceof IndigoQueryReactionCell) {
                IndigoQueryReactionCell reactionCell = (IndigoQueryReactionCell) inputRow.getCell(colIdx);
                newcell = reactionCell.clone();

@@ -171,7 +171,8 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
             return cells;
          }
          
-         IndigoObject highlighted = target.clone();
+         IndigoObject highlighted = target;
+//         IndigoObject highlighted = target.clone();
          
          indigo.setOption("embedding-uniqueness", Uniqueness.values()[_settings.uniqueness
                .getIntValue()].name().toLowerCase());

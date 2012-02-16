@@ -274,7 +274,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
              */
             try {
                IndigoPlugin.lock();
-               target = target.clone();
+//               target = target.clone();
             } finally {
                IndigoPlugin.unlock();
             }

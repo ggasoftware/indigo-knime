@@ -245,7 +245,7 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
             try
             {
                IndigoPlugin.lock();
-               target = target.clone();
+//               target = target.clone();
                while (true)
                {
                   if (removeOfromNO(target))

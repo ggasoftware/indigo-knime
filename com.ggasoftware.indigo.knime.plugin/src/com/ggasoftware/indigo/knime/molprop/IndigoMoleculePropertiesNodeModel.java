@@ -195,7 +195,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
 
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             for (IndigoObject atom : io.iterateAtoms())
                for (IndigoObject nei : atom.iterateNeighbors())
@@ -214,7 +214,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
 
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             for (IndigoObject atom : io.iterateAtoms())
             {
@@ -280,7 +280,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
 
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             for (IndigoObject bond : io.iterateBonds())
                if (bond.bondOrder() == 4)
@@ -295,7 +295,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
 
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             for (IndigoObject bond : io.iterateBonds())
                if (bond.bondOrder() != 4)
@@ -326,7 +326,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
             
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             
             for (IndigoObject ring : io.iterateSSSR())
@@ -351,7 +351,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          {
             int count = 0;
             
-            io = io.clone();
+//            io = io.clone();
             io.aromatize();
             
             for (IndigoObject ring : io.iterateSSSR())

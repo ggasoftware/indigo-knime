@@ -18,70 +18,35 @@ import com.ggasoftware.indigo.*;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.knime.core.data.*;
 import org.knime.core.node.NodeLogger;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 @SuppressWarnings("serial")
 public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
 {
-   private static final NodeLogger LOGGER = NodeLogger
-         .getLogger(IndigoMolCell.class);
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMolCell.class);
 
    private static class Serializer implements
-         DataCellSerializer<IndigoMolCell>
-   {
+ DataCellSerializer<IndigoMolCell> {
       /**
        * {@inheritDoc}
        */
-      public void serialize (final IndigoMolCell cell,
-            final DataCellDataOutput out) throws IOException
-      {
-         try
-         {
-            IndigoPlugin.lock();
-            BASE64Encoder encoder = new BASE64Encoder();
-            String str = encoder.encodeBuffer(cell.getIndigoObject().serialize());
-            out.writeUTF(str);            
-         }
-         catch (IndigoException ex)
-         {
-            LOGGER.error("Error while serializing Indigo object", ex);
-            throw new IOException(ex.getMessage());
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
+      public void serialize(final IndigoMolCell cell, final DataCellDataOutput out) throws IOException {
+         byte[] buf = cell._getBuffer();
+         out.writeInt(buf.length);
+         out.write(buf);
       }
 
       /**
        * {@inheritDoc}
        */
-      public IndigoMolCell deserialize (final DataCellDataInput input)
-            throws IOException
-      {
-         String str = input.readUTF();
-
-         BASE64Decoder decoder = new BASE64Decoder();
-         byte[] buf = decoder.decodeBuffer(str);
-         try
-         {
-            IndigoPlugin.lock();
-            return new IndigoMolCell(IndigoPlugin.getIndigo().unserialize(buf));
-         }
-         catch (IndigoException ex)
-         {
-            LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
-            throw new IOException(ex.getMessage());
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
+      public IndigoMolCell deserialize(final DataCellDataInput input) throws IOException {
+         int buf_len = input.readInt();
+         byte[] buf = new byte[buf_len];
+         input.readFully(buf);
+         return new IndigoMolCell(buf);
       }
    }
 
@@ -96,18 +61,28 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
 
    public IndigoMolCell (IndigoObject obj)
    {
-      super(obj);
+      super();
 
       // Try to serialize to check unexpected configurations: extraordinary charge or etc.
       try
       {
          IndigoPlugin.lock();
-         obj.serialize();
+         _byteBuffer = ByteBuffer.wrap(obj.serialize());
+      }
+      catch (IndigoException ex)
+      {
+         LOGGER.error("Error while serializing Indigo object", ex);
+         throw new RuntimeException(ex.getMessage());
       }
       finally
       {
          IndigoPlugin.unlock();
       }
+
+   }
+
+   public IndigoMolCell(byte[] buf) {
+      super(buf);
    }
 
    @Override
@@ -116,6 +91,7 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       try
       {
          IndigoPlugin.lock();
+         IndigoObject _object = getIndigoObject();
          
          // Return a SMILES string if it can be calculated
          try
@@ -137,13 +113,15 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
    @Override
    protected boolean equalsDataCell (DataCell dc)
    {
-      IndigoMolCell other = (IndigoMolCell)dc;
+      IndigoDataCell other = (IndigoDataCell)dc;
+      IndigoObject self_obj = getIndigoObject();
+      IndigoObject other_obj = other.getIndigoObject();
       
       try
       {
          IndigoPlugin.lock();
          
-         IndigoObject match = IndigoPlugin.getIndigo().exactMatch(_object, other._object);
+         IndigoObject match = IndigoPlugin.getIndigo().exactMatch(self_obj, other_obj);
          
          if (match != null)
             return true;
@@ -166,4 +144,163 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       return 0;
    }
 
+   @Override
+   public IndigoObject getIndigoObject() {
+      byte[] buf = _getBuffer();
+      IndigoObject res;
+      try {
+         IndigoPlugin.lock();
+         res = IndigoPlugin.getIndigo().unserialize(buf);
+
+      } catch (IndigoException ex) {
+         LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
+         throw new RuntimeException(ex.getMessage());
+      } finally {
+         IndigoPlugin.unlock();
+      }
+      return res;
+   }
+
 }
+//@SuppressWarnings("serial")
+//public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
+//{
+//   private static final NodeLogger LOGGER = NodeLogger
+//         .getLogger(IndigoMolCell.class);
+//
+//   private static class Serializer implements
+//         DataCellSerializer<IndigoMolCell>
+//   {
+//      /**
+//       * {@inheritDoc}
+//       */
+//      public void serialize (final IndigoMolCell cell,
+//            final DataCellDataOutput out) throws IOException
+//      {
+//         try
+//         {
+//            IndigoPlugin.lock();
+//            BASE64Encoder encoder = new BASE64Encoder();
+//            String str = encoder.encodeBuffer(cell.getIndigoObject().serialize());
+//            out.writeUTF(str);            
+//         }
+//         catch (IndigoException ex)
+//         {
+//            LOGGER.error("Error while serializing Indigo object", ex);
+//            throw new IOException(ex.getMessage());
+//         }
+//         finally
+//         {
+//            IndigoPlugin.unlock();
+//         }
+//      }
+//
+//      /**
+//       * {@inheritDoc}
+//       */
+//      public IndigoMolCell deserialize (final DataCellDataInput input)
+//            throws IOException
+//      {
+//         String str = input.readUTF();
+//
+//         BASE64Decoder decoder = new BASE64Decoder();
+//         byte[] buf = decoder.decodeBuffer(str);
+//         try
+//         {
+//            IndigoPlugin.lock();
+//            return new IndigoMolCell(IndigoPlugin.getIndigo().unserialize(buf));
+//         }
+//         catch (IndigoException ex)
+//         {
+//            LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
+//            throw new IOException(ex.getMessage());
+//         }
+//         finally
+//         {
+//            IndigoPlugin.unlock();
+//         }
+//      }
+//   }
+//
+//   private static final DataCellSerializer<IndigoMolCell> SERIALIZER = new Serializer();
+//
+//   public static final DataCellSerializer<IndigoMolCell> getCellSerializer ()
+//   {
+//      return SERIALIZER;
+//   }
+//
+//   public static final DataType TYPE = DataType.getType(IndigoMolCell.class);
+//
+//   public IndigoMolCell (IndigoObject obj)
+//   {
+//      super(obj);
+//
+//      // Try to serialize to check unexpected configurations: extraordinary charge or etc.
+//      try
+//      {
+//         IndigoPlugin.lock();
+//         obj.serialize();
+//      }
+//      finally
+//      {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//
+//   @Override
+//   public String toString ()
+//   {
+//      try
+//      {
+//         IndigoPlugin.lock();
+//         
+//         // Return a SMILES string if it can be calculated
+//         try
+//         {
+//            return _object.smiles();
+//         }
+//         catch (IndigoException e)
+//         {
+//            // If SMILES is not an option, return the unique Indigo's object ID
+//            return "<Indigo object #" + _object.self + ">";
+//         }
+//      }
+//      finally
+//      {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//
+//   @Override
+//   protected boolean equalsDataCell (DataCell dc)
+//   {
+//      IndigoMolCell other = (IndigoMolCell)dc;
+//      
+//      try
+//      {
+//         IndigoPlugin.lock();
+//         
+//         IndigoObject match = IndigoPlugin.getIndigo().exactMatch(_object, other._object);
+//         
+//         if (match != null)
+//            return true;
+//      }
+//      catch (IndigoException e)
+//      {
+//         // ignore the exception; default to the false result
+//      }
+//      finally
+//      {
+//         IndigoPlugin.unlock();
+//      }
+//      
+//      return false;
+//   }
+//
+//   @Override
+//   public int hashCode ()
+//   {
+//      return 0;
+//   }
+//
+//}

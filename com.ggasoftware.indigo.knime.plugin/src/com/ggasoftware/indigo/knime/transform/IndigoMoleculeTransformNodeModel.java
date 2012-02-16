@@ -93,7 +93,8 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
             IndigoPlugin.lock();
             
             IndigoObject reaction = ((IndigoDataValue)dataCell).getIndigoObject();
-            reactionsList.add(reaction.clone());
+            reactionsList.add(reaction);
+//            reactionsList.add(reaction.clone());
             
          } catch (IndigoException e) {
             LOGGER.warn("Warning while loading reaction table: " + e.getMessage());
@@ -136,7 +137,8 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
                IndigoPlugin.lock();
                
                IndigoObject io = ((IndigoDataValue)dataCell).getIndigoObject();
-               IndigoObject molecule = io.clone();
+               IndigoObject molecule = io;
+//               IndigoObject molecule = io.clone();
                /*
                 * Apply all the reactions from the list
                 */

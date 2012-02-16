@@ -14,21 +14,45 @@
 
 package com.ggasoftware.indigo.knime.cell;
 
+import java.nio.ByteBuffer;
+
 import org.knime.core.data.DataCell;
 
 import com.ggasoftware.indigo.IndigoObject;
 
 @SuppressWarnings("serial")
 public abstract class IndigoDataCell extends DataCell implements IndigoDataValue {
-
-   protected IndigoObject _object;
-
+   protected ByteBuffer _byteBuffer;
+//   protected IndigoObject _object;
+   
    @Override
-   public IndigoObject getIndigoObject() {
-   	return _object;
+   abstract public IndigoObject getIndigoObject();
+   
+   protected IndigoDataCell(byte[] buf) {
+      _byteBuffer = ByteBuffer.wrap(buf);
+   }
+   
+   protected IndigoDataCell() {
    }
 
-   public IndigoDataCell(IndigoObject obj) {
-      _object = obj;
+   protected byte[] _getBuffer() {
+      if(_byteBuffer == null)
+         throw new RuntimeException("internal error: buffer is not initialized correctly");
+      
+      return _byteBuffer.array();
    }
 }
+//@SuppressWarnings("serial")
+//public abstract class IndigoDataCell extends DataCell implements IndigoDataValue {
+//
+//   protected IndigoObject _object;
+//
+//   @Override
+//   public IndigoObject getIndigoObject() {
+//   	return _object;
+//   }
+//
+//   public IndigoDataCell(IndigoObject obj) {
+//      _object = obj;
+//   }
+//}

@@ -161,12 +161,14 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
                   IndigoObject frag_iter = rg.iterateRGroupFragments();
                   if (frag_iter.hasNext()) {
                      IndigoObject frag = frag_iter.next();
-                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag.clone());
+                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag);
+//                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag.clone());
                      frag.remove();
                   }
                }
 
-               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
+               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol);
+//               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
             } finally {
                IndigoPlugin.unlock();
             }

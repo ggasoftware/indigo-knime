@@ -112,7 +112,8 @@ public class IndigoTransformerNodeModel extends IndigoNodeModel
                IndigoPlugin.lock();
                
                IndigoDataValue iv = (IndigoDataValue) cell;
-               IndigoObject io = iv.getIndigoObject().clone();
+               IndigoObject io = iv.getIndigoObject();
+//               IndigoObject io = iv.getIndigoObject().clone();
                /*
                 * Transform object
                 */

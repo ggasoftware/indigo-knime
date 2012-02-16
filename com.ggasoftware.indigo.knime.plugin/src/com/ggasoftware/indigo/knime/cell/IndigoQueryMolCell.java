@@ -17,50 +17,50 @@ package com.ggasoftware.indigo.knime.cell;
 import java.io.IOException;
 
 import org.knime.core.data.*;
+import org.knime.core.node.NodeLogger;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 @SuppressWarnings("serial")
 public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMolValue
 {
+   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoQueryMolCell.class);
+         
    private static class Serializer implements DataCellSerializer<IndigoQueryMolCell>
    {
-      /**
-       * {@inheritDoc}
-       */
-      public void serialize (final IndigoQueryMolCell cell,
-            final DataCellDataOutput out) throws IOException
-      {
+      public void serialize(final IndigoQueryMolCell cell, final DataCellDataOutput out) throws IOException {
+         byte[] buf = cell._getBuffer();
          if (cell.isSmarts())
             out.writeChar('S');
          else
             out.writeChar('Q');
          
-         out.writeUTF(cell.getSource());
+         out.writeInt(buf.length);
+         out.write(buf);
       }
 
       /**
        * {@inheritDoc}
        */
-      public IndigoQueryMolCell deserialize (final DataCellDataInput input)
-            throws IOException
-      {
-         char c = input.readChar();
-         String query;
+      public IndigoQueryMolCell deserialize(final DataCellDataInput input) throws IOException {
          boolean smarts;
-         
+         char c = input.readChar();
          if (c == 'S')
             smarts = true;
          else if (c == 'Q')
             smarts = false;
          else
             throw new IOException("cannot deserialize: bad 1-st symbol");
+         int buf_len = input.readInt();
+         byte[] buf = new byte[buf_len];
+         input.readFully(buf);
          
-         query = input.readUTF();
-         return new IndigoQueryMolCell(query, smarts);
+         return new IndigoQueryMolCell(buf, smarts);
       }
+      
    }
 
    private static final DataCellSerializer<IndigoQueryMolCell> SERIALIZER = new Serializer();
@@ -70,14 +70,13 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       return SERIALIZER;
    }
 
-   private String _query;
    private boolean _smarts;
    
    public static final DataType TYPE = DataType.getType(IndigoQueryMolCell.class);
 
    public String getSource ()
    {
-      return _query;
+      return new String(_byteBuffer.array());
    }
    
    public boolean isSmarts ()
@@ -85,70 +84,17 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       return _smarts;
    }
    
-   protected IndigoQueryMolCell(IndigoObject obj) {
-      super(obj);
-   }
-   
-   /**
-    * @deprecated Please use
-    * {@link IndigoQueryMolCell#fromString(String)}
-    * or
-    * {@link IndigoQueryMolCell#fromSmarts(String)}
-    * instead
-    */
-   public IndigoQueryMolCell (String query, boolean smarts)
-   {
-      super(null);
-      
-      _query = query;
+   public IndigoQueryMolCell(byte[] buf, boolean smarts) {
+      super(buf);
       _smarts = smarts;
-      
-      Indigo indigo = IndigoPlugin.getIndigo();
-      try
-      {
-         IndigoPlugin.lock();
-         if (smarts)
-            _object = indigo.loadSmarts(query);
-         else
-         {
-            _object = indigo.loadQueryMolecule(query);
-            _object.aromatize();
-         }
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
-      }
    }
-   
+
    public static IndigoQueryMolCell fromString(String str) {
-      Indigo indigo = IndigoPlugin.getIndigo();
-      try {
-         IndigoPlugin.lock();
-         IndigoObject io = indigo.loadQueryMolecule(str);
-         io.aromatize();
-         IndigoQueryMolCell ret = new IndigoQueryMolCell(io);
-         ret._query = str;
-         ret._smarts = false;
-         return ret;
-      }
-      finally {
-         IndigoPlugin.unlock();
-      }
+      return new IndigoQueryMolCell(str.getBytes(), false);
    }
    
-   public static IndigoQueryMolCell fromSmarts(String smarts) {
-      Indigo indigo = IndigoPlugin.getIndigo();
-      try {
-         IndigoPlugin.lock();
-         IndigoQueryMolCell ret = new IndigoQueryMolCell(indigo.loadSmarts(smarts));
-         ret._query = smarts;
-         ret._smarts = true;
-         return ret;
-      }
-      finally {
-         IndigoPlugin.unlock();
-      }
+   public static IndigoQueryMolCell fromSmarts(String str) {
+      return new IndigoQueryMolCell(str.getBytes(), true);
    }
 
    @Override
@@ -157,13 +103,14 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       try
       {
          IndigoPlugin.lock();
+         IndigoObject obj = getIndigoObject();
          
          // Return the name if it is present
-         if (_object.name() != null && _object.name().length() > 0)
-            return _object.name();
+         if (obj.name() != null && obj.name().length() > 0)
+            return obj.name();
          
          // Otherwise, return the unique Indigo's object ID
-         return "<Indigo object #" + _object.self + ">";
+         return "<Indigo object #" + obj.self + ">";
       }
       finally
       {
@@ -183,4 +130,187 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       return 0;
    }
 
+   @Override
+   public IndigoObject getIndigoObject() {
+      Indigo indigo = IndigoPlugin.getIndigo();
+      IndigoObject res;
+      byte[] buf = _getBuffer();
+      try {
+         IndigoPlugin.lock();
+         if(_smarts)
+            res = indigo.loadSmarts(buf);
+         else
+            res = indigo.loadQueryMolecule(buf);
+         res.aromatize();
+      }catch(IndigoException ex) {
+         LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
+         throw new RuntimeException(ex.getMessage());
+      } finally {
+         IndigoPlugin.unlock();
+      }
+      return res;
+   }
+
 }
+//@SuppressWarnings("serial")
+//public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMolValue
+//{
+//   private static class Serializer implements DataCellSerializer<IndigoQueryMolCell>
+//   {
+//      /**
+//       * {@inheritDoc}
+//       */
+//      public void serialize (final IndigoQueryMolCell cell,
+//            final DataCellDataOutput out) throws IOException
+//      {
+//         if (cell.isSmarts())
+//            out.writeChar('S');
+//         else
+//            out.writeChar('Q');
+//         
+//         out.writeUTF(cell.getSource());
+//      }
+//
+//      /**
+//       * {@inheritDoc}
+//       */
+//      public IndigoQueryMolCell deserialize (final DataCellDataInput input)
+//            throws IOException
+//      {
+//         char c = input.readChar();
+//         String query;
+//         boolean smarts;
+//         
+//         if (c == 'S')
+//            smarts = true;
+//         else if (c == 'Q')
+//            smarts = false;
+//         else
+//            throw new IOException("cannot deserialize: bad 1-st symbol");
+//         
+//         query = input.readUTF();
+//         return new IndigoQueryMolCell(query, smarts);
+//      }
+//   }
+//
+//   private static final DataCellSerializer<IndigoQueryMolCell> SERIALIZER = new Serializer();
+//
+//   public static final DataCellSerializer<IndigoQueryMolCell> getCellSerializer ()
+//   {
+//      return SERIALIZER;
+//   }
+//
+//   private String _query;
+//   private boolean _smarts;
+//   
+//   public static final DataType TYPE = DataType.getType(IndigoQueryMolCell.class);
+//
+//   public String getSource ()
+//   {
+//      return _query;
+//   }
+//   
+//   public boolean isSmarts ()
+//   {
+//      return _smarts;
+//   }
+//   
+//   protected IndigoQueryMolCell(IndigoObject obj) {
+//      super(obj);
+//   }
+//   
+//   /**
+//    * @deprecated Please use
+//    * {@link IndigoQueryMolCell#fromString(String)}
+//    * or
+//    * {@link IndigoQueryMolCell#fromSmarts(String)}
+//    * instead
+//    */
+//   public IndigoQueryMolCell (String query, boolean smarts)
+//   {
+//      super(null);
+//      
+//      _query = query;
+//      _smarts = smarts;
+//      
+//      Indigo indigo = IndigoPlugin.getIndigo();
+//      try
+//      {
+//         IndigoPlugin.lock();
+//         if (smarts)
+//            _object = indigo.loadSmarts(query);
+//         else
+//         {
+//            _object = indigo.loadQueryMolecule(query);
+//            _object.aromatize();
+//         }
+//      }
+//      finally
+//      {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//   
+//   public static IndigoQueryMolCell fromString(String str) {
+//      Indigo indigo = IndigoPlugin.getIndigo();
+//      try {
+//         IndigoPlugin.lock();
+//         IndigoObject io = indigo.loadQueryMolecule(str);
+//         io.aromatize();
+//         IndigoQueryMolCell ret = new IndigoQueryMolCell(io);
+//         ret._query = str;
+//         ret._smarts = false;
+//         return ret;
+//      }
+//      finally {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//   
+//   public static IndigoQueryMolCell fromSmarts(String smarts) {
+//      Indigo indigo = IndigoPlugin.getIndigo();
+//      try {
+//         IndigoPlugin.lock();
+//         IndigoQueryMolCell ret = new IndigoQueryMolCell(indigo.loadSmarts(smarts));
+//         ret._query = smarts;
+//         ret._smarts = true;
+//         return ret;
+//      }
+//      finally {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//
+//   @Override
+//   public String toString ()
+//   {
+//      try
+//      {
+//         IndigoPlugin.lock();
+//         
+//         // Return the name if it is present
+//         if (_object.name() != null && _object.name().length() > 0)
+//            return _object.name();
+//         
+//         // Otherwise, return the unique Indigo's object ID
+//         return "<Indigo object #" + _object.self + ">";
+//      }
+//      finally
+//      {
+//         IndigoPlugin.unlock();
+//      }
+//   }
+//
+//   @Override
+//   protected boolean equalsDataCell (DataCell dc)
+//   {
+//      return false;
+//   }
+//
+//   @Override
+//   public int hashCode ()
+//   {
+//      return 0;
+//   }
+//
+//}

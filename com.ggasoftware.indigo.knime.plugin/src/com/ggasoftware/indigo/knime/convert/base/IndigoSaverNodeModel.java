@@ -157,7 +157,7 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
                      destFormat.equals(Format.Rxn.toString()))
                   if (_settings.generateCoords.getBooleanValue() && !io.hasCoord())
                   {
-                     io = io.clone();
+//                     io = io.clone();
                      io.layout();
                   }
                
@@ -172,7 +172,8 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
                   return new SmilesCell(io.smiles());
                if (destFormat.equals(Format.CanonicalSmiles.toString()))
                {
-                  IndigoObject clone = io.clone();
+//                  IndigoObject clone = io.clone();
+                  IndigoObject clone = io;
                   clone.aromatize();
                   return new SmilesCell(clone.canonicalSmiles());
                }

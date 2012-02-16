@@ -89,7 +89,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
                IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
                IndigoPlugin.getIndigo().setOption("fp-any-qwords", 0);
                IndigoPlugin.getIndigo().setOption("fp-ord-qwords", 0);
-               io = io.clone();
+//               io = io.clone();
                
                io.aromatize();
 

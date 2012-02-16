@@ -85,7 +85,7 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
             {
                IndigoPlugin.lock();
                
-               io = io.clone();
+//               io = io.clone();
    
                boolean replaceAllAtoms = !_settings.replaceHighlighted.getBooleanValue() && !_settings.replaceSpecificAtom.getBooleanValue();
 
