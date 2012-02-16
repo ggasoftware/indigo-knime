@@ -1,8 +1,18 @@
+Old nodes compatibility was restored
+Cosmetic in node names, More convinient nodes order
+Bug with incorrect molecules for Scaffold node was fixed (Thanks to Hinnerick https://groups.google.com/group/indigo-bugs/browse_thread/thread/16faf897c090bc04)
+Possible exceptions and runtime errors for molecules with incorrect valence were replaced by warnings(Thanks to Hinnerick)
+Bond replacer node now supports Reactions
+2d coordinates node was added
+New memory model was applied for IndigoDataCells. The new model is stable to huge data sets. (Thanks to Hinnerick and other guys)
+>****************************************************************************************************************
+1.1.0.201201312226
 Windows XP 32-bit rendering compatibility
 InChI conversion in both directions (but without stereochemistry yet)
 Combinatorial Reaction Enumeration
 Bond Replacer Node
 Icons
+
 
 >****************************************************************************************************************
 1.1.0.201201261932  nightly build:
