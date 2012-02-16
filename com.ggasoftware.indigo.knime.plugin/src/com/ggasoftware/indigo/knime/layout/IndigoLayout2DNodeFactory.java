@@ -95,7 +95,7 @@ public class IndigoLayout2DNodeFactory
 //          JFormattedTextField _bondLength = new JFormattedTextField(NumberFormat.getNumberInstance());
           
           private final JSpinner _maxIterations = new JSpinner(new SpinnerNumberModel(IndigoLayout2DSettings.DEFAULT_MAX_ITERATIONS, 
-                1, Integer.MAX_VALUE, 1));
+                0, Integer.MAX_VALUE, 1));
           
           @Override
           public void loadDialogComponents(IndigoDialogPanel dialogPanel, IndigoTransformerSettings settings) {
