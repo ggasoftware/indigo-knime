@@ -4,8 +4,8 @@ Molecules Transformation description was fixed (Thanks to Simon http://tech.knim
 Bug with incorrect molecules for Scaffold node was fixed (Thanks to Hinnerick https://groups.google.com/group/indigo-bugs/browse_thread/thread/16faf897c090bc04)
 Possible exceptions and runtime errors for molecules with incorrect valence were replaced by warnings(Thanks to Hinnerick)
 Bond replacer node now supports Reactions
-2d coordinates node was added
-New memory model was applied for IndigoDataCells. The new model is stable to huge data sets. (Thanks to Hinnerick and other guys)
+2d coordinates node was added (thanks to Simon http://tech.knime.org/forum/indigo/molecule-cleanup-node)
+New memory model was applied for IndigoDataCells. The new model is stable to huge data sets. (Thanks to Hinnerick and Steve http://tech.knime.org/forum/indigo/memory-errors-and-instability-after-nightly-update)
 >****************************************************************************************************************
 1.1.0.201201312226
 Windows XP 32-bit rendering compatibility
