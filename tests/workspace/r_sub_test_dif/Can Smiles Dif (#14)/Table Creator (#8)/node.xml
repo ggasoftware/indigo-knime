@@ -3,16 +3,13 @@
 <entry key="name" type="xstring" value="Table Creator"/>
 <config key="model">
 <config key="rowIndices">
-<entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xint" value="1"/>
+<entry key="array-size" type="xint" value="0"/>
 </config>
 <config key="columnIndices">
-<entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xint" value="0"/>
+<entry key="array-size" type="xint" value="0"/>
 </config>
 <config key="values">
-<entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xstring" value="CCC(C1C=C(CC)N(C)(C)(C)(C)(C)=CC=1)CC&gt;&gt;CCC(C1C=C(CC)N(C)(C)(C)(C)(C)=CC=1)CC"/>
+<entry key="array-size" type="xint" value="0"/>
 </config>
 <entry key="rowIdPrefix" type="xstring" value="Row"/>
 <entry key="rowIdSuffix" type="xstring" value=""/>

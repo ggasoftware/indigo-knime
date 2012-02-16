@@ -17,8 +17,8 @@
 <config key="values">
 <entry key="array-size" type="xint" value="3"/>
 <entry key="0" type="xstring" value="CCCCCCC1CCCCC1"/>
-<entry key="1" type="xstring" value="CCC(CC1CCCCC1)CC"/>
-<entry key="2" type="xstring" value="CC(CCC)CC1CCCCC1"/>
+<entry key="1" type="xstring" value="CC(CCC)CC1CCCCC1"/>
+<entry key="2" type="xstring" value="CCC(CC1CCCCC1)CC"/>
 </config>
 <entry key="rowIdPrefix" type="xstring" value="Row"/>
 <entry key="rowIdSuffix" type="xstring" value=""/>

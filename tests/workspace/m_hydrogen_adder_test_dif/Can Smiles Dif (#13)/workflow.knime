@@ -31,21 +31,6 @@
 </config>
 </config>
 </config>
-<config key="node_10">
-<entry key="id" type="xint" value="10"/>
-<entry key="node_settings_file" type="xstring" value="Molecule Type Cast (#10)/settings.xml"/>
-<entry key="node_is_meta" type="xboolean" value="false"/>
-<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
-<config key="ui_settings">
-<config key="extrainfo.node.bounds">
-<entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="340"/>
-<entry key="1" type="xint" value="307"/>
-<entry key="2" type="xint" value="145"/>
-<entry key="3" type="xint" value="81"/>
-</config>
-</config>
-</config>
 <config key="node_11">
 <entry key="id" type="xint" value="11"/>
 <entry key="node_settings_file" type="xstring" value="Difference Checker (#11)/settings.xml"/>
@@ -72,21 +57,66 @@
 <entry key="0" type="xint" value="353"/>
 <entry key="1" type="xint" value="143"/>
 <entry key="2" type="xint" value="102"/>
-<entry key="3" type="xint" value="97"/>
+<entry key="3" type="xint" value="81"/>
 </config>
 </config>
 </config>
-<config key="node_13">
-<entry key="id" type="xint" value="13"/>
-<entry key="node_settings_file" type="xstring" value="Indigo to Molecule (#13)/settings.xml"/>
+<config key="node_14">
+<entry key="id" type="xint" value="14"/>
+<entry key="node_settings_file" type="xstring" value="Molecule Properties (#14)/settings.xml"/>
 <entry key="node_is_meta" type="xboolean" value="false"/>
 <entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
 <config key="ui_settings">
 <config key="extrainfo.node.bounds">
 <entry key="array-size" type="xint" value="4"/>
-<entry key="0" type="xint" value="184"/>
-<entry key="1" type="xint" value="149"/>
+<entry key="0" type="xint" value="193"/>
+<entry key="1" type="xint" value="64"/>
+<entry key="2" type="xint" value="152"/>
+<entry key="3" type="xint" value="81"/>
+</config>
+</config>
+</config>
+<config key="node_15">
+<entry key="id" type="xint" value="15"/>
+<entry key="node_settings_file" type="xstring" value="Molecule Properties (#15)/settings.xml"/>
+<entry key="node_is_meta" type="xboolean" value="false"/>
+<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
+<config key="ui_settings">
+<config key="extrainfo.node.bounds">
+<entry key="array-size" type="xint" value="4"/>
+<entry key="0" type="xint" value="253"/>
+<entry key="1" type="xint" value="451"/>
+<entry key="2" type="xint" value="152"/>
+<entry key="3" type="xint" value="81"/>
+</config>
+</config>
+</config>
+<config key="node_16">
+<entry key="id" type="xint" value="16"/>
+<entry key="node_settings_file" type="xstring" value="Molecule to Indigo (#16)/settings.xml"/>
+<entry key="node_is_meta" type="xboolean" value="false"/>
+<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
+<config key="ui_settings">
+<config key="extrainfo.node.bounds">
+<entry key="array-size" type="xint" value="4"/>
+<entry key="0" type="xint" value="138"/>
+<entry key="1" type="xint" value="455"/>
 <entry key="2" type="xint" value="140"/>
+<entry key="3" type="xint" value="81"/>
+</config>
+</config>
+</config>
+<config key="node_17">
+<entry key="id" type="xint" value="17"/>
+<entry key="node_settings_file" type="xstring" value="Column Filter (#17)/settings.xml"/>
+<entry key="node_is_meta" type="xboolean" value="false"/>
+<entry key="ui_classname" type="xstring" value="org.knime.core.node.workflow.NodeUIInformation"/>
+<config key="ui_settings">
+<config key="extrainfo.node.bounds">
+<entry key="array-size" type="xint" value="4"/>
+<entry key="0" type="xint" value="473"/>
+<entry key="1" type="xint" value="263"/>
+<entry key="2" type="xint" value="102"/>
 <entry key="3" type="xint" value="81"/>
 </config>
 </config>
@@ -95,33 +125,45 @@
 <config key="connections">
 <config key="connection_0">
 <entry key="sourceID" type="xint" value="-1"/>
-<entry key="destID" type="xint" value="13"/>
+<entry key="destID" type="xint" value="14"/>
 <entry key="sourcePort" type="xint" value="0"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 <config key="connection_1">
 <entry key="sourceID" type="xint" value="8"/>
-<entry key="destID" type="xint" value="10"/>
+<entry key="destID" type="xint" value="16"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
 <config key="connection_2">
-<entry key="sourceID" type="xint" value="10"/>
-<entry key="destID" type="xint" value="11"/>
-<entry key="sourcePort" type="xint" value="1"/>
-<entry key="destPort" type="xint" value="2"/>
-</config>
-<config key="connection_3">
 <entry key="sourceID" type="xint" value="12"/>
 <entry key="destID" type="xint" value="11"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
 </config>
-<config key="connection_4">
-<entry key="sourceID" type="xint" value="13"/>
+<config key="connection_3">
+<entry key="sourceID" type="xint" value="14"/>
 <entry key="destID" type="xint" value="12"/>
 <entry key="sourcePort" type="xint" value="1"/>
 <entry key="destPort" type="xint" value="1"/>
+</config>
+<config key="connection_4">
+<entry key="sourceID" type="xint" value="15"/>
+<entry key="destID" type="xint" value="17"/>
+<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destPort" type="xint" value="1"/>
+</config>
+<config key="connection_5">
+<entry key="sourceID" type="xint" value="16"/>
+<entry key="destID" type="xint" value="15"/>
+<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destPort" type="xint" value="1"/>
+</config>
+<config key="connection_6">
+<entry key="sourceID" type="xint" value="17"/>
+<entry key="destID" type="xint" value="11"/>
+<entry key="sourcePort" type="xint" value="1"/>
+<entry key="destPort" type="xint" value="2"/>
 </config>
 </config>
 <config key="meta_in_ports">

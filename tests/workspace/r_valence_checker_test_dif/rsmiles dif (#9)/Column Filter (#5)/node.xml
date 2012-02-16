@@ -9,7 +9,6 @@
 </config>
 <entry key="hasContent" type="xboolean" value="false"/>
 <entry key="isInactive" type="xboolean" value="false"/>
-<entry key="node_message" type="xstring" value="All columns retained."/>
 <config key="ports">
 <config key="port_1">
 <entry key="index" type="xint" value="1"/>

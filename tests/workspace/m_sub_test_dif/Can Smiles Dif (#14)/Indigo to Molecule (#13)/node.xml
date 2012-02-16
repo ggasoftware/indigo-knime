@@ -21,7 +21,7 @@
 <entry key="SettingsModelID" type="xstring" value="SMID_string"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
 </config>
-<entry key="destFormat" type="xstring" value="Smiles"/>
+<entry key="destFormat" type="xstring" value="CanonicalSmiles"/>
 <config key="generateCoords_Internals">
 <entry key="SettingsModelID" type="xstring" value="SMID_boolean"/>
 <entry key="EnabledStatus" type="xboolean" value="true"/>
