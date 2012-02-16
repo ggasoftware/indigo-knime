@@ -19,8 +19,8 @@
     </fullDescription>
     
     <ports>
-        <inPort index="0" name="Reaction pattern">Table containing Indigo query reactions describing transformations</inPort>
-        <inPort index="1" name="Input molecules">Table containing molecules to transform</inPort>
+        <inPort index="0" name="Input molecules">Table containing molecules to transform</inPort>
+        <inPort index="1" name="Reaction pattern">Table containing Indigo query reactions describing transformations</inPort>
         <outPort index="0" name="Result molecules">The transformed molecules table</outPort>
     </ports>    
 </knimeNode>
