@@ -101,11 +101,12 @@ public class IndigoLayout2DNodeFactory
           public void loadDialogComponents(IndigoDialogPanel dialogPanel, IndigoTransformerSettings settings) {
 //             settings.registerDialogComponent(_bondLength, rsettings._bondLength);
              settings.registerDialogComponent(_maxIterations, rsettings.maxIterations);
-
+             /*
              // Initialize
              dialogPanel.addItemsPanel("2D coordinates settings");
 //             dialogPanel.addItem("Bond length", _bondLength);
              dialogPanel.addItem("Max iterations (0 means no limit)", _maxIterations);
+             */
           }
           
        };
