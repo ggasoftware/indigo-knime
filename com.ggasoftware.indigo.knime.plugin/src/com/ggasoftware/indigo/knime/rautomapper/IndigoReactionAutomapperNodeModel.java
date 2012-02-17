@@ -21,6 +21,7 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 
 import com.ggasoftware.indigo.IndigoException;
+import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionCell;
 import com.ggasoftware.indigo.knime.cell.IndigoQueryReactionValue;
@@ -70,23 +71,35 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
       for (DataRow inputRow : inData[INPUT_PORT]) {
          DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.appendColumn.getBooleanValue() ? 1 : 0)];
 
+         DataCell dataCell = inputRow.getCell(colIdx);
          DataCell newcell = null;
          String message = null;
 
          try {
             IndigoPlugin.lock();
 
-            if (inputRow.getCell(colIdx) instanceof IndigoReactionCell) {
-               IndigoReactionCell reactionCell = (IndigoReactionCell) inputRow.getCell(colIdx);
-               newcell = reactionCell.clone();
-            } else if (inputRow.getCell(colIdx) instanceof IndigoQueryReactionCell) {
-               IndigoQueryReactionCell reactionCell = (IndigoQueryReactionCell) inputRow.getCell(colIdx);
-               newcell = reactionCell.clone();
-            } else {
+            if(dataCell.isMissing())
                newcell = DataType.getMissingCell();
+            else {
+               IndigoObject reaction = ((IndigoDataValue) dataCell).getIndigoObject();
+               reaction.automap(aamParameters);
+               if (dataCell instanceof IndigoReactionCell) {
+                  newcell = new IndigoReactionCell(reaction);
+               } else if (dataCell instanceof IndigoQueryReactionCell) {
+                  REACTIONCELL_TYPE rtype = defineReactionCellType(dataCell);
+                  if(rtype.equals(REACTIONCELL_TYPE.QueryReaction)) {
+                     newcell = IndigoQueryReactionCell.fromString(reaction.rxnfile());
+                  } else {
+                     /*
+                      * Query smiles or smarts
+                      */
+                     newcell = IndigoQueryReactionCell.fromString(reaction.smiles());
+                  }
+               } else {
+                  throw new RuntimeException("internal error: unsupported cell type: " + dataCell.getType().toString());
+               }
             }
-            if (!newcell.isMissing())
-               ((IndigoDataValue) newcell).getIndigoObject().automap(aamParameters);
+               
          } catch (IndigoException e) {
             message = e.getMessage();
          } finally {
