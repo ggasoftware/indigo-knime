@@ -1,3 +1,7 @@
+Fixed regression with automapper: http://tech.knime.org/forum/indigo/reaction-automapper-bug
+
+>************************************************************
+1.1.0.201202162303
 Old nodes compatibility was restored
 Cosmetic in node names, More convinient nodes order (Thanks to Simon http://tech.knime.org/forum/indigo/minor-change-to-the-order-of-the-indigo-directories)
 Molecules Transformation description was fixed (Thanks to Simon http://tech.knime.org/forum/indigo/molecule-transform-node-description-bug)
@@ -6,7 +10,9 @@ Possible exceptions and runtime errors for molecules with incorrect valence were
 Bond replacer node now supports Reactions
 2d coordinates node was added (thanks to Simon http://tech.knime.org/forum/indigo/molecule-cleanup-node)
 New memory model was applied for IndigoDataCells. The new model is stable to huge data sets. (Thanks to Hinnerick and Steve http://tech.knime.org/forum/indigo/memory-errors-and-instability-after-nightly-update)
->****************************************************************************************************************
+
+
+>************************************************************
 1.1.0.201201312226
 Windows XP 32-bit rendering compatibility
 InChI conversion in both directions (but without stereochemistry yet)
@@ -15,7 +21,7 @@ Bond Replacer Node
 Icons
 
 
->****************************************************************************************************************
+>************************************************************
 1.1.0.201201261932  nightly build:
 Molecule transformation node
 Bug with highlighting was fixed
@@ -26,7 +32,7 @@ New parameters loading model was applied (convenience for appending new paramete
 Reaction Builder node was implemented (supports Indigo Molecule and Query Molecule inputs) 
 Reaction Splitter node was implemented (supports Indigo Reaction and Query Reaction inputs)
 
->****************************************************************************************************************
+>************************************************************
 1.1.0.201201191806 nightly build:
 
 1. Bug with QueryReactionCell was fixed. Thanks to Simon http://tech.knime.org/forum/indigo/reaction-automapper-errors
@@ -43,7 +49,7 @@ Reaction Splitter node was implemented (supports Indigo Reaction and Query React
 12.  Reaction support was added for the Valence Checker node
 
 
->****************************************************************************************************************
+>************************************************************
 Changes in the version 1.0.0.0001075 from the nightly build:
 
 1. New translators nodes for converting RxnCell into Indigo cell and vice versa (query reactions are also supported).
