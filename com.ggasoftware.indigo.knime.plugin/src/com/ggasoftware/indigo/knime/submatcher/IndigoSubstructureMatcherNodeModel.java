@@ -272,12 +272,12 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             /*
              * Clone target
              */
-            try {
-               IndigoPlugin.lock();
+//            try {
+//               IndigoPlugin.lock();
 //               target = target.clone();
-            } finally {
-               IndigoPlugin.unlock();
-            }
+//            } finally {
+//               IndigoPlugin.unlock();
+//            }
             matchCount = _getMatchCount(target, queries, inputRow.getKey().getString(), queriesRowKey);
 
             /*
@@ -381,6 +381,8 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       if(_settings.mode.getStringValue().equals(ReactionMode.DaylightAAM.toString()))
          mode = "Daylight-AAM";
+      
+      System.out.println("match target = '" + target.smiles() + "'");
 
       match = indigo.substructureMatcher(target, mode).match(query);
       

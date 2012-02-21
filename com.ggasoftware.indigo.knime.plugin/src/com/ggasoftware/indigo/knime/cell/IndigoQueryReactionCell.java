@@ -17,18 +17,14 @@ package com.ggasoftware.indigo.knime.cell;
 import java.io.IOException;
 
 import org.knime.core.data.*;
-import org.knime.core.node.NodeLogger;
 
 import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 @SuppressWarnings("serial")
 public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQueryReactionValue
 {
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoQueryReactionCell.class);
-         
    private static class Serializer implements DataCellSerializer<IndigoQueryReactionCell>
    {
       public void serialize(final IndigoQueryReactionCell cell, final DataCellDataOutput out) throws IOException {
@@ -90,11 +86,21 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
    }
 
    public static IndigoQueryReactionCell fromString(String str) {
-      return new IndigoQueryReactionCell(str.getBytes(), false);
+      IndigoQueryReactionCell res = new IndigoQueryReactionCell(str.getBytes(), false);
+      /*
+       * Check correctness 
+       */
+      res.getIndigoObject();
+      return res;
    }
    
    public static IndigoQueryReactionCell fromSmarts(String str) {
-      return new IndigoQueryReactionCell(str.getBytes(), true);
+      IndigoQueryReactionCell res = new IndigoQueryReactionCell(str.getBytes(), true);
+      /*
+       * Check correctness 
+       */
+      res.getIndigoObject();
+      return res;
    }
 
    @Override
@@ -142,9 +148,6 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
          else
             res = indigo.loadQueryReaction(buf);
          res.aromatize();
-      }catch(IndigoException ex) {
-         LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
-         throw new RuntimeException(ex.getMessage());
       } finally {
          IndigoPlugin.unlock();
       }

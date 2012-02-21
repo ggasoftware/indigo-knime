@@ -240,11 +240,11 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
             target = null;
          else
          {
-            target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
    
             try
             {
                IndigoPlugin.lock();
+               target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
 //               target = target.clone();
                while (true)
                {

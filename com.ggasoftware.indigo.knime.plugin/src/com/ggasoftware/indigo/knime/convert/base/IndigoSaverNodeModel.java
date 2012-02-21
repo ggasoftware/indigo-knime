@@ -145,10 +145,10 @@ abstract public class IndigoSaverNodeModel extends IndigoNodeModel
          }
          else
          {
-            IndigoObject io = ((IndigoDataValue)cell).getIndigoObject();
             try
             {
                IndigoPlugin.lock();
+               IndigoObject io = ((IndigoDataValue)cell).getIndigoObject();
                
                String destFormat = _settings.destFormat.getStringValue();
                if (destFormat.equals(Format.Mol.toString()) || 

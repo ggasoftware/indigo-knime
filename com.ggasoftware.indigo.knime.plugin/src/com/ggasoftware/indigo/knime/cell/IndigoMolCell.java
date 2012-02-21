@@ -21,12 +21,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.knime.core.data.*;
-import org.knime.core.node.NodeLogger;
 
 @SuppressWarnings("serial")
 public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
 {
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoMolCell.class);
 
    private static class Serializer implements
  DataCellSerializer<IndigoMolCell> {
@@ -69,11 +67,6 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
          IndigoPlugin.lock();
          _byteBuffer = ByteBuffer.wrap(obj.serialize());
       }
-      catch (IndigoException ex)
-      {
-         LOGGER.error("Error while serializing Indigo object", ex);
-         throw new RuntimeException(ex.getMessage());
-      }
       finally
       {
          IndigoPlugin.unlock();
@@ -114,12 +107,13 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
    protected boolean equalsDataCell (DataCell dc)
    {
       IndigoDataCell other = (IndigoDataCell)dc;
-      IndigoObject self_obj = getIndigoObject();
-      IndigoObject other_obj = other.getIndigoObject();
       
       try
       {
          IndigoPlugin.lock();
+         
+         IndigoObject self_obj = getIndigoObject();
+         IndigoObject other_obj = other.getIndigoObject();
          
          IndigoObject match = IndigoPlugin.getIndigo().exactMatch(self_obj, other_obj);
          
@@ -151,10 +145,6 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       try {
          IndigoPlugin.lock();
          res = IndigoPlugin.getIndigo().unserialize(buf);
-
-      } catch (IndigoException ex) {
-         LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
-         throw new RuntimeException(ex.getMessage());
       } finally {
          IndigoPlugin.unlock();
       }

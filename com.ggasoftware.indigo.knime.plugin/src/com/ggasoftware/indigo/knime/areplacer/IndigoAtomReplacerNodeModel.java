@@ -79,11 +79,11 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          }
          else
          {
-            IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
    
             try
             {
                IndigoPlugin.lock();
+               IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
                
 //               io = io.clone();
    

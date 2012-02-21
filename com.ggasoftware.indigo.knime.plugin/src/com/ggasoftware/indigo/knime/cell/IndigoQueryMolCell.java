@@ -17,18 +17,14 @@ package com.ggasoftware.indigo.knime.cell;
 import java.io.IOException;
 
 import org.knime.core.data.*;
-import org.knime.core.node.NodeLogger;
 
 import com.ggasoftware.indigo.Indigo;
-import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
 @SuppressWarnings("serial")
 public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMolValue
 {
-   private static final NodeLogger LOGGER = NodeLogger.getLogger(IndigoQueryMolCell.class);
-         
    private static class Serializer implements DataCellSerializer<IndigoQueryMolCell>
    {
       public void serialize(final IndigoQueryMolCell cell, final DataCellDataOutput out) throws IOException {
@@ -84,17 +80,27 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       return _smarts;
    }
    
-   public IndigoQueryMolCell(byte[] buf, boolean smarts) {
+   private IndigoQueryMolCell(byte[] buf, boolean smarts) {
       super(buf);
       _smarts = smarts;
    }
 
    public static IndigoQueryMolCell fromString(String str) {
-      return new IndigoQueryMolCell(str.getBytes(), false);
+      IndigoQueryMolCell res = new IndigoQueryMolCell(str.getBytes(), false);
+      /*
+       * Check correctness 
+       */
+      res.getIndigoObject();
+      return res;
    }
    
    public static IndigoQueryMolCell fromSmarts(String str) {
-      return new IndigoQueryMolCell(str.getBytes(), true);
+      IndigoQueryMolCell res = new IndigoQueryMolCell(str.getBytes(), true);
+      /*
+       * Check correctness 
+       */
+      res.getIndigoObject();
+      return res;
    }
 
    @Override
@@ -133,7 +139,7 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
    @Override
    public IndigoObject getIndigoObject() {
       Indigo indigo = IndigoPlugin.getIndigo();
-      IndigoObject res;
+      IndigoObject res = null;
       byte[] buf = _getBuffer();
       try {
          IndigoPlugin.lock();
@@ -142,9 +148,6 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
          else
             res = indigo.loadQueryMolecule(buf);
          res.aromatize();
-      }catch(IndigoException ex) {
-         LOGGER.error("Error while unserializing Indigo object: " + ex.getMessage(), ex);
-         throw new RuntimeException(ex.getMessage());
       } finally {
          IndigoPlugin.unlock();
       }
