@@ -382,8 +382,6 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       if(_settings.mode.getStringValue().equals(ReactionMode.DaylightAAM.toString()))
          mode = "Daylight-AAM";
       
-      System.out.println("match target = '" + target.smiles() + "'");
-
       match = indigo.substructureMatcher(target, mode).match(query);
       
       if (match != null && _settings.exact.getBooleanValue()) {
