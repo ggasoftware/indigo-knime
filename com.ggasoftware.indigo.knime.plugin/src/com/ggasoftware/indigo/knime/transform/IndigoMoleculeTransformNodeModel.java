@@ -49,6 +49,11 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
       super(2, 1);
    }
 
+   class Transformation	{
+      IndigoObject reaction;
+      String rowid; 
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -77,7 +82,7 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
       /*
        * Create reactions list
        */
-      LinkedList<IndigoObject> reactionsList = new LinkedList<IndigoObject>();
+      LinkedList<Transformation> reactionsList = new LinkedList<Transformation>();
       
       for(DataRow inputRow : reactionTable) {
          
@@ -91,11 +96,12 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
          }
          try {
             IndigoPlugin.lock();
+
+            Transformation transformation = new Transformation();
+            transformation.rowid = inputRow.getKey().toString();
+            transformation.reaction = ((IndigoDataValue)dataCell).getIndigoObject();
             
-            IndigoObject reaction = ((IndigoDataValue)dataCell).getIndigoObject();
-            reactionsList.add(reaction);
-//            reactionsList.add(reaction.clone());
-            
+            reactionsList.add(transformation);
          } catch (IndigoException e) {
             LOGGER.warn("Warning while loading reaction table: " + e.getMessage());
          } finally {
@@ -133,24 +139,29 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
           * Transform given molecule
           */
          if(transformCell == null) {
+            String transformRowId = null;
             try {
                IndigoPlugin.lock();
                
                IndigoObject io = ((IndigoDataValue)dataCell).getIndigoObject();
                IndigoObject molecule = io;
-//               IndigoObject molecule = io.clone();
                /*
                 * Apply all the reactions from the list
                 */
-               for(IndigoObject reaction : reactionsList)
-                  IndigoPlugin.getIndigo().transform(reaction, molecule);
+               for(Transformation transformation : reactionsList) {
+                  transformRowId = transformation.rowid; 
+                  IndigoPlugin.getIndigo().transform(transformation.reaction, molecule);
+               }
                /*
                 * Create result cell
                 */
                transformCell = new IndigoMolCell(molecule);
                
             } catch (IndigoException e) {
-               LOGGER.warn("Warning while applying a transformation: " + e.getMessage() + " for molecule with rowId: " + inputRow.getKey().toString());
+               String message = "Warning while applying a transformation: " + e.getMessage() + " for molecule with rowId: " + inputRow.getKey().toString();
+               if (transformRowId != null)
+                  message += ". Transformation rowId: " + transformRowId;
+               LOGGER.warn(message);
                transformCell = null;
             } finally {
                IndigoPlugin.unlock();
