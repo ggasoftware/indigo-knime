@@ -23,6 +23,7 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.port.PortType;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.cell.IndigoDataValue;
 import com.ggasoftware.indigo.knime.cell.IndigoMolValue;
@@ -58,18 +59,22 @@ public class IndigoReactionGeneratorNodeModel extends IndigoNodeModel {
          throw new RuntimeException("column '" + columnName + "' can not be found");
       
       LinkedList<IndigoObject> objects = new LinkedList<IndigoObject>();
-      
-      try {
-         IndigoPlugin.lock();
-         for (DataRow inputRow : table) {
-            DataCell dataCell = inputRow.getCell(colIdx);
-            if (dataCell.isMissing()) {
-               throw new RuntimeException("Missing cell has been skipped");
-            }
-            objects.add(((IndigoDataValue) dataCell).getIndigoObject());
+
+      for (DataRow inputRow : table) {
+         DataCell dataCell = inputRow.getCell(colIdx);
+         if (dataCell.isMissing()) {
+            appendWarningMessage("Missing cell has been skipped for RowId '" + inputRow.getKey() + "'");
+            continue;
          }
-      } finally {
-         IndigoPlugin.unlock();
+         try {
+            IndigoPlugin.lock();
+            IndigoObject obj = ((IndigoDataValue) dataCell).getIndigoObject();
+            objects.add(obj);
+         } catch (IndigoException e) {
+            appendWarningMessage("Error while loading structure with RowId '" + inputRow.getKey() + "': " + e.getMessage());
+         } finally {
+            IndigoPlugin.unlock();
+         }
       }
       
       return objects;
@@ -153,6 +158,7 @@ public class IndigoReactionGeneratorNodeModel extends IndigoNodeModel {
          rowNumber++;
       }
       
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

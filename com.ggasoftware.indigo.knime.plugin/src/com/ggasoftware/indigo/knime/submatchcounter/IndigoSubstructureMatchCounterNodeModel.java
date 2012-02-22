@@ -123,11 +123,16 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
       return queries;
    }
    
-   private IndigoObject getIndigoQueryStructureOrNull(DataCell cell)
-   {
+   private IndigoObject getIndigoQueryStructureOrNull(DataCell cell) {
       if (cell.isMissing())
          return null;
-      return ((IndigoDataValue)cell).getIndigoObject();
+      IndigoObject res = null;
+      try {
+         res = ((IndigoDataValue)cell).getIndigoObject();
+      } catch(IndigoException e) {
+         LOGGER.warn("error while loading query structure: " + e.getMessage());
+      }
+      return res;
    }
    
    private DataCell[] getResultRow(DataTableSpec outSpec, int colIdx,
@@ -163,11 +168,17 @@ public class IndigoSubstructureMatchCounterNodeModel extends IndigoNodeModel
       try {
          IndigoPlugin.lock();
          
-         IndigoObject target = ((IndigoDataCell)targetCell).getIndigoObject();
+         IndigoObject target = null;
+         String errMes = null;
+         try {
+            target = ((IndigoDataCell)targetCell).getIndigoObject();
+            errMes = target.checkBadValence();
+         } catch (IndigoException e) {
+            errMes = e.getMessage();
+         }
          
-         String valence = target.checkBadValence();
-         if(valence != null && !valence.equals("")) {
-            appendWarningMessage("Error while processing target structure with RowId = '" + inputRow.getKey() + "': " +  valence);
+         if(errMes != null && !errMes.equals("")) {
+            appendWarningMessage("Error while processing target structure with RowId = '" + inputRow.getKey() + "': " +  errMes);
             return cells;
          }
          

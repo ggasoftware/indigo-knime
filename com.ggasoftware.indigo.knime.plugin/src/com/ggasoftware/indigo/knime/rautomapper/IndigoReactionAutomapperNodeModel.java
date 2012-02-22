@@ -101,7 +101,8 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
             }
                
          } catch (IndigoException e) {
-            message = e.getMessage();
+            message = "Could not calculate AAM for RowId '" + inputRow.getKey() + "': " + e.getMessage();
+            appendWarningMessage(message);
          } finally {
             IndigoPlugin.unlock();
          }
@@ -123,7 +124,8 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
             }
             invalidOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
          }
-
+         
+         handleWarningMessages();
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double) inData[INPUT_PORT].getRowCount(), "Adding row " + rowNumber);
 

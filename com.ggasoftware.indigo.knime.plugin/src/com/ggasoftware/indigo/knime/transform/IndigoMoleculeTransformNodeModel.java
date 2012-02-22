@@ -102,8 +102,9 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
             transformation.reaction = ((IndigoDataValue)dataCell).getIndigoObject();
             
             reactionsList.add(transformation);
+            
          } catch (IndigoException e) {
-            LOGGER.warn("Warning while loading reaction table: " + e.getMessage());
+            appendWarningMessage("Error while loading reaction with RowId '" + inputRow.getKey() + "': " + e.getMessage());
          } finally {
             IndigoPlugin.unlock();
          }
@@ -161,7 +162,7 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
                String message = "Warning while applying a transformation: " + e.getMessage() + " for molecule with rowId: " + inputRow.getKey().toString();
                if (transformRowId != null)
                   message += ". Transformation rowId: " + transformRowId;
-               LOGGER.warn(message);
+               appendWarningMessage(message);
                transformCell = null;
             } finally {
                IndigoPlugin.unlock();
@@ -192,6 +193,8 @@ public class IndigoMoleculeTransformNodeModel extends IndigoNodeModel {
          rowNumber++;
       }
       
+      
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

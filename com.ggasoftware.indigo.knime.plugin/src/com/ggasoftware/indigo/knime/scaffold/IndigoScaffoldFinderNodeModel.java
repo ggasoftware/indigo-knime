@@ -77,11 +77,17 @@ public class IndigoScaffoldFinderNodeModel extends IndigoNodeModel
             }
                
             IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(colIdx);
-            IndigoObject molObj = molcell.getIndigoObject();
-            String str = molObj.checkBadValence();
+            String str = null;
+            IndigoObject molObj = null;
+            try {
+               molObj = molcell.getIndigoObject();
+               str = molObj.checkBadValence();
+            } catch (IndigoException e) {
+               str = e.getMessage();
+            }
             if (str != null && !str.equals("")) {
                LOGGER.warn("Molecule table contains incorrect molecules: skipping the row with RowId = '" + inputRow.getKey() + "': " + str);
-            } else {
+            } else if(molObj != null) {
                arr.arrayAdd(molObj);
             }
          }

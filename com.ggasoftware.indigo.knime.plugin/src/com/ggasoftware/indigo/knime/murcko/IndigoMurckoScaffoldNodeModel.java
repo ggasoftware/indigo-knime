@@ -233,14 +233,11 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
       while (it.hasNext())
       {
          DataRow inputRow = it.next();
-         IndigoObject target;
+         IndigoObject target = null;
          DataCell cell = inputRow.getCell(colIdx); 
          
-         if (cell.isMissing())
-            target = null;
-         else
+         if (!cell.isMissing())
          {
-   
             try
             {
                IndigoPlugin.lock();
@@ -315,7 +312,6 @@ public class IndigoMurckoScaffoldNodeModel extends IndigoNodeModel
       }
       
       handleWarningMessages();
-
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

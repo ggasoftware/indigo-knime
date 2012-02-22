@@ -210,7 +210,7 @@ public class IndigoReactionSplitterNodeModel extends IndigoNodeModel {
                         resultSmiles = reactionRule.extractSelf(queryCell.getSource());
                      }
                   } catch (Exception e) {
-                     LOGGER.warn(e.getMessage());
+                     appendWarningMessage("Could not split reaction for RowId '" + inputRow.getKey() + "': " + e.getMessage());
                      resultMolecule = null;
                      resultSmiles = null;
                   } finally {
@@ -265,6 +265,7 @@ public class IndigoReactionSplitterNodeModel extends IndigoNodeModel {
          rowNumber++;
       }
       
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

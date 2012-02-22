@@ -109,7 +109,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          queries[index] = new QueryWithData(row, queryColIdx, _settings.structureType.equals(STRUCTURE_TYPE.Reaction));
          
          if (queries[index].query == null && !warningPrinted) {
-            LOGGER.warn("query table contains missing cells");
+            LOGGER.warn("query table contains missing or invalid cells");
             warningPrinted = true;
          }
          index++;
@@ -120,7 +120,13 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
    private IndigoObject getIndigoQueryStructureOrNull(DataCell cell) {
       if (cell.isMissing())
          return null;
-      return ((IndigoDataValue)cell).getIndigoObject();
+      IndigoObject res = null;
+      try {
+         res = ((IndigoDataValue)cell).getIndigoObject();
+      } catch(IndigoException e) {
+         LOGGER.warn("error while loading query structure: " + e.getMessage());
+      }
+      return res;
    }
    
    class AlignTargetQueryData
@@ -264,11 +270,18 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          }
          IndigoObject target = null;
          StringBuilder queriesRowKey = new StringBuilder();
+         if (hasMatch) {
+            try {
+               target = ((IndigoDataCell) inputCell).getIndigoObject();
+            } catch (IndigoException e) {
+               appendWarningMessage("Could not load target structure with RowId '" + inputRow.getKey() + "': " + e.getMessage());
+               hasMatch = false;
+            }
+         }
          /*
           * Count matches
           */
          if (hasMatch) {
-            target = ((IndigoDataCell) inputCell).getIndigoObject();
             /*
              * Clone target
              */
@@ -327,7 +340,8 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
                "Processing row " + rowNumber);
          rowNumber++;
       }
-
+      
+      handleWarningMessages();
       validOutputContainer.close();
       invalidOutputContainer.close();
       return new BufferedDataTable[] { validOutputContainer.getTable(),

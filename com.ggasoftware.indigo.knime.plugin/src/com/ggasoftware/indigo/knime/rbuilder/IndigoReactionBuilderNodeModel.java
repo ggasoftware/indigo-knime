@@ -243,7 +243,7 @@ public class IndigoReactionBuilderNodeModel extends IndigoNodeModel {
                }
             }
          } catch (Exception e) {
-            LOGGER.warn(e.getMessage());
+            appendWarningMessage("Could not calculate result reaction for RowId '" + inputRow.getKey()+ "': " + e.getMessage());
             cellType = null;
          } finally {
             IndigoPlugin.unlock();
@@ -268,7 +268,7 @@ public class IndigoReactionBuilderNodeModel extends IndigoNodeModel {
                   break;
                }
             } catch (IndigoException e) {
-               LOGGER.warn("can not create result cell: " + e.getMessage());
+               appendWarningMessage("can not create result cell: " + e.getMessage());
                outputCells[c_idx] = DataType.getMissingCell();
             }
          }
@@ -285,6 +285,7 @@ public class IndigoReactionBuilderNodeModel extends IndigoNodeModel {
          rowNumber++;
       }
 
+      handleWarningMessages();
       outputContainer.close();
 
       return new BufferedDataTable[] { outputContainer.getTable() };
