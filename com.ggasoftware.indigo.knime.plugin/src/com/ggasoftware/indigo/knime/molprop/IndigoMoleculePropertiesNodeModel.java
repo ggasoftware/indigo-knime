@@ -457,12 +457,17 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
 
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
+         
+         for (i = inputRow.getNumCells(); i < cells.length; i++)
+            cells[i] = DataType.getMissingCell();
+         
+         i = inputRow.getNumCells();
 
          if (!inputRow.getCell(colIdx).isMissing()) {
             try {
+               IndigoPlugin.lock();
                IndigoObject io = ((IndigoMolCell) (inputRow.getCell(colIdx))).getIndigoObject();
 
-               IndigoPlugin.lock();
                for (String prop : _settings.selectedProps.getStringArrayValue()) {
                   DataCell cell = null;
                   try {
@@ -473,6 +478,8 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
                   }
                   cells[i++] = cell;
                }
+            }catch (IndigoException e) {
+               appendWarningMessage("error while calculating structure properties for RowId '" + inputRow.getKey() + "': " + e.getMessage());
             } finally {
                IndigoPlugin.unlock();
             }
@@ -480,11 +487,8 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
             if(!warningPrinted)
                LOGGER.warn("Input table contains missing cells");
             warningPrinted = true;
-            
-            for (i = inputRow.getNumCells(); i < cells.length; i++)
-               cells[i] = DataType.getMissingCell();
          }
-
+         
          outputContainer.addRowToTable(new DefaultRow(key, cells));
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(),
@@ -493,6 +497,7 @@ public class IndigoMoleculePropertiesNodeModel extends IndigoNodeModel
          rowNumber++;
       }
 
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

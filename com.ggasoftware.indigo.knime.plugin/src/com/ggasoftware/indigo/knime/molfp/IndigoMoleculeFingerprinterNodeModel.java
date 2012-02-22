@@ -82,8 +82,8 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
          
          if (!inputRow.getCell(colIdx).isMissing())
             try {
-               IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
                IndigoPlugin.lock();
+               IndigoObject io = ((IndigoDataCell) (inputRow.getCell(colIdx))).getIndigoObject();
 
                IndigoPlugin.getIndigo().setOption("fp-sim-qwords", _settings.fpSizeQWords.getIntValue());
                IndigoPlugin.getIndigo().setOption("fp-tau-qwords", 0);
@@ -95,7 +95,7 @@ public class IndigoMoleculeFingerprinterNodeModel extends IndigoNodeModel
 
                fp = io.fingerprint("sim").toString();
             }catch (IndigoException e) {
-               appendWarningMessage("Error while aromatizing structure with RowId = '" + inputRow.getKey()+ "': " + e.getMessage());
+               appendWarningMessage("Error while calculating structure fingerprint for RowId = '" + inputRow.getKey()+ "': " + e.getMessage());
             } finally {
                IndigoPlugin.unlock();
             }

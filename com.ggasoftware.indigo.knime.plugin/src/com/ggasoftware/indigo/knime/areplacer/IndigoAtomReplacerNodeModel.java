@@ -72,14 +72,13 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
          for (i = 0; i < inputRow.getNumCells(); i++)
             cells[i] = inputRow.getCell(i);
          
-         if (inputRow.getCell(colIdx).isMissing())
-         {
-            if (_settings.appendColumn.getBooleanValue())
-               cells[i] = DataType.getMissingCell();
-         }
+         if (_settings.appendColumn.getBooleanValue())
+            cells[i] = DataType.getMissingCell();
          else
+            cells[colIdx] = DataType.getMissingCell();
+         
+         if (!inputRow.getCell(colIdx).isMissing())
          {
-   
             try
             {
                IndigoPlugin.lock();
@@ -112,6 +111,8 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
                   cells[i] = _createNewDataCell(io, _settings.structureType);
                else
                   cells[colIdx] = _createNewDataCell(io, _settings.structureType);
+            } catch (IndigoException e) {
+               appendWarningMessage("error while applying atom replacing rules to the row '" + key + "': " + e.getMessage());
             }
             finally
             {
@@ -126,7 +127,8 @@ public class IndigoAtomReplacerNodeModel extends IndigoNodeModel
 
          rowNumber++;
       }
-
+      
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

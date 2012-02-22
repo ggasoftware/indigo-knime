@@ -16,10 +16,11 @@ package com.ggasoftware.indigo.knime.cell;
 
 import org.knime.core.data.DataValue;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 public interface IndigoDataValue extends DataValue {
 
-	public abstract IndigoObject getIndigoObject();
+	public abstract IndigoObject getIndigoObject() throws IndigoException;
 
 }

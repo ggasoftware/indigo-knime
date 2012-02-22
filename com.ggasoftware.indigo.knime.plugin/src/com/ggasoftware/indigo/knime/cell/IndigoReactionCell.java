@@ -101,8 +101,10 @@ public class IndigoReactionCell extends IndigoDataCell implements IndigoReaction
             return "<Indigo object #" + _object.self + ">";
          }
       }
-      finally
+      catch (IndigoException e)
       {
+         return null;
+      } finally {
          IndigoPlugin.unlock();
       }
    }
@@ -142,7 +144,7 @@ public class IndigoReactionCell extends IndigoDataCell implements IndigoReaction
    }
 
    @Override
-   public IndigoObject getIndigoObject() {
+   public IndigoObject getIndigoObject() throws IndigoException{
       byte[] buf = _getBuffer();
       IndigoObject res;
       try {
@@ -154,10 +156,6 @@ public class IndigoReactionCell extends IndigoDataCell implements IndigoReaction
       return res;
    }
    
-   public IndigoReactionCell clone() {
-      byte[] buf = _getBuffer();
-      return new IndigoReactionCell(buf.clone());
-   }
 
 }
 //@SuppressWarnings("serial")

@@ -84,18 +84,22 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
       try
       {
          IndigoPlugin.lock();
-         IndigoObject _object = getIndigoObject();
+         IndigoObject obj = getIndigoObject();
          
          // Return a SMILES string if it can be calculated
          try
          {
-            return _object.smiles();
+            return obj.smiles();
          }
          catch (IndigoException e)
          {
             // If SMILES is not an option, return the unique Indigo's object ID
-            return "<Indigo object #" + _object.self + ">";
+            return "<Indigo object #" + obj.self + ">";
          }
+      }
+      catch (IndigoException e)
+      {
+         return null;
       }
       finally
       {
@@ -139,7 +143,7 @@ public class IndigoMolCell extends IndigoDataCell implements IndigoMolValue
    }
 
    @Override
-   public IndigoObject getIndigoObject() {
+   public IndigoObject getIndigoObject() throws IndigoException{
       byte[] buf = _getBuffer();
       IndigoObject res;
       try {

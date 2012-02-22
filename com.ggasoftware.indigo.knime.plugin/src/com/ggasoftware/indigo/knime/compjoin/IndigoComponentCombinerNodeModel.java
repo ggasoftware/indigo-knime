@@ -162,7 +162,7 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
                }
             }
          } catch (Exception e) {
-            LOGGER.warn(e.getMessage());
+            appendWarningMessage("error while combine components from row '" + inputRow.getKey() + "': " + e.getMessage());
             cellType = null;
          } finally {
             IndigoPlugin.unlock();
@@ -203,6 +203,7 @@ public class IndigoComponentCombinerNodeModel extends IndigoNodeModel {
          rowNumber++;
       }
       
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

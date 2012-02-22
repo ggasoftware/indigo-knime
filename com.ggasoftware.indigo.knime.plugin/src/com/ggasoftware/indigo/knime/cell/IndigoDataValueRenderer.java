@@ -65,48 +65,35 @@ public class IndigoDataValueRenderer extends AbstractPainterDataValueRenderer
    @Override
    protected void setValue (final Object value)
    {
-      if (value instanceof IndigoDataValue)
-         _object = ((IndigoDataValue) value).getIndigoObject();
-      else if (value == DataType.getMissingCell())
-      {
-         _object = null;
-         _errorMessage = "Missing cell";
-      }
-      else
-      {
-         try
-         {
-            IndigoPlugin.lock();
+      try {
+         IndigoPlugin.lock();
+         if (value instanceof IndigoDataValue)
+            _object = ((IndigoDataValue) value).getIndigoObject();
+         else if (value == DataType.getMissingCell()) {
+            _object = null;
+            _errorMessage = "Missing cell";
+         } else {
+            Indigo indigo = IndigoPlugin.getIndigo();
+
             if (value instanceof MolValue)
-               _object = IndigoPlugin.getIndigo().loadQueryMolecule(
-                     ((MolValue) value).getMolValue());
+               _object = indigo.loadQueryMolecule(((MolValue) value).getMolValue());
             else if (value instanceof SdfValue)
-               _object = IndigoPlugin.getIndigo().loadQueryMolecule(
-                     ((SdfValue) value).getSdfValue());
+               _object = indigo.loadQueryMolecule(((SdfValue) value).getSdfValue());
             else if (value instanceof SmilesValue) {
                String smiles = ((SmilesValue) value).getSmilesValue();
-               _object = !smiles.matches("^[^>]*>[^>]*>[^>]*$") ?
-                     IndigoPlugin.getIndigo().loadMolecule(smiles) : 
-                     IndigoPlugin.getIndigo().loadReaction(smiles);
+               _object = !smiles.matches("^[^>]*>[^>]*>[^>]*$") ? indigo.loadMolecule(smiles) : indigo.loadReaction(smiles);
             } else if (value instanceof SmartsValue)
-               _object = IndigoPlugin.getIndigo().loadSmarts(
-                     ((SmartsValue) value).getSmartsValue());
+               _object = indigo.loadSmarts(((SmartsValue) value).getSmartsValue());
             else if (value instanceof RxnValue)
-               _object = IndigoPlugin.getIndigo().loadQueryReaction(
-                     (((RxnValue) value).getRxnValue()));
+               _object = indigo.loadQueryReaction((((RxnValue) value).getRxnValue()));
             else if (value instanceof CMLValue)
-               _object = IndigoPlugin.getIndigo().loadMolecule(
-                     (((CMLValue) value).getCMLValue()));
+               _object = indigo.loadMolecule((((CMLValue) value).getCMLValue()));
          }
-         catch (IndigoException e)
-         {
-            _object = null;
-            _errorMessage = e.getMessage();
-         }
-         finally
-         {
-            IndigoPlugin.unlock();
-         }
+      } catch (IndigoException e) {
+         _object = null;
+         _errorMessage = e.getMessage();
+      } finally {
+         IndigoPlugin.unlock();
       }
    }
 

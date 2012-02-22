@@ -75,10 +75,17 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
                IndigoPlugin.lock();
             
                IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
+               
                int ncomp = target.countComponents();
                
                if (maxcomp < ncomp)
                   maxcomp = ncomp;
+            } 
+            catch (IndigoException e)
+            {
+               /*
+                * Skip errors (they will reveal in the next step)
+                */
             }
             finally
             {
@@ -113,10 +120,10 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
          
          if (!cell.isMissing())
          {
-            IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
             try
             {
                IndigoPlugin.lock();
+               IndigoObject target = ((IndigoMolCell)(inputRow.getCell(colIdx))).getIndigoObject();
                
                ArrayList<IndigoObject> collection = new ArrayList<IndigoObject>();
                
@@ -154,12 +161,12 @@ public class IndigoComponentSeparatorNodeModel extends IndigoNodeModel
             }
          }
          
-         handleWarningMessages();
          
          
          outputContainer.addRowToTable(new DefaultRow(key, cells));
       }
       
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

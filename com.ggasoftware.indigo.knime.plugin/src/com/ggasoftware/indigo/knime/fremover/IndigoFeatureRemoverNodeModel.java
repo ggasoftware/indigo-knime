@@ -204,18 +204,15 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
 
       for (DataRow inputRow : bufferedDataTable)
       {
-         IndigoObject target;
+         IndigoObject target = null;
          DataCell cell = inputRow.getCell(colIdx); 
          
-         if (cell.isMissing())
-            target = null;
-         else
+         if (!cell.isMissing())
          {
-            target = ((IndigoDataCell)(inputRow.getCell(colIdx))).getIndigoObject();
-   
             try
             {
                IndigoPlugin.lock();
+               target = ((IndigoDataCell)(inputRow.getCell(colIdx))).getIndigoObject();
 //               target = target.clone();
                String[] features = _settings.selectedFeatures.getStringArrayValue();
                if (features != null)
@@ -228,6 +225,10 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
                         fRem.removeFeature(target);
                         
                   }
+            }
+            catch (IndigoException e) {
+                appendWarningMessage("Could not remove feature for RowId = '" + inputRow.getKey() + "': " + e.getMessage());
+                target = null;
             }
             finally
             {
@@ -271,7 +272,8 @@ public class IndigoFeatureRemoverNodeModel extends IndigoNodeModel
                "Adding row " + rowNumber);
          rowNumber++;
       }
-
+      
+      handleWarningMessages();
       outputContainer.close();
       return new BufferedDataTable[] { outputContainer.getTable() };
    }

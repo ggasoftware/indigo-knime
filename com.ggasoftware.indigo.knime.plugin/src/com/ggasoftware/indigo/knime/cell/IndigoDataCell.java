@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 
 import org.knime.core.data.DataCell;
 
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 
 @SuppressWarnings("serial")
@@ -26,7 +27,7 @@ public abstract class IndigoDataCell extends DataCell implements IndigoDataValue
 //   protected IndigoObject _object;
    
    @Override
-   abstract public IndigoObject getIndigoObject();
+   abstract public IndigoObject getIndigoObject() throws IndigoException;
    
    protected IndigoDataCell(byte[] buf) {
       _byteBuffer = ByteBuffer.wrap(buf);

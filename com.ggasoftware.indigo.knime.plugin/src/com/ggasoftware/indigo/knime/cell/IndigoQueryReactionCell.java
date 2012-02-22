@@ -19,6 +19,7 @@ import java.io.IOException;
 import org.knime.core.data.*;
 
 import com.ggasoftware.indigo.Indigo;
+import com.ggasoftware.indigo.IndigoException;
 import com.ggasoftware.indigo.IndigoObject;
 import com.ggasoftware.indigo.knime.plugin.IndigoPlugin;
 
@@ -118,6 +119,10 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
          // Otherwise, return the unique Indigo's object ID
          return "<Indigo object #" + obj.self + ">";
       }
+      catch (IndigoException e)
+      {
+         return null;
+      }
       finally
       {
          IndigoPlugin.unlock();
@@ -137,7 +142,7 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
    }
 
    @Override
-   public IndigoObject getIndigoObject() {
+   public IndigoObject getIndigoObject() throws IndigoException {
       Indigo indigo = IndigoPlugin.getIndigo();
       IndigoObject res;
       byte[] buf = _getBuffer();
@@ -154,11 +159,6 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
       return res;
    }
    
-   public IndigoQueryReactionCell clone() {
-      byte[] buf = _getBuffer();
-      return new IndigoQueryReactionCell(buf.clone(), _smarts);
-   }
-
 }
 //@SuppressWarnings("serial")
 //public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQueryReactionValue
