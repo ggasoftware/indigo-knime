@@ -1,1 +1,1 @@
-3,WARN Indigo Fingerprint : Error while aromatizing structure with RowId = 'Row2': element: bad valence on N having 8 drawn bonds, charge 0, and 0 radical electrons
+3,WARN Indigo Fingerprint : Error while calculating structure fingerprint for RowId = 'Row2': element: bad valence on N having 8 drawn bonds, charge 0, and 0 radical electrons
