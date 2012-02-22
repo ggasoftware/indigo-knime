@@ -71,119 +71,155 @@ public class IndigoRGroupDecomposerNodeModel extends IndigoNodeModel
    protected BufferedDataTable[] execute (final BufferedDataTable[] inData,
          final ExecutionContext exec) throws Exception
    {
-      int molColIdx = inData[IndigoRGroupDecomposerSettings.MOL_PORT].getDataTableSpec().findColumnIndex(_settings.molColumn.getStringValue());
+      BufferedDataTable molDataTable = inData[IndigoRGroupDecomposerSettings.MOL_PORT];
+      BufferedDataTable scafDataTable = inData[IndigoRGroupDecomposerSettings.SCAF_PORT];
+      
+      int molColIdx = molDataTable.getDataTableSpec().findColumnIndex(_settings.molColumn.getStringValue());
       if (molColIdx == -1)
          throw new Exception("column not found");
 
-      int scafColIdx = inData[IndigoRGroupDecomposerSettings.SCAF_PORT].getDataTableSpec().findColumnIndex(_settings.scaffoldColumn.getStringValue());
+      int scafColIdx = scafDataTable.getDataTableSpec().findColumnIndex(_settings.scaffoldColumn.getStringValue());
       if (scafColIdx == -1)
          throw new Exception("scaffold column not found");
       
-      IndigoObject query;
+      
+      IndigoObject query = null;
       
       {
-         CloseableRowIterator it = inData[IndigoRGroupDecomposerSettings.SCAF_PORT].iterator();
+         CloseableRowIterator it = scafDataTable.iterator();
          if (!it.hasNext())
-            throw new Exception("no query molecule found in the data source");
+            appendWarningMessage("no query molecule found in the data source");
          DataRow row = it.next();
          
          if(row.getCell(scafColIdx).isMissing())
-            throw new Exception("no query molecule found in the data source");
-         
-         query = ((IndigoQueryMolValue)row.getCell(scafColIdx)).getIndigoObject();
+            appendWarningMessage("no query molecule found in the data source");
+         try {
+            query = ((IndigoQueryMolValue)row.getCell(scafColIdx)).getIndigoObject();
+         } catch (IndigoException e) {
+            appendWarningMessage("can not load query molecule: " + e.getMessage());
+         }
          if (it.hasNext())
             LOGGER.warn("second data source contains more than one row; ignoring all others");
       }
       
-      IndigoObject deco;
+      IndigoObject deco = null;
       int rsites = 0;
       
+      DataTableSpec scafSpec = calcDataTableSpec2();
+      BufferedDataContainer scafOutputContainer = exec.createDataContainer(scafSpec);
       
-      try
-      {
-         IndigoPlugin.lock();
-         Indigo indigo = IndigoPlugin.getIndigo();
-         IndigoObject arr = indigo.createArray();
-         
-         for (DataRow inputRow : inData[IndigoRGroupDecomposerSettings.MOL_PORT])
-         {
-            if(inputRow.getCell(molColIdx).isMissing()) {
-               LOGGER.warn("Molecule table contains missing cells: ignoring");
-               continue;
+      BufferedDataContainer rgOutputContainer = null;
+      
+      if (query != null) {
+         try {
+            IndigoPlugin.lock();
+            Indigo indigo = IndigoPlugin.getIndigo();
+            IndigoObject arr = indigo.createArray();
+
+            for (DataRow inputRow : molDataTable) {
+               if (inputRow.getCell(molColIdx).isMissing()) {
+                  LOGGER.warn("Molecule table contains missing cells: ignoring");
+                  continue;
+               }
+               try {
+                  IndigoMolCell molcell = (IndigoMolCell) inputRow.getCell(molColIdx);
+                  arr.arrayAdd(molcell.getIndigoObject());
+               } catch (IndigoException e) {
+                  appendWarningMessage("can not load target molecule RowId = '" + inputRow.getKey() + "': " + e.getMessage());
+               }
             }
-            IndigoMolCell molcell = (IndigoMolCell)inputRow.getCell(molColIdx);
-            arr.arrayAdd(molcell.getIndigoObject());
+            
+            if(arr.count() == 0) {
+               appendWarningMessage("no target molecules were loaded");
+            } else {
+               deco = indigo.decomposeMolecules(query, arr);
+               rsites = deco.decomposedMoleculeScaffold().countRSites();
+            }
+         } catch (IndigoException e) {
+            appendWarningMessage("Error while decompose molecules: " + e.getMessage());
+            deco = null;
+         } finally {
+            IndigoPlugin.unlock();
          }
          
-         deco = indigo.decomposeMolecules(query, arr);
-         rsites = deco.decomposedMoleculeScaffold().countRSites();
-      }
-      finally
-      {
-         IndigoPlugin.unlock();
-      }
-      
-      DataTableSpec spec = calcDataTableSpec(inData[IndigoRGroupDecomposerSettings.MOL_PORT].getDataTableSpec(), rsites);
-      DataTableSpec spec2 = calcDataTableSpec2();
-
-      BufferedDataContainer outputContainer = exec.createDataContainer(spec);
-      BufferedDataContainer outputContainer2 = exec.createDataContainer(spec2);
-
-      IndigoObject deco_iter = deco.iterateDecomposedMolecules();
-      
-      for (DataRow inputRow : inData[IndigoRGroupDecomposerSettings.MOL_PORT])
-      {
-         RowKey key = inputRow.getKey();
-         DataCell[] cells = new DataCell[inputRow.getNumCells() + rsites + 1];
-         int i;
-
-         for (i = 0; i < inputRow.getNumCells(); i++)
-            cells[i] = inputRow.getCell(i);
-
-         cells[inputRow.getNumCells()] = DataType.getMissingCell();
+         DataTableSpec rgSpec = calcDataTableSpec(molDataTable.getDataTableSpec(), rsites);
+         rgOutputContainer = exec.createDataContainer(rgSpec);
          
-         for (i = 1; i <= rsites; i++)
-            cells[inputRow.getNumCells() + i] =  DataType.getMissingCell();
-         /*
-          * Skip missing cells
-          */
-         if (!inputRow.getCell(molColIdx).isMissing())
-            try {
-               IndigoPlugin.lock();
-               if (!deco_iter.hasNext()) {
-                  LOGGER.error("deco iterator ended unexpectedly");
-                  break;
+         if (deco != null) {
+
+            IndigoObject deco_iter = deco.iterateDecomposedMolecules();
+
+            for (DataRow inputRow : molDataTable) {
+               RowKey key = inputRow.getKey();
+               DataCell[] cells = new DataCell[inputRow.getNumCells() + rsites + 1];
+               int i;
+
+               for (i = 0; i < inputRow.getNumCells(); i++)
+                  cells[i] = inputRow.getCell(i);
+
+               cells[inputRow.getNumCells()] = DataType.getMissingCell();
+
+               for (i = 1; i <= rsites; i++)
+                  cells[inputRow.getNumCells() + i] = DataType.getMissingCell();
+               /*
+                * Skip missing and invalid cells
+                */
+               if (inputRow.getCell(molColIdx).isMissing()) {
+                  continue;
                }
-
-               IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
-
-               for (IndigoObject rg : deco_mol.iterateRGroups()) {
-                  IndigoObject frag_iter = rg.iterateRGroupFragments();
-                  if (frag_iter.hasNext()) {
-                     IndigoObject frag = frag_iter.next();
-                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag);
-//                     cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag.clone());
-                     frag.remove();
+               try {
+                  IndigoMolCell molcell = (IndigoMolCell) inputRow.getCell(molColIdx);
+                  molcell.getIndigoObject();
+               } catch (IndigoException e) {
+                  continue;
+               }
+               try {
+                  IndigoPlugin.lock();
+                  if (!deco_iter.hasNext()) {
+                     LOGGER.error("deco iterator ended unexpectedly");
+                     break;
                   }
-               }
 
-               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol);
-//               cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol.clone());
-            } finally {
-               IndigoPlugin.unlock();
+                  IndigoObject deco_mol = deco_iter.next().decomposedMoleculeWithRGroups();
+
+                  for (IndigoObject rg : deco_mol.iterateRGroups()) {
+                     IndigoObject frag_iter = rg.iterateRGroupFragments();
+                     if (frag_iter.hasNext()) {
+                        IndigoObject frag = frag_iter.next();
+                        cells[inputRow.getNumCells() + rg.index()] = new IndigoMolCell(frag);
+                        // cells[inputRow.getNumCells() + rg.index()] = new
+                        // IndigoMolCell(frag.clone());
+                        frag.remove();
+                     }
+                  }
+                  cells[inputRow.getNumCells()] = new IndigoMolCell(deco_mol);
+                  // cells[inputRow.getNumCells()] = new
+                  // IndigoMolCell(deco_mol.clone());
+               } catch (IndigoException e) {
+                  appendWarningMessage("error while adding decomposition for RowId = '" + inputRow.getKey() + "': " + e.getMessage());
+               } finally {
+                  IndigoPlugin.unlock();
+               }
+               rgOutputContainer.addRowToTable(new DefaultRow(key, cells));
             }
+         }
+         if(rgOutputContainer == null) {
+            rgOutputContainer = exec.createDataContainer(calcDataTableSpec(molDataTable.getDataTableSpec(), 0));
+         }
          
-         outputContainer.addRowToTable(new DefaultRow(key, cells));
+         if(deco != null) {
+            DataCell[] cells = new DataCell[1];
+            String molfile = deco.decomposedMoleculeScaffold().molfile();
+            cells[0] = IndigoQueryMolCell.fromString(molfile);
+            scafOutputContainer.addRowToTable(new DefaultRow("Row1", cells));
+         }
+
       }
       
-      DataCell[] cells = new DataCell[1];
-      String molfile = deco.decomposedMoleculeScaffold().molfile();
-      cells[0] = IndigoQueryMolCell.fromString(molfile);
-      outputContainer2.addRowToTable(new DefaultRow("Row1", cells));      
-      
-      outputContainer.close();
-      outputContainer2.close();
-      return new BufferedDataTable[] { outputContainer.getTable(), outputContainer2.getTable() };
+      handleWarningMessages();
+      rgOutputContainer.close();
+      scafOutputContainer.close();
+      return new BufferedDataTable[] { rgOutputContainer.getTable(), scafOutputContainer.getTable() };
    }
 
    /**

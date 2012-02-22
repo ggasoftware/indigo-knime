@@ -54,7 +54,8 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
     */
    @Override
    protected BufferedDataTable[] execute(final BufferedDataTable[] inData, final ExecutionContext exec) throws Exception {
-      DataTableSpec inputTableSpec = inData[INPUT_PORT].getDataTableSpec();
+      BufferedDataTable bufferedDataTable = inData[INPUT_PORT];
+      DataTableSpec inputTableSpec = bufferedDataTable.getDataTableSpec();
       DataTableSpec[] outputSpecs = getDataTableSpecs(inputTableSpec);
 
       BufferedDataContainer validOutputContainer = exec.createDataContainer(outputSpecs[0]);
@@ -68,7 +69,7 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
       String aamParameters = _settings.getAAMParameters();
       
       int rowNumber = 1;
-      for (DataRow inputRow : inData[INPUT_PORT]) {
+      for (DataRow inputRow : bufferedDataTable) {
          DataCell[] cells = new DataCell[inputRow.getNumCells() + (_settings.appendColumn.getBooleanValue() ? 1 : 0)];
 
          DataCell dataCell = inputRow.getCell(colIdx);
@@ -125,13 +126,13 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
             invalidOutputContainer.addRowToTable(new DefaultRow(inputRow.getKey(), cells));
          }
          
-         handleWarningMessages();
          exec.checkCanceled();
-         exec.setProgress(rowNumber / (double) inData[INPUT_PORT].getRowCount(), "Adding row " + rowNumber);
+         exec.setProgress(rowNumber / (double) bufferedDataTable.getRowCount(), "Adding row " + rowNumber);
 
          rowNumber++;
       }
 
+      handleWarningMessages();
       validOutputContainer.close();
       invalidOutputContainer.close();
       return new BufferedDataTable[] { validOutputContainer.getTable(), invalidOutputContainer.getTable() };
