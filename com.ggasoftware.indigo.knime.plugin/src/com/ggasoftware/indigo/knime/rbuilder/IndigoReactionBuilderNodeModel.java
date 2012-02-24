@@ -18,7 +18,6 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
@@ -98,10 +97,6 @@ public class IndigoReactionBuilderNodeModel extends IndigoNodeModel {
    }
 
    private final IndigoReactionBuilderSettings _settings = new IndigoReactionBuilderSettings();
-
-   // the logger instance
-   private static final NodeLogger LOGGER = NodeLogger
-         .getLogger(IndigoReactionBuilderNodeModel.class);
 
    /**
     * Constructor for the node model.
