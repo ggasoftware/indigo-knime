@@ -1,1 +1,1 @@
-5,WARN Molecule Transformation (beta) : Warning while applying a transformation: element: bad valence on N having 8 drawn bonds, charge 0, and 0 radical electrons for molecule with rowId: Row2
+5,WARN Molecule Transformation (beta) : Warning while applying a transformation: element: bad valence on N having 8 drawn bonds, charge 0, and 0 radical electrons for molecule with rowId: Row2. Transformation rowId: Row1
