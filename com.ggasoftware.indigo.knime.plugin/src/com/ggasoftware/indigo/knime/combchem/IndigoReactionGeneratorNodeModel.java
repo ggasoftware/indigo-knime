@@ -155,7 +155,6 @@ public class IndigoReactionGeneratorNodeModel extends IndigoNodeModel {
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double)outputCount,
                "Adding row " + rowNumber);
-         rowNumber++;
       }
       
       handleWarningMessages();
