@@ -1,3 +1,12 @@
+>************************************************************
+1.1.0.201202272004
+Indigo throwing exeptions bug was fixed. (Thanks to Linel, http://tech.knime.org/forum/indigo/changes-in-molecule-properties-node)
+CMF extended format was applied. (Thanks to Hinnerick, https://groups.google.com/group/indigo-bugs/browse_thread/thread/16faf897c090bc04)
+Transformation node bug was fixed (Thanks to Chris, http://tech.knime.org/forum/indigo/combinatorial-reaction-enumeration-node-bug-and-feature-requests)
+
+
+>************************************************************
+1.1.0.201202211836
 Fixed regression with automapper: http://tech.knime.org/forum/indigo/reaction-automapper-bug
 
 >************************************************************
