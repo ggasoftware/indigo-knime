@@ -334,6 +334,8 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          } else {
             invalidOutputContainer.addRowToTable(inputRow);
          }
+         if (target != null)
+            target.dispose();
          
          exec.checkCanceled();
          exec.setProgress(rowNumber / (double) inData[TARGET_PORT].getRowCount(),
@@ -448,7 +450,7 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
       
       String mode = "";
       
-      IndigoObject match = null;
+      IndigoObject match = null, matcher = null;
       
       if (!_settings.exact.getBooleanValue() || target.countHeavyAtoms() <= query.countAtoms())
       {
@@ -464,7 +466,8 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
             indigo.setTautomerRule(3, "1C", "N,O");
          }
       
-         match = indigo.substructureMatcher(target, mode).match(query);
+         matcher = indigo.substructureMatcher(target, mode); 
+         match = matcher.match(query);
       }
       
       if (match != null && _settings.exact.getBooleanValue())
@@ -505,6 +508,10 @@ public class IndigoSubstructureMatcherNodeModel extends IndigoNodeModel
          if (_settings.align.getBooleanValue())
             queryData.align(target, match);
       }
+      if (match != null)
+         match.dispose();
+      if (matcher != null)
+         matcher.dispose();
       return (match != null);
    }
    
