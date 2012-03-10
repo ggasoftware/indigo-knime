@@ -59,7 +59,7 @@ public class IndigoFingerprintSimilarityNodeDialog extends NodeDialogPane
       @Override
       public void actionPerformed (ActionEvent arg0)
       {
-         if (_metrics.getSelectedItem() == Metric.Tversky)
+         if (_metrics.getSelectedItem().equals(Metric.Tversky.toString()))
          {
             _alpha.setVisible(true);
             _beta.setVisible(true);
