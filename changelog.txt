@@ -1,4 +1,11 @@
 >************************************************************
+1.1.2
+Fixed InChI computation caused KNIME application temintation. Thanks to Hinnerk: https://groups.google.com/d/msg/indigo-bugs/Fvr4l8CQvAQ/r_HYDxumALAJ
+Options for Tverksy metric for Similarity Node was restored. Thanks to Simon: http://tech.knime.org/forum/indigo/fingerprint-similarity-improvement-request
+Fixed memory issues with substructure matcher. Thanks to fab: http://tech.knime.org/forum/indigo/error-in-loop
+
+
+>************************************************************
 1.1.0.201202272004
 Indigo throwing exeptions bug was fixed. (Thanks to Linel, http://tech.knime.org/forum/indigo/changes-in-molecule-properties-node)
 CMF extended format was applied. (Thanks to Hinnerck, https://groups.google.com/group/indigo-bugs/browse_thread/thread/16faf897c090bc04)
