@@ -148,6 +148,7 @@ public class IndigoQueryMolCell extends IndigoDataCell implements IndigoQueryMol
       byte[] buf = _getBuffer();
       try {
          IndigoPlugin.lock();
+         indigo.setOption("ignore-stereochemistry-errors", true);
          if(_smarts)
             res = indigo.loadSmarts(buf);
          else

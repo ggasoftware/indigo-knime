@@ -148,6 +148,7 @@ public class IndigoQueryReactionCell extends IndigoDataCell implements IndigoQue
       byte[] buf = _getBuffer();
       try {
          IndigoPlugin.lock();
+         indigo.setOption("ignore-stereochemistry-errors", true);
          if(_smarts)
             res = indigo.loadReactionSmarts(buf);
          else
