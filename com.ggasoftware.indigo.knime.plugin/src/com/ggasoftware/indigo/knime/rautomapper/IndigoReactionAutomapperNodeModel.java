@@ -83,12 +83,25 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
                newcell = DataType.getMissingCell();
             else {
                IndigoObject reaction = ((IndigoDataValue) dataCell).getIndigoObject();
+               /*
+                * Setup timeout
+                */
+               if(_settings.useAamTimeout.getBooleanValue())
+                  IndigoPlugin.getIndigo().setOption("aam-timeout", _settings.aamTimeout.getIntValue());
+               else
+                  IndigoPlugin.getIndigo().setOption("aam-timeout", 0);
+               /*
+                * Perform AAM
+                */
                reaction.automap(aamParameters);
                /*
                 * Highlight reacting centers by correcting them
                 */
                if(_settings.highlightReactingCenters.getBooleanValue())
                   reaction.correctReactingCenters();
+               /*
+                * Create data cell
+                */
                if (dataCell instanceof IndigoReactionCell) {
                   newcell = new IndigoReactionCell(reaction);
                } else if (dataCell instanceof IndigoQueryReactionCell) {

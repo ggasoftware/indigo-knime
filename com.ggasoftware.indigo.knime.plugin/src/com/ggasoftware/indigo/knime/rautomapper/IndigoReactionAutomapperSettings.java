@@ -6,6 +6,7 @@ import org.knime.core.data.DataTableSpec;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelInteger;
+import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 
 import com.ggasoftware.indigo.knime.common.IndigoNodeSettings;
 
@@ -29,6 +30,8 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public final SettingsModelBoolean ignoreRadicals = new SettingsModelBoolean(CFGKEY_IGNORE_RADICALS, false);
    public final SettingsModelBoolean ignoreValence = new SettingsModelBoolean(CFGKEY_IGNORE_VALENCE, false);
    public final SettingsModelBoolean highlightReactingCenters = new SettingsModelBoolean("highlightReactingCenters", false);
+   public final SettingsModelBoolean useAamTimeout = new SettingsModelBoolean("useAamTimeout", false);
+   public final SettingsModelIntegerBounded aamTimeout = new SettingsModelIntegerBounded("aamTimeout", 0, 0, Integer.MAX_VALUE);
    
    private final HashMap<String, SettingsModelBoolean> _ignoreFlags = new HashMap<String, SettingsModelBoolean>();
 
@@ -42,6 +45,8 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
       addSettingsParameter(ignoreRadicals);
       addSettingsParameter(ignoreValence);
       addSettingsParameter(highlightReactingCenters);
+      addSettingsParameter(useAamTimeout);
+      addSettingsParameter(aamTimeout);
       
       _ignoreFlags.put(CFGKEY_IGNORE_CHARGES, ignoreCharges);
       _ignoreFlags.put(CFGKEY_IGNORE_ISOTOPES, ignoreIsotopes);
