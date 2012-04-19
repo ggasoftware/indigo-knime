@@ -50,6 +50,7 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       dialogPanel.addItemsPanel("Automapping settings");
       dialogPanel.addItem("Reaction AAM mode", _mode);
       dialogPanel.addItem(_highlightReactingCenters);
+      
       dialogPanel.addItemsPanel("Match rules settings");
       dialogPanel.addItem(_ignoreCharges);
       dialogPanel.addItem(_ignoreIsotopes);
