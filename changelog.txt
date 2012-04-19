@@ -4,7 +4,8 @@ Fixed Murcko scaffold computation issue. Thanks to Hinnerk: https://groups.googl
 Many issues with loading SGroups from Molfile has been fixed.
 "Highlight Reacting Centers" option was added. Thanks to James: http://tech.knime.org/forum/indigo/reaction-automapper-bond-highlighting
 AAM for query reactions bug was fixed.
-RGroup scaffold iteration bug was fixed. Thanks to Simon: http://tech.knime.org/forum/indigo/r-group-decomposer 
+RGroup scaffold iteration bug was fixed. Thanks to Simon: http://tech.knime.org/forum/indigo/r-group-decomposer
+AAM Timeout option was added. Thanks to Daniel: http://groups.google.com/group/indigo-dev/browse_thread/thread/4430412b9864f3fd 
 
 >************************************************************
 1.1.2
