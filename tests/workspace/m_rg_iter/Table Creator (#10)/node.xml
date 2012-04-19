@@ -12,7 +12,7 @@
 </config>
 <config key="values">
 <entry key="array-size" type="xint" value="1"/>
-<entry key="0" type="xstring" value="2"/>
+<entry key="0" type="xstring" value="1"/>
 </config>
 <entry key="rowIdPrefix" type="xstring" value="Row"/>
 <entry key="rowIdSuffix" type="xstring" value=""/>
