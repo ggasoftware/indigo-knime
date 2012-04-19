@@ -34,6 +34,7 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
    private final JCheckBox _ignoreIsotopes = new JCheckBox("Ignore isotopes");
    private final JCheckBox _ignoreRadicals = new JCheckBox("Ignore radicals");
    private final JCheckBox _ignoreValence = new JCheckBox("Ignore valence");
+   private final JCheckBox _highlightReactingCenters = new JCheckBox("Highlight Reacting Centers");
 
    protected IndigoReactionAutomapperNodeDialog() {
       super();
@@ -48,6 +49,8 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       
       dialogPanel.addItemsPanel("Automapping settings");
       dialogPanel.addItem("Reaction AAM mode", _mode);
+      dialogPanel.addItem(_highlightReactingCenters);
+      dialogPanel.addItemsPanel("Match rules settings");
       dialogPanel.addItem(_ignoreCharges);
       dialogPanel.addItem(_ignoreIsotopes);
       dialogPanel.addItem(_ignoreRadicals);
@@ -70,6 +73,8 @@ public class IndigoReactionAutomapperNodeDialog extends NodeDialogPane {
       _settings.registerDialogComponent(_ignoreIsotopes, _settings.ignoreIsotopes);
       _settings.registerDialogComponent(_ignoreRadicals, _settings.ignoreRadicals);
       _settings.registerDialogComponent(_ignoreValence, _settings.ignoreValence);
+      
+      _settings.registerDialogComponent(_highlightReactingCenters, _settings.highlightReactingCenters);
       
       
    }

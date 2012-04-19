@@ -84,6 +84,11 @@ public class IndigoReactionAutomapperNodeModel extends IndigoNodeModel {
             else {
                IndigoObject reaction = ((IndigoDataValue) dataCell).getIndigoObject();
                reaction.automap(aamParameters);
+               /*
+                * Highlight reacting centers by correcting them
+                */
+               if(_settings.highlightReactingCenters.getBooleanValue())
+                  reaction.correctReactingCenters();
                if (dataCell instanceof IndigoReactionCell) {
                   newcell = new IndigoReactionCell(reaction);
                } else if (dataCell instanceof IndigoQueryReactionCell) {

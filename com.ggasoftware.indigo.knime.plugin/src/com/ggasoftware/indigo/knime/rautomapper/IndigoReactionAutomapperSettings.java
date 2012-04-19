@@ -28,6 +28,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
    public final SettingsModelBoolean ignoreIsotopes = new SettingsModelBoolean(CFGKEY_IGNORE_ISOTOPES, false);
    public final SettingsModelBoolean ignoreRadicals = new SettingsModelBoolean(CFGKEY_IGNORE_RADICALS, false);
    public final SettingsModelBoolean ignoreValence = new SettingsModelBoolean(CFGKEY_IGNORE_VALENCE, false);
+   public final SettingsModelBoolean highlightReactingCenters = new SettingsModelBoolean("highlightReactingCenters", false);
    
    private final HashMap<String, SettingsModelBoolean> _ignoreFlags = new HashMap<String, SettingsModelBoolean>();
 
@@ -40,6 +41,7 @@ public class IndigoReactionAutomapperSettings extends IndigoNodeSettings {
       addSettingsParameter(ignoreIsotopes);
       addSettingsParameter(ignoreRadicals);
       addSettingsParameter(ignoreValence);
+      addSettingsParameter(highlightReactingCenters);
       
       _ignoreFlags.put(CFGKEY_IGNORE_CHARGES, ignoreCharges);
       _ignoreFlags.put(CFGKEY_IGNORE_ISOTOPES, ignoreIsotopes);
