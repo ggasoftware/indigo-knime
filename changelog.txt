@@ -6,6 +6,7 @@ Many issues with loading SGroups from Molfile has been fixed.
 AAM for query reactions bug was fixed.
 RGroup scaffold iteration bug was fixed. Thanks to Simon: http://tech.knime.org/forum/indigo/r-group-decomposer
 AAM Timeout option was added. Thanks to Daniel: http://groups.google.com/group/indigo-dev/browse_thread/thread/4430412b9864f3fd 
+new API was implemented for the RGroup Decomposer node. There are several important changes (molecules with no matches handling, high-symmetric systems correct processing etc.)
 
 >************************************************************
 1.1.2
